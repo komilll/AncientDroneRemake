@@ -29,11 +29,13 @@ public:
 	ModelClass(const ModelClass&);
 	~ModelClass();
 
-	bool Initialize(ID3D11Device*);
+	bool Initialize(ID3D11Device*, int width, int height);
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();
+	void SetTranslation(int x, int y, int z);
+	D3DXVECTOR3 GetTranslation();
 
 private:
 	bool InitializeBuffers(ID3D11Device*);
@@ -43,6 +45,9 @@ private:
 private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 	int m_vertexCount, m_indexCount;
+	int m_width, m_height;
+	float m_scale;
+	int m_translationX, m_translationY, m_translationZ;
 };
 
 #endif

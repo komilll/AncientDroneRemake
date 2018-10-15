@@ -28,6 +28,11 @@ private:
 		D3DXMATRIX projection;
 	};
 
+	struct ColorBufferType
+	{
+		D3DXVECTOR4 color;
+	};
+
 public:
 	ColorShaderClass();
 	ColorShaderClass(const ColorShaderClass&);
@@ -36,6 +41,7 @@ public:
 	bool Initialize(ID3D11Device*, HWND);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
+	void SetColor(D3DXVECTOR4 newColor);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*);
@@ -50,6 +56,9 @@ private:
 	ID3D11PixelShader* m_pixelShader;
 	ID3D11InputLayout* m_layout;
 	ID3D11Buffer* m_matrixBuffer;
+	ID3D11Buffer* m_colorBuffer;
+
+	D3DXVECTOR4 m_color;
 };
 
 #endif

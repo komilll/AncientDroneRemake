@@ -8,7 +8,8 @@ GraphicsClass::GraphicsClass()
 {
 	m_D3D = 0;
 	m_Camera = 0;
-	m_Model = 0;
+	playerModel = 0;
+	groundModel = 0;
 	m_ColorShader = 0;
 }
 
@@ -51,22 +52,23 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
+	m_Camera->SetPosition(0.0f, 0.0f, -256.0f);	
 
 	// Create the model object.
-	m_Model = new ModelClass;
-	if (!m_Model)
+	groundModel = new ModelClass;
+	if (!groundModel)
 	{
 		return false;
 	}
 
-	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice());
+	//Initialize the model object.
+	result = groundModel->Initialize(m_D3D->GetDevice(), 148, 1);
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
 		return false;
 	}
+	groundModel->SetTranslation(0.0f, -40.0f, 0.0f);
 
 	// Create the color shader object.
 	m_ColorShader = new ColorShaderClass;
@@ -98,11 +100,18 @@ void GraphicsClass::Shutdown()
 	}
 
 	// Release the model object.
-	if (m_Model)
+	if (playerModel)
 	{
-		m_Model->Shutdown();
-		delete m_Model;
-		m_Model = 0;
+		playerModel->Shutdown();
+		delete playerModel;
+		playerModel = 0;
+	}
+
+	if (groundModel)
+	{
+		groundModel->Shutdown();
+		delete groundModel;
+		groundModel = 0;
 	}
 
 	// Release the camera object.
@@ -128,7 +137,6 @@ bool GraphicsClass::Frame()
 {
 	bool result;
 
-
 	// Render the graphics scene.
 	result = Render();
 	if (!result)
@@ -139,12 +147,21 @@ bool GraphicsClass::Frame()
 	return true;
 }
 
+D3DClass* GraphicsClass::GetD3D()
+{
+	return m_D3D;
+}
+
+void GraphicsClass::SetPlayerModel(ModelClass * player)
+{
+	playerModel = player;
+}
+
 
 bool GraphicsClass::Render()
 {
 	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
 	bool result;
-
 
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
@@ -158,10 +175,23 @@ bool GraphicsClass::Render()
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_Model->Render(m_D3D->GetDeviceContext());
+	m_ColorShader->SetColor(D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f));
+	D3DXMatrixTranslation(&worldMatrix, playerModel->GetTranslation().x, playerModel->GetTranslation().y, playerModel->GetTranslation().z);
+	playerModel->Render(m_D3D->GetDeviceContext());
 
 	// Render the model using the color shader.
-	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+	m_ColorShader->SetColor(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f));
+	m_D3D->GetWorldMatrix(worldMatrix);	
+	D3DXMatrixTranslation(&worldMatrix, groundModel->GetTranslation().x, groundModel->GetTranslation().y, groundModel->GetTranslation().z);
+	groundModel->Render(m_D3D->GetDeviceContext());
+
+	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), groundModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
 	if (!result)
 	{
 		return false;

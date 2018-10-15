@@ -10,6 +10,7 @@ ColorShaderClass::ColorShaderClass()
 	m_pixelShader = 0;
 	m_layout = 0;
 	m_matrixBuffer = 0;
+	m_colorBuffer = 0;
 }
 
 
@@ -67,6 +68,11 @@ bool ColorShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount
 	return true;
 }
 
+void ColorShaderClass::SetColor(D3DXVECTOR4 newColor)
+{
+	m_color = newColor;
+}
+
 
 bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename)
 {
@@ -76,7 +82,7 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* v
 	ID3D10Blob* pixelShaderBuffer;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
 	unsigned int numElements;
-	D3D11_BUFFER_DESC matrixBufferDesc;
+	D3D11_BUFFER_DESC matrixBufferDesc, colorBufferDesc;
 
 
 	// Initialize the pointers this function will use to null.
@@ -187,6 +193,19 @@ bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* v
 		return false;
 	}
 
+	colorBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	colorBufferDesc.ByteWidth = sizeof(MatrixBufferType);
+	colorBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	colorBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	colorBufferDesc.MiscFlags = 0;
+	colorBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&colorBufferDesc, NULL, &m_colorBuffer);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -198,6 +217,12 @@ void ColorShaderClass::ShutdownShader()
 	{
 		m_matrixBuffer->Release();
 		m_matrixBuffer = 0;
+	}
+
+	if (m_colorBuffer)
+	{
+		m_colorBuffer->Release();
+		m_colorBuffer = 0;
 	}
 
 	// Release the layout.
@@ -267,6 +292,7 @@ bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
+	ColorBufferType* dataPtr2;
 	unsigned int bufferNumber;
 
 
@@ -298,6 +324,22 @@ bool ColorShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, D
 
 	// Finanly set the constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+
+	result = deviceContext->Map(m_colorBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	dataPtr2 = (ColorBufferType*)mappedResource.pData;
+
+	dataPtr2->color = m_color;
+
+	deviceContext->Unmap(m_colorBuffer, 0);
+
+	bufferNumber = 1;
+
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_colorBuffer);
 
 	return true;
 }

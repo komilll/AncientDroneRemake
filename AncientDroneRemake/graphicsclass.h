@@ -13,7 +13,6 @@
 #include "modelclass.h"
 #include "colorshaderclass.h"
 
-
 /////////////
 // GLOBALS //
 /////////////
@@ -36,6 +35,8 @@ public:
 	bool Initialize(int, int, HWND);
 	void Shutdown();
 	bool Frame();
+	D3DClass *GetD3D();
+	void SetPlayerModel(ModelClass* player);
 
 private:
 	bool Render();
@@ -43,8 +44,10 @@ private:
 private:
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;
-	ModelClass* m_Model;
 	ColorShaderClass* m_ColorShader;
+
+	ModelClass* playerModel;
+	ModelClass* groundModel;
 };
 
 #endif

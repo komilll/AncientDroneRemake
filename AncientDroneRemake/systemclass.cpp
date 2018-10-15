@@ -8,6 +8,8 @@ SystemClass::SystemClass()
 {
 	m_Input = 0;
 	m_Graphics = 0;
+	m_GameManager = 0;
+	m_self = this;
 }
 
 
@@ -54,6 +56,17 @@ bool SystemClass::Initialize()
 	// Initialize the graphics object.
 	result = m_Graphics->Initialize(screenWidth, screenHeight, m_hwnd);
 	if (!result)
+	{
+		return false;
+	}
+
+	m_GameManager = new GameManager;
+	if (!m_GameManager)
+	{
+		return false;
+	}
+
+	if (!m_GameManager->Initialize(GetInputController(), m_Graphics->GetD3D(), m_Graphics))
 	{
 		return false;
 	}
@@ -126,6 +139,11 @@ void SystemClass::Run()
 	return;
 }
 
+InputClass * SystemClass::GetInputController()
+{
+	return m_Input;
+}
+
 
 bool SystemClass::Frame()
 {
@@ -136,6 +154,11 @@ bool SystemClass::Frame()
 	if (m_Input->IsKeyDown(VK_ESCAPE))
 	{
 		return false;
+	}
+
+	if (m_GameManager)
+	{
+		m_GameManager->Update();
 	}
 
 	// Do the frame processing for the graphics object.

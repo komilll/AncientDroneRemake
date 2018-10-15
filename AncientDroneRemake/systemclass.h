@@ -22,6 +22,7 @@
 ///////////////////////
 #include "inputclass.h"
 #include "graphicsclass.h"
+#include "gamemanager.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +38,7 @@ public:
 	bool Initialize();
 	void Shutdown();
 	void Run();
+	InputClass* GetInputController();
 
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
 
@@ -52,6 +54,8 @@ private:
 
 	InputClass* m_Input;
 	GraphicsClass* m_Graphics;
+	GameManager* m_GameManager;
+	SystemClass *m_self;
 };
 
 
