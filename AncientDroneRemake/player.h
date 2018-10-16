@@ -1,6 +1,8 @@
 #pragma once
 
 #include <chrono>
+#include <iostream>
+#include <sstream>
 
 #include "inputclass.h"
 #include "modelclass.h"

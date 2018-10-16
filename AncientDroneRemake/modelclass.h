@@ -11,6 +11,11 @@
 #include <d3d11.h>
 #include <d3dx10math.h>
 
+struct Bounds
+{
+	D3DXVECTOR2 min;
+	D3DXVECTOR2 max;
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 // Class name: ModelClass
@@ -22,7 +27,7 @@ private:
 	{
 		D3DXVECTOR3 position;
 		D3DXVECTOR4 color;
-	};
+	};	
 
 public:
 	ModelClass();
@@ -34,8 +39,19 @@ public:
 	void Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();
-	void SetTranslation(int x, int y, int z);
+	void SetTranslation(float x, float y, float z);
 	D3DXVECTOR3 GetTranslation();
+
+	/* Physics based methods */
+	void SetBounds(float minX, float maxX, float minY, float maxY);
+	///<summary>
+	///First argument is min bounds, second argument is max bounds
+	///</summary>
+	Bounds GetBounds();
+
+public:
+	/* Physics based components */
+	Bounds bounds;
 
 private:
 	bool InitializeBuffers(ID3D11Device*);
@@ -47,7 +63,7 @@ private:
 	int m_vertexCount, m_indexCount;
 	int m_width, m_height;
 	float m_scale;
-	int m_translationX, m_translationY, m_translationZ;
+	float m_translationX, m_translationY, m_translationZ;
 };
 
 #endif

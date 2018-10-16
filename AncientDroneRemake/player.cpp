@@ -42,6 +42,8 @@ bool Player::Initialize()
 		return false;
 
 	m_graphics->SetPlayerModel(m_playerModel);
+	movementUp += 100.0f;
+	movementRight -= 80.0f;
 }
 
 bool Player::Initialize(InputClass * inputClass)
@@ -51,14 +53,14 @@ bool Player::Initialize(InputClass * inputClass)
 }
 
 void Player::Update()
-{	
+{
 	if (m_input->IsKeyDown(btn_moveRight))
 	{
-		movementRight += 5.0f;
+		movementRight += 2.0f;
 	}
 	if (m_input->IsKeyDown(btn_moveLeft))
 	{
-		movementRight -= 5.0f;
+		movementRight -= 2.0f;
 	}
 	if (m_input->IsKeyDown(btn_jump) && isGround)
 	{
@@ -78,13 +80,25 @@ void Player::Update()
 			movementUp += jumpTickHeight;
 			currentJumpTicks--;
 		}
-		else if (movementUp - gravity > -24.0f)
+		//else if (movementUp - gravity > -24.0f)
+		else if (m_playerModel->GetBounds().min.y - (m_graphics->GetGroundModel()->GetBounds().max.y - m_graphics->GetGroundModel()->GetBounds().min.y) <= m_graphics->GetGroundModel()->GetBounds().max.y
+			&& m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel()->GetBounds().max.x)
+		{
+			float playerMin_ = m_playerModel->GetBounds().min.y - (m_graphics->GetGroundModel()->GetBounds().max.y - m_graphics->GetGroundModel()->GetBounds().min.y);
+			float groundMax_ = m_graphics->GetGroundModel()->GetBounds().max.y;
+
+			float playerMinX = m_playerModel->GetBounds().min.x;
+			float groundMaxX = m_graphics->GetGroundModel()->GetBounds().max.x;			
+			
+			movementUp += (groundMax_ - playerMin_);
+
+			isGround = true;			
+		}
+		else
 		{
 			isGround = false;
 			movementUp -= gravity;
 		}
-		else
-			isGround = true;
 
 		timer -= 20.0f;		
 	}

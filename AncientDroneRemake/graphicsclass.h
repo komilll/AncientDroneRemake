@@ -4,7 +4,6 @@
 #ifndef _GRAPHICSCLASS_H_
 #define _GRAPHICSCLASS_H_
 
-
 ///////////////////////
 // MY CLASS INCLUDES //
 ///////////////////////
@@ -36,12 +35,15 @@ public:
 	void Shutdown();
 	bool Frame();
 	D3DClass *GetD3D();
+	HWND *GetHWND();
 	void SetPlayerModel(ModelClass* player);
+	ModelClass* GetGroundModel();
 
 private:
 	bool Render();
 
 private:
+	HWND* m_hwnd;
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;
 	ColorShaderClass* m_ColorShader;

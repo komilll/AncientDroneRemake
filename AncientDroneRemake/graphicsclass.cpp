@@ -28,6 +28,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
 
+	m_hwnd = &hwnd;
 
 	// Create the Direct3D object.
 	m_D3D = new D3DClass;
@@ -62,13 +63,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the model object.
-	result = groundModel->Initialize(m_D3D->GetDevice(), 148, 1);
+	result = groundModel->Initialize(m_D3D->GetDevice(), 20, 1);
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
 		return false;
 	}
-	groundModel->SetTranslation(0.0f, -40.0f, 0.0f);
+	groundModel->SetTranslation(-80.0f, -60.0f, 0.0f);
 
 	// Create the color shader object.
 	m_ColorShader = new ColorShaderClass;
@@ -137,6 +138,10 @@ bool GraphicsClass::Frame()
 {
 	bool result;
 
+	groundModel->SetTranslation(groundModel->GetTranslation().x, groundModel->GetTranslation().y + 0.0f, groundModel->GetTranslation().z);
+	if (groundModel->GetTranslation().y >= 75.0f)
+		groundModel->SetTranslation(0.0f, -60.0f, 0.0f);
+
 	// Render the graphics scene.
 	result = Render();
 	if (!result)
@@ -152,9 +157,19 @@ D3DClass* GraphicsClass::GetD3D()
 	return m_D3D;
 }
 
+HWND * GraphicsClass::GetHWND()
+{
+	return m_hwnd;
+}
+
 void GraphicsClass::SetPlayerModel(ModelClass * player)
 {
 	playerModel = player;
+}
+
+ModelClass * GraphicsClass::GetGroundModel()
+{
+	return groundModel;
 }
 
 

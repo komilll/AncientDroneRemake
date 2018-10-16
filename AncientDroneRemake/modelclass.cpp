@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 // Filename: modelclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "modelclass.h"
@@ -27,6 +27,8 @@ bool ModelClass::Initialize(ID3D11Device* device, int width, int height)
 
 	m_width = width;
 	m_height = height;
+
+	SetBounds(-m_width / 2, m_width / 2, -m_height, 0.0f);
 
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
@@ -62,7 +64,7 @@ int ModelClass::GetIndexCount()
 	return m_indexCount;
 }
 
-void ModelClass::SetTranslation(int x, int y, int z)
+void ModelClass::SetTranslation(float x, float y, float z)
 {
 	m_translationX = x;
 	m_translationY = y;
@@ -74,6 +76,22 @@ D3DXVECTOR3 ModelClass::GetTranslation()
 	return D3DXVECTOR3(m_translationX, m_translationY, m_translationZ);
 }
 
+void ModelClass::SetBounds(float minX, float maxX, float minY, float maxY)
+{
+	bounds.min = D3DXVECTOR2(minX, minY);
+	bounds.max = D3DXVECTOR2(maxX, maxY);
+}
+
+Bounds ModelClass::GetBounds()
+{
+	Bounds localBounds;
+	localBounds.min.x = bounds.min.x + m_translationX;
+	localBounds.max.x = bounds.max.x + m_translationX;
+	localBounds.min.y = bounds.min.y + m_translationY;
+	localBounds.max.y = bounds.max.y + m_translationY;
+	
+	return localBounds;
+}
 
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
 {
