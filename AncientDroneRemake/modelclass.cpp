@@ -28,7 +28,7 @@ bool ModelClass::Initialize(ID3D11Device* device, int width, int height)
 	m_width = width;
 	m_height = height;
 
-	SetBounds(-m_width / 2, m_width / 2, -m_height, 0.0f);
+	SetBounds(-m_width, m_width, -m_height, m_height);
 
 	// Initialize the vertex and index buffers.
 	result = InitializeBuffers(device);
