@@ -43,7 +43,7 @@ bool Player::Initialize()
 
 	m_graphics->SetPlayerModel(m_playerModel);
 	movementUp += 10.0f;
-	movementRight -= 80.0f;
+	movementRight -= 60.0f;
 }
 
 bool Player::Initialize(InputClass * inputClass)
@@ -77,61 +77,56 @@ void Player::Update()
 
 	if (timer >= 20.0f) //20ms = 0.02s
 	{
-		float groundThickness = (m_graphics->GetGroundModel()->GetBounds().max.y - m_graphics->GetGroundModel()->GetBounds().min.y) / 4;
+		bool isFalling = true;
+		isGround = false;
 
-		if (currentJumpTicks > 0)
+		for (int i = 0; i < 4; i++)
 		{
-			isGround = false;
-			frameMovementUp += jumpTickHeight;
-			currentJumpTicks--;
-		}
-		//else if (movementUp - gravity > -24.0f)
-		else if (m_playerModel->GetBounds().min.y - groundThickness <= m_graphics->GetGroundModel()->GetBounds().max.y)
-		{
-			//float playerMin_ = m_playerModel->GetBounds().min.y - groundThickness;
-			//float groundMax_ = m_graphics->GetGroundModel()->GetBounds().max.y;
+			float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
 
-			//float playerMinX = m_playerModel->GetBounds().min.x;
-			//float groundMaxX = m_graphics->GetGroundModel()->GetBounds().max.x;
-
-			//frameMovementUp += (groundMax_ - playerMin_);
-			if (m_playerModel->GetBounds().max.y + groundThickness > m_graphics->GetGroundModel()->GetBounds().min.y)
+			if (currentJumpTicks > 0)
 			{
-				if (m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel()->GetBounds().max.x
-					&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel()->GetBounds().min.x)
-				{
+				isFalling = false;
 
-					isGround = true;
-				}
-				else if (m_playerModel->GetBounds().max.x < m_graphics->GetGroundModel()->GetBounds().max.x)
-				{
-					isGround = false;
-					frameMovementUp -= gravity;
+				frameMovementUp += jumpTickHeight;
+				currentJumpTicks--;
+			}
+			if (m_playerModel->GetBounds().min.y - groundThickness <= m_graphics->GetGroundModel(i)->GetBounds().max.y)
+			{
+				//float playerMin_ = m_playerModel->GetBounds().min.y - groundThickness;
+				//float groundMax_ = m_graphics->GetGroundModel()->GetBounds().max.y;
 
-					if (m_graphics->GetGroundModel()->GetBounds().min.x - m_playerModel->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
-						frameMovementRight = m_graphics->GetGroundModel()->GetBounds().min.x - m_playerModel->GetBounds().max.x;
-				}
-				else if (m_playerModel->GetBounds().min.x > m_graphics->GetGroundModel()->GetBounds().min.x)
-				{
-					isGround = false;
-					frameMovementUp -= gravity;
+				//float playerMinX = m_playerModel->GetBounds().min.x;
+				//float groundMaxX = m_graphics->GetGroundModel()->GetBounds().max.x;
 
-					float temp_ = -(m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel()->GetBounds().max.x);
-					if (temp_ >= 0.0f && frameMovementRight < 0.0f)
-						frameMovementRight = temp_;
+				//frameMovementUp += (groundMax_ - playerMin_);
+
+				if (m_playerModel->GetBounds().max.y + groundThickness > m_graphics->GetGroundModel(i)->GetBounds().min.y)
+				{
+					if (m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
+						&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
+					{
+						isFalling = false;
+						isGround = true;
+					}
+					else if (m_playerModel->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x)
+					{
+						if (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_playerModel->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
+							frameMovementRight = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_playerModel->GetBounds().max.x;
+					}
+					else if (m_playerModel->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
+					{
+						float temp_ = -(m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
+
+						if (temp_ >= 0.0f && frameMovementRight < 0.0f)
+							frameMovementRight = temp_;
+					}
 				}
 			}
-			else
-			{
-				isGround = false;
-				frameMovementUp -= gravity;
-			}
 		}
-		else
-		{
-			isGround = false;
+
+		if (isFalling)
 			frameMovementUp -= gravity;
-		}
 
 		timer -= 20.0f;		
 	}

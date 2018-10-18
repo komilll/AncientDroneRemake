@@ -8,9 +8,13 @@ GraphicsClass::GraphicsClass()
 {
 	m_D3D = 0;
 	m_Camera = 0;
-	playerModel = 0;
-	groundModel = 0;
+	playerModel = 0;	
 	m_ColorShader = 0;
+
+	for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
+	{
+		groundModel[i] = nullptr;
+	}
 }
 
 
@@ -56,20 +60,31 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Camera->SetPosition(0.0f, 0.0f, -256.0f);	
 
 	// Create the model object.
-	groundModel = new ModelClass;
-	if (!groundModel)
+	for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
 	{
-		return false;
+		groundModel[i] = new ModelClass;
+		if (!groundModel[i])
+		{
+			return false;
+		}
 	}
 
 	//Initialize the model object.
-	result = groundModel->Initialize(m_D3D->GetDevice(), 20, 1);
-	if (!result)
-	{
-		MessageBox(hwnd, "Could not initialize the model object.", "Error", MB_OK);
-		return false;
-	}
-	groundModel->SetTranslation(-80.0f, -60.0f, 0.0f);
+	result = groundModel[0]->Initialize(m_D3D->GetDevice(), 10, 1);
+	groundModel[0]->SetTranslation(-60.0f, -50, 0.0f);
+	if (!result) return false;
+
+	result = groundModel[1]->Initialize(m_D3D->GetDevice(), 10, 1);
+	groundModel[1]->SetTranslation(-20, -60.0f, 0.0f);
+	if (!result) return false;
+
+	result = groundModel[2]->Initialize(m_D3D->GetDevice(), 10, 1);
+	groundModel[2]->SetTranslation(20, -50, 0.0f);
+	if (!result) return false;
+
+	result = groundModel[3]->Initialize(m_D3D->GetDevice(), 10, 1);
+	groundModel[3]->SetTranslation(50, -70, 0.0f);
+	if (!result) return false;
 
 	// Create the color shader object.
 	m_ColorShader = new ColorShaderClass;
@@ -110,9 +125,12 @@ void GraphicsClass::Shutdown()
 
 	if (groundModel)
 	{
-		groundModel->Shutdown();
-		delete groundModel;
-		groundModel = 0;
+		for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
+		{
+			groundModel[i]->Shutdown();
+			delete groundModel[i];
+			groundModel[i] = 0;
+		}		
 	}
 
 	// Release the camera object.
@@ -137,10 +155,6 @@ void GraphicsClass::Shutdown()
 bool GraphicsClass::Frame()
 {
 	bool result;
-
-	groundModel->SetTranslation(groundModel->GetTranslation().x, groundModel->GetTranslation().y + 0.0f, groundModel->GetTranslation().z);
-	if (groundModel->GetTranslation().y >= 75.0f)
-		groundModel->SetTranslation(0.0f, -60.0f, 0.0f);
 
 	// Render the graphics scene.
 	result = Render();
@@ -167,9 +181,9 @@ void GraphicsClass::SetPlayerModel(ModelClass * player)
 	playerModel = player;
 }
 
-ModelClass * GraphicsClass::GetGroundModel()
+ModelClass *GraphicsClass::GetGroundModel(int index)
 {
-	return groundModel;
+	return groundModel[index];
 }
 
 
@@ -201,15 +215,18 @@ bool GraphicsClass::Render()
 		return false;
 	}
 
-	m_ColorShader->SetColor(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f));
-	m_D3D->GetWorldMatrix(worldMatrix);	
-	D3DXMatrixTranslation(&worldMatrix, groundModel->GetTranslation().x, groundModel->GetTranslation().y, groundModel->GetTranslation().z);
-	groundModel->Render(m_D3D->GetDeviceContext());
-
-	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), groundModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-	if (!result)
+	for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
 	{
-		return false;
+		m_ColorShader->SetColor(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f));
+		m_D3D->GetWorldMatrix(worldMatrix);
+		D3DXMatrixTranslation(&worldMatrix, groundModel[i]->GetTranslation().x, groundModel[i]->GetTranslation().y, groundModel[i]->GetTranslation().z);
+		groundModel[i]->Render(m_D3D->GetDeviceContext());
+
+		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), groundModel[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+		if (!result)
+		{
+			return false;
+		}
 	}
 
 	// Present the rendered scene to the screen.

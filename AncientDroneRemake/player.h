@@ -47,12 +47,12 @@ private:
 	int movementRight;
 	int movementUp;
 	bool isGround = false;
-	int jumpTicks = 5;
+	int jumpTicks = 40;
 	int currentJumpTicks = 0;
-	int jumpTickHeight = 5;
+	float jumpTickHeight = 0.75f;
 
 	//Physics
-	int gravity = 1;
+	float gravity = 1.75f;
 	float timer;
 	__int64 lastTime;
 };

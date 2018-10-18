@@ -37,7 +37,7 @@ public:
 	D3DClass *GetD3D();
 	HWND *GetHWND();
 	void SetPlayerModel(ModelClass* player);
-	ModelClass* GetGroundModel();
+	ModelClass* GetGroundModel(int index);
 
 private:
 	bool Render();
@@ -49,7 +49,8 @@ private:
 	ColorShaderClass* m_ColorShader;
 
 	ModelClass* playerModel;
-	ModelClass* groundModel;
+	const static int GROUND_MODEL_LENGTH = 4;
+	ModelClass* groundModel[GROUND_MODEL_LENGTH];
 };
 
 #endif
