@@ -47,3 +47,7 @@ if (isFalling)
 And that’s all. I’m simply testing 4 states: player jumping, player standing on ground, player moving inside platform from left side (snap to left), player moving inside platform from right side (snap to right). If player isn’t jumping and isn’t standing on ground then it must be falling so I apply gravity in that case scenario.
 
 After every week progress I will post new release version with changes that I’ve made through that week. Thank you for reading and once again – Let the adventure begin!
+
+https://github.com/komilll/AncientDroneRemake/releases/tag/0.1 - Week #1 release
+<center><img src="Blog/gif_1.gif"></center>
+<center><i>Week #1: Gif #1 – Jumping on platforms using basic physics engine</i></center>
