@@ -11,7 +11,7 @@ To begin our adventure I’ve prepared basic pipeline for rendering 2D images. I
 Second thing that I needed to start working on game was physics engine. Currently it’s horrible primitive but that’s enough for jumping on platforms (and so enough for PLATFORMer game). In each model instance I’ve added physics bounds. Each object has its bounds initialized on creation but they can be modified if we’d like for example enemies to have larger colliders or make player’s vulnerability collider smaller than model itself. Physics is based on simple comparisons in FixedUpdate() (I derived this name from Unity engine as an Update with fixed timestep):
 
 <pre><code class="c++">
-  bool isFalling = true;
+bool isFalling = true;
 bool isGround = false;
 
 if (jumping)
