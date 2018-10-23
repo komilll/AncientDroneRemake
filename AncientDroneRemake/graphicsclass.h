@@ -11,6 +11,7 @@
 #include "cameraclass.h"
 #include "modelclass.h"
 #include "colorshaderclass.h"
+#include "textureshaderclass.h"
 
 /////////////
 // GLOBALS //
@@ -51,6 +52,8 @@ private:
 	ModelClass* playerModel;
 	const static int GROUND_MODEL_LENGTH = 4;
 	ModelClass* groundModel[GROUND_MODEL_LENGTH];
+
+	TextureShaderClass* m_TextureShader;
 };
 
 #endif

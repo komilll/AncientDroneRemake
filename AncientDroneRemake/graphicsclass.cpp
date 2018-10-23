@@ -10,6 +10,7 @@ GraphicsClass::GraphicsClass()
 	m_Camera = 0;
 	playerModel = 0;	
 	m_ColorShader = 0;
+	m_TextureShader = 0;
 
 	for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
 	{
@@ -101,6 +102,19 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	m_TextureShader = new TextureShaderClass;
+	if (!m_TextureShader)
+	{
+		return false;
+	}
+
+	result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the texture shader object.", "Error", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
@@ -108,6 +122,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	// Release the color shader object.
+	if (m_TextureShader)
+	{
+		m_TextureShader->Shutdown();
+		delete m_TextureShader;
+		m_TextureShader = 0;
+	}
+
 	if (m_ColorShader)
 	{
 		m_ColorShader->Shutdown();
