@@ -26,6 +26,12 @@ private:
 		D3DXMATRIX projection;
 	};
 
+	struct TextureBufferType
+	{
+		D3DXVECTOR2 tex;
+		D3DXVECTOR2 padding;
+	};
+
 public:
 	TextureShaderClass();
 	TextureShaderClass(const TextureShaderClass&);
@@ -45,10 +51,13 @@ private:
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:
+	D3DXVECTOR2 m_textureParams;
+
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
 	ID3D11InputLayout* m_layout;
 	ID3D11Buffer* m_matrixBuffer;
+	ID3D11Buffer* m_textureBuffer;
 	ID3D11SamplerState* m_sampleState;
 	ID3D11ShaderResourceView* texture;
 };

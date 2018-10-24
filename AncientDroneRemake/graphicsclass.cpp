@@ -230,7 +230,7 @@ bool GraphicsClass::Render()
 	playerModel->Render(m_D3D->GetDeviceContext());
 
 	// Render the model using the color shader.
-	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
 	if (!result)
 	{
 		return false;

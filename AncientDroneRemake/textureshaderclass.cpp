@@ -69,9 +69,9 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* vertexShaderBuffer;
 	ID3D10Blob* pixelShaderBuffer;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
 	unsigned int numElements;
-	D3D11_BUFFER_DESC matrixBufferDesc;
+	D3D11_BUFFER_DESC matrixBufferDesc, texBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
 
 
@@ -142,13 +142,21 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 	polygonLayout[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[0].InstanceDataStepRate = 0;
 
-	polygonLayout[1].SemanticName = "TEXCOORD";
+	polygonLayout[1].SemanticName = "COLOR";
 	polygonLayout[1].SemanticIndex = 0;
-	polygonLayout[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	polygonLayout[1].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	polygonLayout[1].InputSlot = 0;
 	polygonLayout[1].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[1].InstanceDataStepRate = 0;
+
+	polygonLayout[2].SemanticName = "TEXCOORD";
+	polygonLayout[2].SemanticIndex = 0;
+	polygonLayout[2].Format = DXGI_FORMAT_R32G32_FLOAT;
+	polygonLayout[2].InputSlot = 0;
+	polygonLayout[2].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[2].InstanceDataStepRate = 0;
 
 	// Get a count of the elements in the layout.
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
@@ -183,6 +191,20 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 		return false;
 	}
 
+	texBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	texBufferDesc.ByteWidth = sizeof(TextureBufferType);
+	texBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	texBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	texBufferDesc.MiscFlags = 0;
+	texBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&texBufferDesc, NULL, &m_textureBuffer);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+
 	// Create a texture sampler state description.
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -204,6 +226,12 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 	{
 		return false;
 	}	
+
+	result = D3DX11CreateShaderResourceViewFromFile(device, "star.dds", NULL, NULL, &texture, NULL);
+	if (FAILED(result))
+	{
+		return false;
+	}
 
 	return true;
 }
@@ -282,6 +310,7 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
+	TextureBufferType* dataPtr2;
 	unsigned int bufferNumber;
 
 	// Transpose the matrices to prepare them for the shader.
@@ -313,8 +342,26 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	// Finanly set the constant buffer in the vertex shader with the updated values.
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
+	result = deviceContext->Map(m_textureBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	dataPtr2 = (TextureBufferType*)mappedResource.pData;
+
+	dataPtr2->tex = m_textureParams;
+	dataPtr2->padding = D3DXVECTOR2(0.0f, 0.0f);
+
+	deviceContext->Unmap(m_textureBuffer, 0);
+
+	bufferNumber = 1;
+
+	// Finanly set the constant buffer in the vertex shader with the updated values.
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_textureBuffer);
+
 	// Set shader texture resource in the pixel shader.
-	//deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(0, 1, &texture);
 
 	return true;
 }

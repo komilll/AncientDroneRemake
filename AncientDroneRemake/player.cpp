@@ -35,7 +35,7 @@ bool Player::Initialize()
 	if (m_d3d == nullptr)
 		return false;
 
-	if (!m_playerModel->Initialize(m_d3d->GetDevice(), 8, 16))
+	if (!m_playerModel->Initialize(m_d3d->GetDevice(), 8, 8))
 		return false;
 
 	if (m_graphics == nullptr)
