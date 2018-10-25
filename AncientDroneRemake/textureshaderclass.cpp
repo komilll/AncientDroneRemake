@@ -63,6 +63,18 @@ void TextureShaderClass::SetColor(D3DXVECTOR4 newColor)
 	//m_color = newColor;
 }
 
+void TextureShaderClass::SetAnimationData(int row, int column, float imageWidth, float imageHeight, float fullScreenWidth, float fullScreenHeight)
+{
+	m_texBufferType.row = row;
+	m_texBufferType.column = column;
+	m_texBufferType.width = imageWidth;
+	m_texBufferType.height = imageHeight;
+	m_texBufferType.fullScreenWidth = fullScreenWidth;
+	m_texBufferType.fullScreenHeight = fullScreenHeight;
+	
+	m_texBufferType.padding = D3DXVECTOR2(0.0f, 0.0f);
+}
+
 bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename)
 {
 	HRESULT result;
@@ -227,12 +239,13 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 		return false;
 	}	
 
-	result = D3DX11CreateShaderResourceViewFromFile(device, "star.dds", NULL, NULL, &texture, NULL);
+	result = D3DX11CreateShaderResourceViewFromFile(device, "ancient_ball.dds", NULL, NULL, &texture, NULL);
 	if (FAILED(result))
 	{
 		return false;
 	}
 
+	SetAnimationData(0, 0, 64.0f, 64.0f, 1024.0f, 1024.0f);
 	return true;
 }
 
@@ -350,8 +363,13 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	dataPtr2 = (TextureBufferType*)mappedResource.pData;
 
-	dataPtr2->tex = m_textureParams;
-	dataPtr2->padding = D3DXVECTOR2(0.0f, 0.0f);
+	dataPtr2->row = m_texBufferType.row;
+	dataPtr2->column = m_texBufferType.column;
+	dataPtr2->width = m_texBufferType.width;
+	dataPtr2->height = m_texBufferType.height;
+	dataPtr2->fullScreenWidth = m_texBufferType.fullScreenWidth;
+	dataPtr2->fullScreenHeight = m_texBufferType.fullScreenHeight;
+	dataPtr2->padding = m_texBufferType.padding;;
 
 	deviceContext->Unmap(m_textureBuffer, 0);
 

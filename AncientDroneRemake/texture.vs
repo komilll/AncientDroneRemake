@@ -13,6 +13,18 @@ cbuffer MatrixBuffer
 	matrix projectionMatrix;
 };
 
+cbuffer TextureBuffer
+{
+	int row;
+	int column;
+	float width;
+	float height;
+	float fullScreenWidth;
+	float fullScreenHeight;
+	
+	float2 padding;	
+};
+
 //////////////
 // TYPEDEFS //
 //////////////
@@ -46,7 +58,7 @@ PixelInputType ColorVertexShader(VertexInputType input)
     output.position = mul(output.position, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
 
-	output.tex = input.tex;
+	output.tex = (input.tex * float2(width/fullScreenWidth, height/fullScreenHeight) + float2((row * width)/fullScreenWidth, (column * height)/fullScreenHeight));
     
     return output;
 }

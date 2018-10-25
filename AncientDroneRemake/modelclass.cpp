@@ -146,9 +146,14 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	//left = -right;
 	//bottom = -top;
 
+	//animationPose[0]->leftTop = D3DXVECTOR2(0.0, 0.0);
+	//animationPose[0]->leftBottom = D3DXVECTOR2(0.0, 64.0f / 1024.0f);
+	//animationPose[0]->rightBottom = D3DXVECTOR2(64.0f / 1024.0f, 64.0f / 1024.0f);
+	//animationPose[0]->rightTop = D3DXVECTOR2(0.0f, 64.0f / 1024.0f);
+
 	vertices[0].position = D3DXVECTOR3(left, top, 0.0f);  // Top left.
 	vertices[0].color = D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f);
-	vertices[0].tex = D3DXVECTOR2(0.0f, 0.0f);
+	vertices[0].tex = D3DXVECTOR2(0.0, 0.0);
 
 	vertices[1].position = D3DXVECTOR3(right, top, 0.0f);  // Top right.
 	vertices[1].color = D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f);
@@ -160,7 +165,7 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 	vertices[3].position = D3DXVECTOR3(left, bottom, 0.0f);  // Bottom left.
 	vertices[3].color = D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f);
-	vertices[3].tex = D3DXVECTOR2(0.0f, 1.0f);
+	vertices[3].tex = D3DXVECTOR2(0.0, 1.0f);
 
 	// Load the index array with data.
 	indices[0] = 0;  // Bottom left.

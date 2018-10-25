@@ -54,6 +54,9 @@ private:
 	ModelClass* groundModel[GROUND_MODEL_LENGTH];
 
 	TextureShaderClass* m_TextureShader;
+
+	int a = 0;
+	int index = 0;
 };
 
 #endif

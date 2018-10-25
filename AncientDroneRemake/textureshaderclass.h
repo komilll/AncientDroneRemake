@@ -28,7 +28,13 @@ private:
 
 	struct TextureBufferType
 	{
-		D3DXVECTOR2 tex;
+		int row;
+		int column;
+		float width;
+		float height;
+		float fullScreenWidth;
+		float fullScreenHeight;
+
 		D3DXVECTOR2 padding;
 	};
 
@@ -41,6 +47,7 @@ public:
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
 	void SetColor(D3DXVECTOR4 newColor);
+	void SetAnimationData(int row, int column, float imageWidth, float imageHeight, float fullScreenWidth, float fullScreenHeight);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*);
@@ -51,7 +58,7 @@ private:
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:
-	D3DXVECTOR2 m_textureParams;
+	TextureBufferType m_texBufferType;
 
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
