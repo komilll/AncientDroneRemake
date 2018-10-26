@@ -10,6 +10,7 @@
 #include <d3dx10math.h>
 #include <d3dx11async.h>
 #include <fstream>
+#include "animationimporter.h"
 
 using namespace std;
 
@@ -48,6 +49,7 @@ public:
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
 	void SetColor(D3DXVECTOR4 newColor);
 	void SetAnimationData(int row, int column, float imageWidth, float imageHeight, float fullScreenWidth, float fullScreenHeight);
+	void SetNextFrame();
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*);
@@ -59,6 +61,9 @@ private:
 
 private:
 	TextureBufferType m_texBufferType;
+	AnimationImporter* m_animationImporter;
+	int m_currentAnimationFrame = 0;
+	int m_currentAnimationIndex = 0;
 
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;

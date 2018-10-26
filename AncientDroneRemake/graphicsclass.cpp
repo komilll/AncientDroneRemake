@@ -191,7 +191,7 @@ bool GraphicsClass::Frame()
 		index++;
 		if (index == 6)
 			index = 0;
-		m_TextureShader->SetAnimationData(index, 0, 64.0f, 64.0f, 1024.0f, 1024.0f);
+		m_TextureShader->SetNextFrame();
 	}
 
 	return true;

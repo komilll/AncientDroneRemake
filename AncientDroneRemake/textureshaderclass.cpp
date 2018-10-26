@@ -7,6 +7,7 @@ TextureShaderClass::TextureShaderClass()
 	m_layout = 0;
 	m_matrixBuffer = 0;
 	texture = 0;
+	m_animationImporter = 0;
 }
 
 TextureShaderClass::TextureShaderClass(const TextureShaderClass &other)
@@ -73,6 +74,11 @@ void TextureShaderClass::SetAnimationData(int row, int column, float imageWidth,
 	m_texBufferType.fullScreenHeight = fullScreenHeight;
 	
 	m_texBufferType.padding = D3DXVECTOR2(0.0f, 0.0f);
+}
+
+void TextureShaderClass::SetNextFrame()
+{
+	m_currentAnimationFrame = (m_currentAnimationFrame + 1) % m_animationImporter->GetMaxFrames(m_currentAnimationIndex);
 }
 
 bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename)
@@ -239,13 +245,17 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 		return false;
 	}	
 
+	LPCSTR name = "ancient_ball.dds";
 	result = D3DX11CreateShaderResourceViewFromFile(device, "ancient_ball.dds", NULL, NULL, &texture, NULL);
 	if (FAILED(result))
 	{
 		return false;
 	}
+	// SetAnimationData(0, 0, 64.0f, 64.0f, 1024.0f, 1024.0f);
+	m_animationImporter = new AnimationImporter();
 
-	SetAnimationData(0, 0, 64.0f, 64.0f, 1024.0f, 1024.0f);
+	m_animationImporter->ImportFile(device, name, 64, 64, 1024, 1024);
+	m_animationImporter->CreateAnimation(6, 0);
 	return true;
 }
 
@@ -325,6 +335,9 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	MatrixBufferType* dataPtr;
 	TextureBufferType* dataPtr2;
 	unsigned int bufferNumber;
+
+	AnimationData* a = m_animationImporter->GetAnimationData(0, m_currentAnimationFrame);
+	SetAnimationData(a->row, a->column, a->imageWidth, a->imageHeight, a->fullScreenWidth, a->fullScreenHeight);
 
 	// Transpose the matrices to prepare them for the shader.
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);

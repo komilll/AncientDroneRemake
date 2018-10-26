@@ -58,7 +58,7 @@ PixelInputType ColorVertexShader(VertexInputType input)
     output.position = mul(output.position, viewMatrix);
     output.position = mul(output.position, projectionMatrix);
 
-	output.tex = (input.tex * float2(width/fullScreenWidth, height/fullScreenHeight) + float2((row * width)/fullScreenWidth, (column * height)/fullScreenHeight));
+	output.tex = (input.tex * float2(width/fullScreenWidth, height/fullScreenHeight) + float2((column * width)/fullScreenWidth, (row * height)/fullScreenHeight));
     
     return output;
 }
