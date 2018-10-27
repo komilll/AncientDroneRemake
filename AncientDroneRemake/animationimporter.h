@@ -14,6 +14,7 @@ struct AnimationData
 	float imageHeight;
 	float fullScreenWidth;
 	float fullScreenHeight;
+	int timePerFrame;
 };
 
 
@@ -28,6 +29,7 @@ public:
 		D3DXVECTOR2 rightBottom;
 		int row;
 		int frames;
+		int timePerFrame;
 	};
 
 
@@ -37,7 +39,7 @@ public:
 	~AnimationImporter();
 
 	bool ImportFile(ID3D11Device* device, LPCSTR filename, int frameWidth, int frameHeight, int textureWidth, int textureHeight);
-	bool CreateAnimation(int frames, int row = -1);
+	bool CreateAnimation(int frames, int timePerFrame, int row = -1);
 	AnimationData* GetAnimationData(int index, int currentFrame);
 	int GetMaxFrames(int index);
 

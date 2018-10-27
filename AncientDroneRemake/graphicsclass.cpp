@@ -184,15 +184,7 @@ bool GraphicsClass::Frame()
 		return false;
 	}
 
-	a++;
-	if (a > 10)
-	{
-		a = 0;
-		index++;
-		if (index == 6)
-			index = 0;
-		m_TextureShader->SetNextFrame();
-	}
+	m_TextureShader->CheckNextFrame();	
 
 	return true;
 }
@@ -245,7 +237,7 @@ bool GraphicsClass::Render()
 	{
 		return false;
 	}
-
+	
 	for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
 	{
 		m_ColorShader->SetColor(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f));

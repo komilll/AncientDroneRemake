@@ -36,7 +36,9 @@ private:
 		float fullScreenWidth;
 		float fullScreenHeight;
 
-		D3DXVECTOR2 padding;
+		float reverseX;
+		float reverseY;
+		//D3DXVECTOR2 padding;
 	};
 
 public:
@@ -50,6 +52,7 @@ public:
 	void SetColor(D3DXVECTOR4 newColor);
 	void SetAnimationData(int row, int column, float imageWidth, float imageHeight, float fullScreenWidth, float fullScreenHeight);
 	void SetNextFrame();
+	void CheckNextFrame();
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*);
@@ -64,6 +67,7 @@ private:
 	AnimationImporter* m_animationImporter;
 	int m_currentAnimationFrame = 0;
 	int m_currentAnimationIndex = 0;
+	int m_currentFrameTime = 0;	
 
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;

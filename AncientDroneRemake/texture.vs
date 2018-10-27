@@ -21,8 +21,9 @@ cbuffer TextureBuffer
 	float height;
 	float fullScreenWidth;
 	float fullScreenHeight;
-	
-	float2 padding;	
+
+	float reverseX;
+	float reverseY;
 };
 
 //////////////
@@ -59,6 +60,8 @@ PixelInputType ColorVertexShader(VertexInputType input)
     output.position = mul(output.position, projectionMatrix);
 
 	output.tex = (input.tex * float2(width/fullScreenWidth, height/fullScreenHeight) + float2((column * width)/fullScreenWidth, (row * height)/fullScreenHeight));
-    
+    output.tex *= float2(reverseX, reverseY);
+
+
     return output;
 }

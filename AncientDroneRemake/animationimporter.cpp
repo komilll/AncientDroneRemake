@@ -39,8 +39,11 @@ bool AnimationImporter::ImportFile(ID3D11Device* device, LPCSTR filename, int fr
 	return true;
 }
 
-bool AnimationImporter::CreateAnimation(int frames, int row)
+bool AnimationImporter::CreateAnimation(int frames, int timePerFrame, int row)
 {
+	if (row == -1)
+		row = m_currentIndex;
+
 	animationPose[m_currentIndex]->leftTop = D3DXVECTOR2((m_frameWidth * frames) / m_textureWidth, (m_frameHeight * row) / m_textureHeight);
 	animationPose[m_currentIndex]->leftBottom = D3DXVECTOR2((m_frameWidth * frames) / m_textureWidth, (m_frameHeight * (row + 1)) / m_textureHeight);
 	animationPose[m_currentIndex]->rightBottom = D3DXVECTOR2((m_frameWidth * (frames + 1)) / m_textureWidth, (m_frameHeight * (row + 1)) / m_textureHeight);
@@ -48,6 +51,12 @@ bool AnimationImporter::CreateAnimation(int frames, int row)
 
 	animationPose[m_currentIndex]->row = row;
 	animationPose[m_currentIndex]->frames = frames;
+	animationPose[m_currentIndex]->timePerFrame = timePerFrame;	
+
+	if (timePerFrame <= 0)
+	{
+		return false;
+	}
 
 	m_currentIndex++;
 
@@ -56,6 +65,7 @@ bool AnimationImporter::CreateAnimation(int frames, int row)
 
 AnimationData* AnimationImporter::GetAnimationData(int index, int currentFrame)
 {
+	animationData->timePerFrame = animationPose[index]->timePerFrame;
 	animationData->row = animationPose[index]->row;
 	animationData->column = currentFrame % animationPose[index]->frames;
 

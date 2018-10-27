@@ -133,6 +133,7 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="modelclass.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="playeranimationstates.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureshaderclass.h" />
   </ItemGroup>

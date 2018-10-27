@@ -73,12 +73,23 @@ void TextureShaderClass::SetAnimationData(int row, int column, float imageWidth,
 	m_texBufferType.fullScreenWidth = fullScreenWidth;
 	m_texBufferType.fullScreenHeight = fullScreenHeight;
 	
-	m_texBufferType.padding = D3DXVECTOR2(0.0f, 0.0f);
+
+	//m_texBufferType.padding = D3DXVECTOR2(0.0f, 0.0f);
 }
 
 void TextureShaderClass::SetNextFrame()
 {
 	m_currentAnimationFrame = (m_currentAnimationFrame + 1) % m_animationImporter->GetMaxFrames(m_currentAnimationIndex);
+}
+
+void TextureShaderClass::CheckNextFrame()
+{
+	m_currentFrameTime++;
+	if (m_animationImporter->GetAnimationData(m_currentAnimationIndex, m_currentAnimationFrame)->timePerFrame == m_currentFrameTime)
+	{		
+		m_currentFrameTime = 0;
+		SetNextFrame();
+	}
 }
 
 bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename)
@@ -245,8 +256,8 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 		return false;
 	}	
 
-	LPCSTR name = "ancient_ball.dds";
-	result = D3DX11CreateShaderResourceViewFromFile(device, "ancient_ball.dds", NULL, NULL, &texture, NULL);
+	LPCSTR name = "player.dds";
+	result = D3DX11CreateShaderResourceViewFromFile(device, "dirt01.dds", NULL, NULL, &texture, NULL);
 	if (FAILED(result))
 	{
 		return false;
@@ -254,8 +265,13 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 	// SetAnimationData(0, 0, 64.0f, 64.0f, 1024.0f, 1024.0f);
 	m_animationImporter = new AnimationImporter();
 
-	m_animationImporter->ImportFile(device, name, 64, 64, 1024, 1024);
-	m_animationImporter->CreateAnimation(6, 0);
+	m_animationImporter->ImportFile(device, name, 1024, 1024, 1024, 1024);
+	if (m_animationImporter->CreateAnimation(1, 10) == false)
+	{
+		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
+		return false;
+	}
+
 	return true;
 }
 
@@ -382,7 +398,10 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	dataPtr2->height = m_texBufferType.height;
 	dataPtr2->fullScreenWidth = m_texBufferType.fullScreenWidth;
 	dataPtr2->fullScreenHeight = m_texBufferType.fullScreenHeight;
-	dataPtr2->padding = m_texBufferType.padding;;
+
+	dataPtr2->reverseX = 1.0f;
+	dataPtr2->reverseY = 1.0f;
+	//dataPtr2->padding = m_texBufferType.padding;
 
 	deviceContext->Unmap(m_textureBuffer, 0);
 
