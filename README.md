@@ -6,6 +6,17 @@ To start with – it isn’t a tutorial series. I wanted to start a blog to moti
 Project itself is a remake of 2D Platformer game that I’ve made with my friend for Ludum Dare 36
 <a href="https://azargaz.itch.io/ancient-drone">https://azargaz.itch.io/ancient-drone</a>. This time I’d like to make it from scratch using DirectX 11. I will create flipbook animation system, basic physics engine, enemies with simple AI and other things essential to complete this remake. Let’s get started!
 
+<h2>Week #2</h2>
+This week I was preparing animation pipeline. It's based on simply importing whole 2D sprite sheet and slicing it to get frames we'd like to use further. Currently (and it'll be propably enough for this project) there is only "fixed size" slice option, which means that after specifying number of frames, row and size of single sprite, you are getting animation sequence that can be simply used.
+
+It doesn't use any recognizion systems so it has to be controlled by user (but Unity works similar except that it throws away empty frames). Major downside is that there isn't transparency introduced. My idea is to create .dds with pink background and use it as translucent color then, but I'll have to improve animation pipeline first.
+
+I'm kinda disappointed with this week because I had a lot of things going on university and I got a little seek on the weekend so I programmed like 6-7 hours this week but it doesn't mean I didn't like little animation that I've produced and which you can see below.
+
+<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.2">https://github.com/komilll/AncientDroneRemake/releases/tag/0.2</a> - Week #2 release
+<center><img src="Blog/gif_2.gif"></center>
+<center><i>Week #1: Gif #2 – Player idle animation</i></center>
+
 <h2>Week #1</h2>
 To begin our adventure I’ve prepared basic pipeline for rendering 2D images. Image is created simply by rendering rectangle (2 triangles) with specified size and color. In future I will implement textures (or even .png files) importing to allow using sprites. Base of my pipeline is based on Rasterek tutorial, up until #4 tutorial - <a href="http://www.rastertek.com/dx11tut04.html">http://www.rastertek.com/dx11tut04.html</a>. I highly recommend his tutorial series to begin with DirectX 11 programming.
 
