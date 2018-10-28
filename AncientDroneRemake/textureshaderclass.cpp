@@ -257,7 +257,7 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 	}	
 
 	LPCSTR name = "player.dds";
-	result = D3DX11CreateShaderResourceViewFromFile(device, "dirt01.dds", NULL, NULL, &texture, NULL);
+	result = D3DX11CreateShaderResourceViewFromFile(device, "player.dds", NULL, NULL, &texture, NULL);
 	if (FAILED(result))
 	{
 		return false;
@@ -265,8 +265,8 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 	// SetAnimationData(0, 0, 64.0f, 64.0f, 1024.0f, 1024.0f);
 	m_animationImporter = new AnimationImporter();
 
-	m_animationImporter->ImportFile(device, name, 1024, 1024, 1024, 1024);
-	if (m_animationImporter->CreateAnimation(1, 10) == false)
+	m_animationImporter->ImportFile(device, name, 64, 64, 1024, 1024);
+	if (m_animationImporter->CreateAnimation(4, 10) == false)
 	{
 		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
 		return false;
