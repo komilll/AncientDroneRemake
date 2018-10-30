@@ -7,6 +7,7 @@ Player::Player()
 	m_playerModel = 0;
 	timer = 0;
 	lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	m_playerAnimation = 0;
 }
 
 Player::Player(InputClass * inputClass, D3DClass *d3d, GraphicsClass *graphicsClass)
@@ -35,11 +36,21 @@ bool Player::Initialize()
 	if (m_d3d == nullptr)
 		return false;
 
-	if (!m_playerModel->Initialize(m_d3d->GetDevice(), 8, 8))
+	if (!m_playerModel->Initialize(m_d3d->GetDevice(), 12, 12))
 		return false;
 
 	if (m_graphics == nullptr)
 		return false;
+
+	m_playerAnimation = new PlayerAnimationStates();
+	if (m_playerAnimation == nullptr)
+		return false;
+
+	m_playerAnimation->PrepareAnimationPose(IDLE, IDLE);
+	m_playerAnimation->PrepareAnimationPose(MOVING, MOVING);
+	m_playerAnimation->PrepareAnimationPose(COMMAND, COMMAND);
+	m_playerAnimation->PrepareAnimationPose(FALLING, FALLING);
+	m_playerAnimation->SetState(IDLE);
 
 	m_graphics->SetPlayerModel(m_playerModel);
 	movementUp += 10.0f;
@@ -56,6 +67,7 @@ void Player::Update()
 {
 	float frameMovementRight = 0.0f;
 	float frameMovementUp = 0.0f;
+	State newState = IDLE;
 
 	if (m_input->IsKeyDown(btn_moveRight))
 	{
@@ -65,6 +77,25 @@ void Player::Update()
 	{
 		frameMovementRight -= 1.0f;
 	}
+	if (frameMovementRight > 0.0f)
+	{
+		m_playerModel->movingRight = true;
+		newState = MOVING;
+		idleTime = 0;
+	}
+	else if (frameMovementRight < 0.0f)
+	{
+		m_playerModel->movingRight = false;
+		newState = MOVING;
+		idleTime = 0;
+	}
+	else
+	{
+		idleTime++;
+		if (idleTime >= timeToSetIdleState)
+			newState = IDLE;
+	}
+
 	if (m_input->IsKeyDown(btn_jump) && isGround)
 	{
 		isGround = false;
@@ -80,7 +111,7 @@ void Player::Update()
 		bool isFalling = true;
 		isGround = false;
 
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 		{
 			float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
 
@@ -134,6 +165,13 @@ void Player::Update()
 	movementRight += frameMovementRight;
 	movementUp += frameMovementUp;
 
+	if (isGround == false)
+	{		
+		newState = FALLING;
+	}
+
+
+	SetNewAnimation(newState);
 	Move();
 }
 
@@ -145,6 +183,15 @@ void Player::FixedUpdate()
 void Player::Move()
 {
 	m_playerModel->SetTranslation(movementRight, movementUp, 0.0f);
+}
+
+void Player::SetNewAnimation(State newState)
+{
+	if (newState == m_playerAnimation->GetCurrentState())
+		return;
+
+	m_playerAnimation->SetState(newState);
+	m_graphics->SetPlayerAnimation(m_playerAnimation->GetCurrentState());
 }
 
 void Player::OnDestroy()

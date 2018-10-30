@@ -41,10 +41,11 @@ void TextureShaderClass::Shutdown()
 }
 
 bool TextureShaderClass::Render(ID3D11DeviceContext* deviceContext, int indexCount, D3DXMATRIX worldMatrix, D3DXMATRIX viewMatrix,
-	D3DXMATRIX projectionMatrix)
+	D3DXMATRIX projectionMatrix, bool movingRight)
 {
 	bool result;
 
+	m_reverseX = !movingRight;
 
 	// Set the shader parameters that it will use for rendering.
 	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
@@ -67,7 +68,11 @@ void TextureShaderClass::SetColor(D3DXVECTOR4 newColor)
 void TextureShaderClass::SetAnimationData(int row, int column, float imageWidth, float imageHeight, float fullScreenWidth, float fullScreenHeight)
 {
 	m_texBufferType.row = row;
-	m_texBufferType.column = column;
+	if (m_reverseX)
+		m_texBufferType.column = fullScreenWidth / imageWidth - column - 1;
+	else
+		m_texBufferType.column = column;
+
 	m_texBufferType.width = imageWidth;
 	m_texBufferType.height = imageHeight;
 	m_texBufferType.fullScreenWidth = fullScreenWidth;
@@ -79,7 +84,12 @@ void TextureShaderClass::SetAnimationData(int row, int column, float imageWidth,
 
 void TextureShaderClass::SetNextFrame()
 {
-	m_currentAnimationFrame = (m_currentAnimationFrame + 1) % m_animationImporter->GetMaxFrames(m_currentAnimationIndex);
+	if (!m_animationImporter->GetAnimationData(m_currentAnimationIndex, m_currentAnimationFrame)->loop && m_currentAnimationFrame == m_animationImporter->GetMaxFrames(m_currentAnimationIndex) - 1)
+	{
+		//Do nothing, already reached last frame, stay this way		
+	}
+	else
+		m_currentAnimationFrame = (m_currentAnimationFrame + 1) % m_animationImporter->GetMaxFrames(m_currentAnimationIndex);
 }
 
 void TextureShaderClass::CheckNextFrame()
@@ -90,6 +100,13 @@ void TextureShaderClass::CheckNextFrame()
 		m_currentFrameTime = 0;
 		SetNextFrame();
 	}
+}
+
+void TextureShaderClass::SetNewAnimation(int index)
+{
+	m_currentAnimationIndex = index;
+	m_currentAnimationFrame = 0;
+	m_currentFrameTime = 0;
 }
 
 bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename)
@@ -235,7 +252,7 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 
 
 	// Create a texture sampler state description.
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.Filter = D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -266,11 +283,30 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 	m_animationImporter = new AnimationImporter();
 
 	m_animationImporter->ImportFile(device, name, 64, 64, 1024, 1024);
-	if (m_animationImporter->CreateAnimation(4, 10) == false)
+	if (m_animationImporter->CreateAnimation(4, 10, 0) == false) //IDLE
 	{
 		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
 		return false;
 	}
+
+	if (m_animationImporter->CreateAnimation(6, 7, 1) == false) //MOVING
+	{
+		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
+		return false;
+	}
+
+	if (m_animationImporter->CreateAnimation(7, 5, 3) == false) //COMMAND
+	{
+		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
+		return false;
+	}
+
+	if (m_animationImporter->CreateAnimation(3, 5, 4, false) == false) //FALLING
+	{
+		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
+		return false;
+	}
+	//MessageBox(hwnd, "", "TEST", MB_OK);	
 
 	return true;
 }
@@ -352,7 +388,7 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	TextureBufferType* dataPtr2;
 	unsigned int bufferNumber;
 
-	AnimationData* a = m_animationImporter->GetAnimationData(0, m_currentAnimationFrame);
+	AnimationData* a = m_animationImporter->GetAnimationData(m_currentAnimationIndex, m_currentAnimationFrame);
 	SetAnimationData(a->row, a->column, a->imageWidth, a->imageHeight, a->fullScreenWidth, a->fullScreenHeight);
 
 	// Transpose the matrices to prepare them for the shader.
@@ -397,9 +433,9 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	dataPtr2->width = m_texBufferType.width;
 	dataPtr2->height = m_texBufferType.height;
 	dataPtr2->fullScreenWidth = m_texBufferType.fullScreenWidth;
-	dataPtr2->fullScreenHeight = m_texBufferType.fullScreenHeight;
+	dataPtr2->fullScreenHeight = m_texBufferType.fullScreenHeight;	
 
-	dataPtr2->reverseX = 1.0f;
+	dataPtr2->reverseX = m_reverseX ? -1.0f : 1.0f;
 	dataPtr2->reverseY = 1.0f;
 	//dataPtr2->padding = m_texBufferType.padding;
 

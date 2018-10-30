@@ -6,9 +6,9 @@
 
 #include "inputclass.h"
 #include "modelclass.h"
-#include "colorshaderclass.h"
 #include "d3dclass.h"
 #include "graphicsclass.h"
+#include "playeranimationstates.h"
 
 ///<summary>Class for on-screen character input and gameplay values</summary>
 class Player
@@ -25,14 +25,16 @@ public:
 	void FixedUpdate();
 	void Move();
 
-private:
+private:	
 	//External Classes
 	InputClass *m_input; //Class referenced from SystemClass; Singleton
 	D3DClass *m_d3d;
 	GraphicsClass *m_graphics;
 	//////////////////
 	ModelClass *m_playerModel;
+	PlayerAnimationStates *m_playerAnimation;
 	
+	void SetNewAnimation(State newState);
 	void OnDestroy();
 
 	//Input Options
@@ -50,6 +52,8 @@ private:
 	int jumpTicks = 40;
 	int currentJumpTicks = 0;
 	float jumpTickHeight = 0.75f;
+	int idleTime = 0;
+	int timeToSetIdleState = 15;
 
 	//Physics
 	float gravity = 1.75f;

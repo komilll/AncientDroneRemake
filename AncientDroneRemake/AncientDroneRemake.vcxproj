@@ -127,6 +127,7 @@
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="colorshaderclass.h" />
     <ClInclude Include="d3dclass.h" />
+    <ClInclude Include="enemybase.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
@@ -148,6 +149,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="playeranimationstates.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
   </ItemGroup>

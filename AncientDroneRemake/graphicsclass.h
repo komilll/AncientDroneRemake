@@ -12,6 +12,7 @@
 #include "modelclass.h"
 #include "colorshaderclass.h"
 #include "textureshaderclass.h"
+#include <vector>
 
 /////////////
 // GLOBALS //
@@ -39,6 +40,8 @@ public:
 	HWND *GetHWND();
 	void SetPlayerModel(ModelClass* player);
 	ModelClass* GetGroundModel(int index);
+	int GetGroundModelCount();
+	void SetPlayerAnimation(int index);
 
 private:
 	bool Render();
@@ -50,10 +53,11 @@ private:
 	ColorShaderClass* m_ColorShader;
 
 	ModelClass* playerModel;
-	const static int GROUND_MODEL_LENGTH = 4;
+	const static int GROUND_MODEL_LENGTH = 5;
 	ModelClass* groundModel[GROUND_MODEL_LENGTH];
 
-	TextureShaderClass* m_TextureShader;
+	TextureShaderClass* m_TextureShader;	
+	std::vector<ModelClass*> m_enemyModels;
 
 	int a = 0;
 	int index = 0;

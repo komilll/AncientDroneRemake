@@ -53,6 +53,7 @@ public:
 public:
 	/* Physics based components */
 	Bounds bounds;
+	bool movingRight;
 
 private:
 	bool InitializeBuffers(ID3D11Device*);

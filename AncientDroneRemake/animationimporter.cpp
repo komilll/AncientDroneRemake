@@ -39,7 +39,7 @@ bool AnimationImporter::ImportFile(ID3D11Device* device, LPCSTR filename, int fr
 	return true;
 }
 
-bool AnimationImporter::CreateAnimation(int frames, int timePerFrame, int row)
+bool AnimationImporter::CreateAnimation(int frames, int timePerFrame, int row, bool loop)
 {
 	if (row == -1)
 		row = m_currentIndex;
@@ -52,6 +52,7 @@ bool AnimationImporter::CreateAnimation(int frames, int timePerFrame, int row)
 	animationPose[m_currentIndex]->row = row;
 	animationPose[m_currentIndex]->frames = frames;
 	animationPose[m_currentIndex]->timePerFrame = timePerFrame;	
+	animationPose[m_currentIndex]->loop = loop;
 
 	if (timePerFrame <= 0)
 	{
@@ -66,6 +67,7 @@ bool AnimationImporter::CreateAnimation(int frames, int timePerFrame, int row)
 AnimationData* AnimationImporter::GetAnimationData(int index, int currentFrame)
 {
 	animationData->timePerFrame = animationPose[index]->timePerFrame;
+	animationData->loop = animationPose[index]->loop;
 	animationData->row = animationPose[index]->row;
 	animationData->column = currentFrame % animationPose[index]->frames;
 

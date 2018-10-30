@@ -71,20 +71,24 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the model object.
-	result = groundModel[0]->Initialize(m_D3D->GetDevice(), 10, 1);
-	groundModel[0]->SetTranslation(-60.0f, -50, 0.0f);
-	if (!result) return false;
+	//result = groundModel[0]->Initialize(m_D3D->GetDevice(), 10, 1);
+	//groundModel[0]->SetTranslation(-60.0f, -50, 0.0f);
+	//if (!result) return false;
 
-	result = groundModel[1]->Initialize(m_D3D->GetDevice(), 10, 1);
-	groundModel[1]->SetTranslation(-20, -60.0f, 0.0f);
-	if (!result) return false;
+	//result = groundModel[1]->Initialize(m_D3D->GetDevice(), 10, 1);
+	//groundModel[1]->SetTranslation(-20, -60.0f, 0.0f);
+	//if (!result) return false;
 
-	result = groundModel[2]->Initialize(m_D3D->GetDevice(), 10, 1);
-	groundModel[2]->SetTranslation(20, -50, 0.0f);
-	if (!result) return false;
+	//result = groundModel[2]->Initialize(m_D3D->GetDevice(), 10, 1);
+	//groundModel[2]->SetTranslation(20, -50, 0.0f);
+	//if (!result) return false;
 
-	result = groundModel[3]->Initialize(m_D3D->GetDevice(), 10, 1);
-	groundModel[3]->SetTranslation(50, -70, 0.0f);
+	//result = groundModel[3]->Initialize(m_D3D->GetDevice(), 10, 1);
+	//groundModel[3]->SetTranslation(50, -70, 0.0f);
+	//if (!result) return false;
+
+	result = groundModel[4]->Initialize(m_D3D->GetDevice(), 200, 1);
+	groundModel[4]->SetTranslation(0.0f, -90.0f, 0.0f);
 	if (!result) return false;
 
 	// Create the color shader object.
@@ -114,6 +118,9 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		MessageBox(hwnd, "Could not initialize the texture shader object.", "Error", MB_OK);
 		return false;
 	}
+
+	//Spawn enemies
+	
 
 	return true;
 }
@@ -209,6 +216,16 @@ ModelClass *GraphicsClass::GetGroundModel(int index)
 	return groundModel[index];
 }
 
+int GraphicsClass::GetGroundModelCount()
+{
+	return GROUND_MODEL_LENGTH;
+}
+
+void GraphicsClass::SetPlayerAnimation(int index)
+{
+	m_TextureShader->SetNewAnimation(index);
+}
+
 
 bool GraphicsClass::Render()
 {
@@ -231,8 +248,8 @@ bool GraphicsClass::Render()
 	D3DXMatrixTranslation(&worldMatrix, playerModel->GetTranslation().x, playerModel->GetTranslation().y, playerModel->GetTranslation().z);
 	playerModel->Render(m_D3D->GetDeviceContext());
 
-	// Render the model using the color shader.
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	// Render the model using the color shader.	
+	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, playerModel->movingRight);
 	if (!result)
 	{
 		return false;
