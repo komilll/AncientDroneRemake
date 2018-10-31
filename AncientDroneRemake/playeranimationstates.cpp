@@ -1,16 +1,16 @@
 #include "playeranimationstates.h"
 
-State PlayerAnimationStates::GetCurrentState()
+StatePlayer PlayerAnimationStates::GetCurrentState()
 {
 	return state;
 }
 
-void PlayerAnimationStates::SetState(State newState)
+void PlayerAnimationStates::SetState(StatePlayer newState)
 {
 	state = newState;
 }
 
-void PlayerAnimationStates::PrepareAnimationPose(State state_, int animationPoseIndex)
+void PlayerAnimationStates::PrepareAnimationPose(StatePlayer state_, int animationPoseIndex)
 {
 	m_animationPoseIndex[state_] = animationPoseIndex;
 }

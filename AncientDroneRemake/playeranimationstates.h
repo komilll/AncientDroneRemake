@@ -7,7 +7,7 @@
 #include <d3d11.h>
 #include <D3DX11.h>
 
-enum State {
+enum StatePlayer {
 	IDLE,
 	MOVING,
 	COMMAND,
@@ -19,13 +19,13 @@ static class PlayerAnimationStates
 
 
 public:
-	State GetCurrentState();
-	void SetState(State newState);
-	void PrepareAnimationPose(State state_, int animationPoseIndex);
+	StatePlayer GetCurrentState();
+	void SetState(StatePlayer newState);
+	void PrepareAnimationPose(StatePlayer state_, int animationPoseIndex);
 	int GetAnimationIndex();
 
 private:
-	State state;
+	StatePlayer state;
 	int m_animationPoseIndex[4];
 };
 

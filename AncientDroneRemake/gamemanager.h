@@ -1,6 +1,7 @@
 ///////////////////////////////
 #include "player.h"
 #include "inputclass.h"
+#include "enemybase.h"
 
 class GameManager
 {
@@ -15,4 +16,5 @@ public:
 private:
 	InputClass* m_inputClass; //Singleton
 	Player *player;
+	EnemyBase* enemy;
 };

@@ -23,6 +23,11 @@ void GameManager::Update()
 	{
 		player->Update();
 	}
+
+	if (enemy)
+	{
+		enemy->Update();
+	}
 }
 
 bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClass *graphicsClass)
@@ -38,5 +43,12 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 	if (!player->Initialize())
 		return false;
 	
+	enemy = new EnemyBase();
+	if (enemy == nullptr)
+		return false;
+
+	if (!enemy->Init(graphicsClass))
+		return false;
+
 	return true;
 }

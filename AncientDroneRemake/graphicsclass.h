@@ -42,6 +42,7 @@ public:
 	ModelClass* GetGroundModel(int index);
 	int GetGroundModelCount();
 	void SetPlayerAnimation(int index);
+	void AddEnemyModel(ModelClass* enemyModel);
 
 private:
 	bool Render();

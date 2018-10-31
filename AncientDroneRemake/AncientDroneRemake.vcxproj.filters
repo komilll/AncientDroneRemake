@@ -57,6 +57,9 @@
     <ClInclude Include="enemybase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="enemywanderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="systemclass.cpp">
@@ -96,6 +99,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="playeranimationstates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enemybase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enemywanderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

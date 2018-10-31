@@ -34,7 +34,7 @@ private:
 	ModelClass *m_playerModel;
 	PlayerAnimationStates *m_playerAnimation;
 	
-	void SetNewAnimation(State newState);
+	void SetNewAnimation(StatePlayer newState);
 	void OnDestroy();
 
 	//Input Options

@@ -71,21 +71,21 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the model object.
-	//result = groundModel[0]->Initialize(m_D3D->GetDevice(), 10, 1);
-	//groundModel[0]->SetTranslation(-60.0f, -50, 0.0f);
-	//if (!result) return false;
+	result = groundModel[0]->Initialize(m_D3D->GetDevice(), 10, 1);
+	groundModel[0]->SetTranslation(-80.0f, -50, 0.0f);
+	if (!result) return false;
 
-	//result = groundModel[1]->Initialize(m_D3D->GetDevice(), 10, 1);
-	//groundModel[1]->SetTranslation(-20, -60.0f, 0.0f);
-	//if (!result) return false;
+	result = groundModel[1]->Initialize(m_D3D->GetDevice(), 10, 1);
+	groundModel[1]->SetTranslation(-60, -60.0f, 0.0f);
+	if (!result) return false;
 
-	//result = groundModel[2]->Initialize(m_D3D->GetDevice(), 10, 1);
-	//groundModel[2]->SetTranslation(20, -50, 0.0f);
-	//if (!result) return false;
+	result = groundModel[2]->Initialize(m_D3D->GetDevice(), 10, 1);
+	groundModel[2]->SetTranslation(60, -50, 0.0f);
+	if (!result) return false;
 
-	//result = groundModel[3]->Initialize(m_D3D->GetDevice(), 10, 1);
-	//groundModel[3]->SetTranslation(50, -70, 0.0f);
-	//if (!result) return false;
+	result = groundModel[3]->Initialize(m_D3D->GetDevice(), 10, 1);
+	groundModel[3]->SetTranslation(80, -70, 0.0f);
+	if (!result) return false;
 
 	result = groundModel[4]->Initialize(m_D3D->GetDevice(), 200, 1);
 	groundModel[4]->SetTranslation(0.0f, -90.0f, 0.0f);
@@ -120,7 +120,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Spawn enemies
-	
 
 	return true;
 }
@@ -226,6 +225,11 @@ void GraphicsClass::SetPlayerAnimation(int index)
 	m_TextureShader->SetNewAnimation(index);
 }
 
+void GraphicsClass::AddEnemyModel(ModelClass * enemyModel)
+{
+	m_enemyModels.push_back(enemyModel);
+}
+
 
 bool GraphicsClass::Render()
 {
@@ -263,6 +267,20 @@ bool GraphicsClass::Render()
 		groundModel[i]->Render(m_D3D->GetDeviceContext());
 
 		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), groundModel[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+		if (!result)
+		{
+			return false;
+		}
+	}
+
+	for (int i = 0; i < m_enemyModels.size(); i++)
+	{
+		m_ColorShader->SetColor(D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f));
+		m_D3D->GetWorldMatrix(worldMatrix);
+		D3DXMatrixTranslation(&worldMatrix, m_enemyModels[i]->GetTranslation().x, m_enemyModels[i]->GetTranslation().y, m_enemyModels[i]->GetTranslation().z);
+		m_enemyModels[i]->Render(m_D3D->GetDeviceContext());
+
+		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_enemyModels[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
 		if (!result)
 		{
 			return false;

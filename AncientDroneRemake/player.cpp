@@ -67,7 +67,7 @@ void Player::Update()
 {
 	float frameMovementRight = 0.0f;
 	float frameMovementUp = 0.0f;
-	State newState = IDLE;
+	StatePlayer newState = IDLE;
 
 	if (m_input->IsKeyDown(btn_moveRight))
 	{
@@ -185,7 +185,7 @@ void Player::Move()
 	m_playerModel->SetTranslation(movementRight, movementUp, 0.0f);
 }
 
-void Player::SetNewAnimation(State newState)
+void Player::SetNewAnimation(StatePlayer newState)
 {
 	if (newState == m_playerAnimation->GetCurrentState())
 		return;
