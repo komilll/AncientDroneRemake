@@ -28,7 +28,7 @@ First, I am summing red and blue channel (if red = 1.0 and blue = 1.0 then we're
 
 <a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.3">https://github.com/komilll/AncientDroneRemake/releases/tag/0.3</a> - Week #3 release
 <center><img src="Blog/gif_3.gif"></center>
-<center><i>Week #1: Gif #3 – Player full animations</i></center>
+<center><i>Week #3: Gif #3 – Player full animations</i></center>
 
 <h2>Week #2</h2>
 This week I was preparing animation pipeline. It's based on simply importing whole 2D sprite sheet and slicing it to get frames we'd like to use further. Currently (and it'll be propably enough for this project) there is only "fixed size" slice option, which means that after specifying number of frames, row and size of single sprite, you are getting animation sequence that can be simply used.
@@ -39,7 +39,7 @@ I'm kinda disappointed with this week because I had a lot of things going on uni
 
 <a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.2">https://github.com/komilll/AncientDroneRemake/releases/tag/0.2</a> - Week #2 release
 <center><img src="Blog/gif_2.gif"></center>
-<center><i>Week #1: Gif #2 – Player idle animation</i></center>
+<center><i>Week #2: Gif #2 – Player idle animation</i></center>
 
 <h2>Week #1</h2>
 To begin our adventure I’ve prepared basic pipeline for rendering 2D images. Image is created simply by rendering rectangle (2 triangles) with specified size and color. In future I will implement textures (or even .png files) importing to allow using sprites. Base of my pipeline is based on Rasterek tutorial, up until #4 tutorial - <a href="http://www.rastertek.com/dx11tut04.html">http://www.rastertek.com/dx11tut04.html</a>. I highly recommend his tutorial series to begin with DirectX 11 programming.
