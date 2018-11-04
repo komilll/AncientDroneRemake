@@ -6,6 +6,30 @@ To start with – it isn’t a tutorial series. I wanted to start a blog to moti
 Project itself is a remake of 2D Platformer game that I’ve made with my friend for Ludum Dare 36
 <a href="https://azargaz.itch.io/ancient-drone">https://azargaz.itch.io/ancient-drone</a>. This time I’d like to make it from scratch using DirectX 11. I will create flipbook animation system, basic physics engine, enemies with simple AI and other things essential to complete this remake. Let’s get started!
 
+<h2>Week #3</h2>
+As I implemented animation pipeline in previous week, I used it for three basic player animations. In case if player is standing still, idle animation is playing. There is also movement animation and jump animation which freezes at last frame and doesn't loop (based on boolean).
+
+Other major improvement was setting transparency on spritesheet. I colored spritesheet transparent color as pink (1, 0, 1) and in pixelshader I'm checking if chosen pixel is transparent or not
+
+<pre><code class="cpp">
+float4 ColorPixelShader(PixelInputType input) : SV_TARGET
+{
+	float4 textureColor = shaderTexture.Sample(SampleType, float2(input.tex.x, input.tex.y));	
+
+	float alpha = textureColor.r + textureColor.b;
+	textureColor.a = 1.0f - ( alpha - normalize(textureColor.g) * 2.0f );
+	textureColor *= normalize(textureColor.a);
+
+   	return textureColor;
+}
+</code></pre>
+
+First, I am summing red and blue channel (if red = 1.0 and blue = 1.0 then we're getting pink). So we need alpha variable to be 2.0. Next line is really interesing - in the brackets we check if there green channel is 0.0. If green is different, then it will be normalized to 1.0, multiplied to 2.0 and so we will get value equal to 0.0 in brackets and finally alpha channel will be 1.0 so it will be fully opaque. Last line is to convert to black color (0, 0, 0, 0) when alpha is 0.0.
+
+<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.3">https://github.com/komilll/AncientDroneRemake/releases/tag/0.3</a> - Week #3 release
+<center><img src="Blog/gif_3.gif"></center>
+<center><i>Week #1: Gif #3 – Player full animations</i></center>
+
 <h2>Week #2</h2>
 This week I was preparing animation pipeline. It's based on simply importing whole 2D sprite sheet and slicing it to get frames we'd like to use further. Currently (and it'll be propably enough for this project) there is only "fixed size" slice option, which means that after specifying number of frames, row and size of single sprite, you are getting animation sequence that can be simply used.
 
