@@ -11,6 +11,8 @@ GraphicsClass::GraphicsClass()
 	playerModel = 0;	
 	m_ColorShader = 0;
 	m_TextureShader = 0;
+	m_TextureShaderBackground = 0;
+	m_backgroundModel = 0;
 
 	for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
 	{
@@ -91,6 +93,11 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	groundModel[4]->SetTranslation(0.0f, -90.0f, 0.0f);
 	if (!result) return false;
 
+	m_backgroundModel = new ModelClass;
+	result = m_backgroundModel->Initialize(m_D3D->GetDevice(), 200, 112.5f);
+	m_backgroundModel->SetTranslation(0.0f, 0.0f, 0.0f);
+	if (!result) return false;
+
 	// Create the color shader object.
 	m_ColorShader = new ColorShaderClass;
 	if (!m_ColorShader)
@@ -119,6 +126,19 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	m_TextureShaderBackground = new TextureShaderGeneralClass;
+	if (!m_TextureShaderBackground)
+	{
+		return false;
+	}
+
+	result = m_TextureShaderBackground->Initialize(m_D3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the texture shader object - Texture Shader General", "Error", MB_OK);
+		return false;
+	}	
+
 	//Spawn enemies
 
 	return true;
@@ -128,6 +148,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void GraphicsClass::Shutdown()
 {
 	// Release the color shader object.
+	if (m_TextureShaderBackground)
+	{
+		m_TextureShaderBackground->Shutdown();
+		delete m_TextureShaderBackground;
+		m_TextureShaderBackground = 0;
+	}
+
 	if (m_TextureShader)
 	{
 		m_TextureShader->Shutdown();
@@ -148,6 +175,13 @@ void GraphicsClass::Shutdown()
 		playerModel->Shutdown();
 		delete playerModel;
 		playerModel = 0;
+	}
+
+	if (m_backgroundModel)
+	{
+		m_backgroundModel->Shutdown();
+		delete m_backgroundModel;
+		m_backgroundModel = 0;
 	}
 
 	if (groundModel)
@@ -236,6 +270,8 @@ bool GraphicsClass::Render()
 	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
 	bool result;
 
+	m_D3D->TurnZBufferOff();
+
 	// Clear the buffers to begin the scene.
 	m_D3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
@@ -246,7 +282,19 @@ bool GraphicsClass::Render()
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
+	
+	m_D3D->GetWorldMatrix(worldMatrix);
+	D3DXMatrixTranslation(&worldMatrix, m_backgroundModel->GetTranslation().x, m_backgroundModel->GetTranslation().y, m_backgroundModel->GetTranslation().z);
+	m_backgroundModel->Render(m_D3D->GetDeviceContext());
 
+	result = m_TextureShaderBackground->Render(m_D3D->GetDeviceContext(), m_backgroundModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+	{
+		return false;
+	}
+
+
+	m_D3D->TurnOnAlphaBlending();
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_ColorShader->SetColor(D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f));
 	D3DXMatrixTranslation(&worldMatrix, playerModel->GetTranslation().x, playerModel->GetTranslation().y, playerModel->GetTranslation().z);
@@ -258,9 +306,11 @@ bool GraphicsClass::Render()
 	{
 		return false;
 	}
-	
+	m_D3D->TurnOffAlphaBlending();
+
+
 	for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
-	{
+	{		
 		m_ColorShader->SetColor(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f));
 		m_D3D->GetWorldMatrix(worldMatrix);
 		D3DXMatrixTranslation(&worldMatrix, groundModel[i]->GetTranslation().x, groundModel[i]->GetTranslation().y, groundModel[i]->GetTranslation().z);
@@ -273,22 +323,24 @@ bool GraphicsClass::Render()
 		}
 	}
 
-	for (int i = 0; i < m_enemyModels.size(); i++)
-	{
-		m_ColorShader->SetColor(D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f));
-		m_D3D->GetWorldMatrix(worldMatrix);
-		D3DXMatrixTranslation(&worldMatrix, m_enemyModels[i]->GetTranslation().x, m_enemyModels[i]->GetTranslation().y, m_enemyModels[i]->GetTranslation().z);
-		m_enemyModels[i]->Render(m_D3D->GetDeviceContext());
+	//for (int i = 0; i < m_enemyModels.size(); i++)
+	//{
+	//	m_ColorShader->SetColor(D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f));
+	//	m_D3D->GetWorldMatrix(worldMatrix);
+	//	D3DXMatrixTranslation(&worldMatrix, m_enemyModels[i]->GetTranslation().x, m_enemyModels[i]->GetTranslation().y, m_enemyModels[i]->GetTranslation().z);
+	//	m_enemyModels[i]->Render(m_D3D->GetDeviceContext());
 
-		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_enemyModels[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-		if (!result)
-		{
-			return false;
-		}
-	}
+	//	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_enemyModels[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	//	if (!result)
+	//	{
+	//		return false;
+	//	}
+	//}
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();
+
+	m_D3D->TurnZBufferOn();
 
 	return true;
 }

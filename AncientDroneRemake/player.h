@@ -49,9 +49,9 @@ private:
 	int movementRight;
 	int movementUp;
 	bool isGround = false;
-	int jumpTicks = 40;
+	int jumpTicks = 8;
 	int currentJumpTicks = 0;
-	float jumpTickHeight = 0.75f;
+	float jumpTickHeight = 3.75f;
 	int idleTime = 0;
 	int timeToSetIdleState = 15;
 

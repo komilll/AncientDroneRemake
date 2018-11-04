@@ -138,6 +138,7 @@
     <ClInclude Include="playeranimationstates.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureshaderclass.h" />
+    <ClInclude Include="textureshadergeneralclass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="animationimporter.cpp" />
@@ -155,12 +156,15 @@
     <ClCompile Include="playeranimationstates.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
+    <ClCompile Include="textureshadergeneralclass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps" />
     <None Include="color.vs" />
     <None Include="texture.ps" />
     <None Include="texture.vs" />
+    <None Include="texturegeneral.ps" />
+    <None Include="texturegeneral.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

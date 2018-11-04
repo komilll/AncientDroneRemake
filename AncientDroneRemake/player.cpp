@@ -111,18 +111,31 @@ void Player::Update()
 		bool isFalling = true;
 		isGround = false;
 
+		if (currentJumpTicks > 0)
+		{
+			isFalling = false;
+
+			frameMovementUp += jumpTickHeight;
+			currentJumpTicks--;
+		}
+
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 		{
 			float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
 
-			if (currentJumpTicks > 0)
+			if (frameMovementUp > 0.0f && //Check if player is moving up
+				//Check if player is inside environment
+				m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+				m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y
+				//Check if player is in horizontal bounds of environment
+				&& m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
+					&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
 			{
-				isFalling = false;
-
-				frameMovementUp += jumpTickHeight;
-				currentJumpTicks--;
+				isFalling = true;
+				currentJumpTicks = 0;
+				frameMovementUp = -(m_playerModel->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) - 0.1f;
 			}
-			if (m_playerModel->GetBounds().min.y - groundThickness <= m_graphics->GetGroundModel(i)->GetBounds().max.y)
+			else if (m_playerModel->GetBounds().min.y - groundThickness <= m_graphics->GetGroundModel(i)->GetBounds().max.y)
 			{
 				//float playerMin_ = m_playerModel->GetBounds().min.y - groundThickness;
 				//float groundMax_ = m_graphics->GetGroundModel()->GetBounds().max.y;

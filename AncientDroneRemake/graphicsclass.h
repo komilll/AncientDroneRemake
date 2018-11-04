@@ -12,6 +12,7 @@
 #include "modelclass.h"
 #include "colorshaderclass.h"
 #include "textureshaderclass.h"
+#include "textureshadergeneralclass.h"
 #include <vector>
 
 /////////////
@@ -54,10 +55,12 @@ private:
 	ColorShaderClass* m_ColorShader;
 
 	ModelClass* playerModel;
+	ModelClass* m_backgroundModel;
 	const static int GROUND_MODEL_LENGTH = 5;
 	ModelClass* groundModel[GROUND_MODEL_LENGTH];
 
-	TextureShaderClass* m_TextureShader;	
+	TextureShaderGeneralClass* m_TextureShaderBackground;
+	TextureShaderClass* m_TextureShader;
 	std::vector<ModelClass*> m_enemyModels;
 
 	int a = 0;

@@ -60,6 +60,9 @@
     <ClInclude Include="enemywanderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="textureshadergeneralclass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="systemclass.cpp">
@@ -83,9 +86,6 @@
     <ClCompile Include="cameraclass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="colorshaderclass.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -107,6 +107,12 @@
     <ClCompile Include="enemywanderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="textureshadergeneralclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="colorshaderclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">
@@ -119,6 +125,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="texture.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="texturegeneral.ps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="texturegeneral.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
