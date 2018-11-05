@@ -27,6 +27,7 @@ void GameManager::Update()
 	if (enemy)
 	{
 		enemy->Update();
+		enemy->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
 }
 
@@ -43,7 +44,7 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 	if (!player->Initialize())
 		return false;
 	
-	enemy = new EnemyBase();
+	enemy = new EnemyWanderer();
 	if (enemy == nullptr)
 		return false;
 

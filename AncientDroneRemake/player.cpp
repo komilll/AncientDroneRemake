@@ -46,6 +46,8 @@ bool Player::Initialize()
 	if (m_playerAnimation == nullptr)
 		return false;
 
+	m_playerModel->SetBounds(-4, 4, m_playerModel->GetBounds().min.y, m_playerModel->GetBounds().max.y - 3);
+
 	m_playerAnimation->PrepareAnimationPose(IDLE, IDLE);
 	m_playerAnimation->PrepareAnimationPose(MOVING, MOVING);
 	m_playerAnimation->PrepareAnimationPose(COMMAND, COMMAND);
@@ -121,7 +123,7 @@ void Player::Update()
 
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 		{
-			float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
+			//float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
 
 			if (frameMovementUp > 0.0f && //Check if player is moving up
 				//Check if player is inside environment
@@ -135,7 +137,7 @@ void Player::Update()
 				currentJumpTicks = 0;
 				frameMovementUp = -(m_playerModel->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) - 0.1f;
 			}
-			else if (m_playerModel->GetBounds().min.y - groundThickness <= m_graphics->GetGroundModel(i)->GetBounds().max.y)
+			else if (m_playerModel->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y)
 			{
 				//float playerMin_ = m_playerModel->GetBounds().min.y - groundThickness;
 				//float groundMax_ = m_graphics->GetGroundModel()->GetBounds().max.y;
@@ -145,7 +147,7 @@ void Player::Update()
 
 				//frameMovementUp += (groundMax_ - playerMin_);
 
-				if (m_playerModel->GetBounds().max.y + groundThickness > m_graphics->GetGroundModel(i)->GetBounds().min.y)
+				if (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y)
 				{
 					if (m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
 						&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
@@ -196,6 +198,29 @@ void Player::FixedUpdate()
 void Player::Move()
 {
 	m_playerModel->SetTranslation(movementRight, movementUp, 0.0f);
+}
+
+void Player::DealDamage(int dmg)
+{
+	/*if (health <= 0)
+		return;*/
+
+	health -= dmg;
+	if (health <= 0)
+	{
+		health = 0;
+		PlayerDeath();
+	}
+}
+
+Bounds Player::GetBounds()
+{
+	return m_playerModel->GetBounds();
+}
+
+void Player::PlayerDeath()
+{
+	movementUp += 100.0f;
 }
 
 void Player::SetNewAnimation(StatePlayer newState)

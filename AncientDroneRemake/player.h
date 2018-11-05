@@ -24,6 +24,11 @@ public:
 	void Update();
 	void FixedUpdate();
 	void Move();
+	void DealDamage(int dmg);
+	Bounds GetBounds();
+
+private:
+	void PlayerDeath();
 
 private:	
 	//External Classes
@@ -59,4 +64,7 @@ private:
 	float gravity = 1.75f;
 	float timer;
 	__int64 lastTime;
+
+	//Gameplay
+	int health = 1;
 };

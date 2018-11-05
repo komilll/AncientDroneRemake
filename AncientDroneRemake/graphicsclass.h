@@ -56,7 +56,7 @@ private:
 
 	ModelClass* playerModel;
 	ModelClass* m_backgroundModel;
-	const static int GROUND_MODEL_LENGTH = 5;
+	const static int GROUND_MODEL_LENGTH = 3;
 	ModelClass* groundModel[GROUND_MODEL_LENGTH];
 
 	TextureShaderGeneralClass* m_TextureShaderBackground;
