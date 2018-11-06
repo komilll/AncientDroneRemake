@@ -128,7 +128,9 @@
     <ClInclude Include="colorshaderclass.h" />
     <ClInclude Include="d3dclass.h" />
     <ClInclude Include="enemybase.h" />
+    <ClInclude Include="enemyflying.h" />
     <ClInclude Include="enemywanderer.h" />
+    <ClInclude Include="flyingenemybomb.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="graphicsclass.h" />
     <ClInclude Include="inputclass.h" />
@@ -146,7 +148,9 @@
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
     <ClCompile Include="enemybase.cpp" />
+    <ClCompile Include="enemyflying.cpp" />
     <ClCompile Include="enemywanderer.cpp" />
+    <ClCompile Include="flyingenemybomb.cpp" />
     <ClCompile Include="gamemanager.cpp" />
     <ClCompile Include="graphicsclass.cpp" />
     <ClCompile Include="inputclass.cpp" />

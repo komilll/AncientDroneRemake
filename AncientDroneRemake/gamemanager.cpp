@@ -24,10 +24,15 @@ void GameManager::Update()
 		player->Update();
 	}
 
-	if (enemy)
+	if (enemyWanderer)
 	{
-		enemy->Update();
-		enemy->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+		enemyWanderer->Update();
+		enemyWanderer->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+	}
+
+	if (enemyFlying)
+	{
+		enemyFlying->Update();
 	}
 }
 
@@ -44,12 +49,21 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 	if (!player->Initialize())
 		return false;
 	
-	enemy = new EnemyWanderer();
-	if (enemy == nullptr)
+	enemyWanderer = new EnemyWanderer();
+	if (enemyWanderer == nullptr)
 		return false;
 
-	if (!enemy->Init(graphicsClass))
+	if (!enemyWanderer->Init(graphicsClass))
 		return false;
+
+	enemyFlying = new EnemyFlying();
+	if (enemyFlying == nullptr)
+		return false;
+
+	if (!enemyFlying->Init(graphicsClass, 8, 8))
+		return false;
+
+	enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
 
 	return true;
 }

@@ -2,6 +2,7 @@
 #include "player.h"
 #include "inputclass.h"
 #include "enemywanderer.h"
+#include "enemyflying.h"
 
 class GameManager
 {
@@ -16,5 +17,6 @@ public:
 private:
 	InputClass* m_inputClass; //Singleton
 	Player *player;
-	EnemyWanderer* enemy;
+	EnemyWanderer* enemyWanderer;
+	EnemyFlying* enemyFlying;
 };

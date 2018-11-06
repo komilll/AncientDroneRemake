@@ -63,6 +63,12 @@
     <ClInclude Include="textureshadergeneralclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="enemyflying.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="flyingenemybomb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="systemclass.cpp">
@@ -111,6 +117,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="colorshaderclass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyflying.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="flyingenemybomb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

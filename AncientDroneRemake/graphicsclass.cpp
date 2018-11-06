@@ -74,7 +74,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	//Initialize the model object.
 	result = groundModel[0]->Initialize(m_D3D->GetDevice(), 5, 25);
-	groundModel[0]->SetTranslation(-80.0f, -90, 0.0f);
+	groundModel[0]->SetTranslation(-80.0f, -40, 0.0f);
 	if (!result) return false;
 
 	result = groundModel[1]->Initialize(m_D3D->GetDevice(), 5, 25);

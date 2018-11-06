@@ -14,14 +14,15 @@ EnemyWanderer::~EnemyWanderer()
 {
 }
 
-bool EnemyWanderer::Init(GraphicsClass * graphicsClass)
+bool EnemyWanderer::Init(GraphicsClass* graphicsClass, float width, float height, float translationX, float translationY)
 {
-	return EnemyBase::Init(graphicsClass);
+	return EnemyBase::Init(graphicsClass, width, height, translationX, translationY);
 }
 
 void EnemyWanderer::Update()
 {
 	EnemyBase::Update();
+	Move(frameMovementRight);
 }
 
 void EnemyWanderer::Move(float x)

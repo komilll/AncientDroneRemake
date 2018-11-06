@@ -14,7 +14,7 @@ EnemyBase::~EnemyBase()
 {
 }
 
-bool EnemyBase::Init(GraphicsClass* graphicsClass)
+bool EnemyBase::Init(GraphicsClass* graphicsClass, float width, float height, float translationX, float translationY)
 {
 	m_graphics = graphicsClass;
 	if (m_graphics == nullptr)
@@ -28,7 +28,8 @@ bool EnemyBase::Init(GraphicsClass* graphicsClass)
 		return false;
 	}
 
-	m_model->Initialize(m_graphics->GetD3D()->GetDevice(), 16, 16);
+	m_model->Initialize(m_graphics->GetD3D()->GetDevice(), width, height);
+	m_model->SetTranslation(translationX, translationY, 0.0f);
 	m_graphics->AddEnemyModel(m_model);
 
 	return true;
@@ -36,8 +37,8 @@ bool EnemyBase::Init(GraphicsClass* graphicsClass)
 
 void EnemyBase::Update()
 {
-	float frameMovementRight = speed;
-	float frameMovementUp = 0.0f;
+	frameMovementRight = speed;
+	frameMovementUp = 0.0f;
 
 	__int64 now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	timer += (now - lastTime);
@@ -45,7 +46,7 @@ void EnemyBase::Update()
 
 	if (timer >= 20.0f) //20ms = 0.02s
 	{
-		bool isFalling = true;
+		bool isFalling = useGravity;
 		bool isGround = false;
 
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
@@ -57,7 +58,8 @@ void EnemyBase::Update()
 				if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
 					&& m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
 				{
-					frameMovementUp = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_model->GetBounds().min.y);
+					if (useGravity)
+						frameMovementUp = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_model->GetBounds().min.y);
 					isFalling = false;
 					isGround = true;
 				}
@@ -75,19 +77,32 @@ void EnemyBase::Update()
 				}
 			}
 
-			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x && 
-				m_graphics->GetGroundModel(i)->GetBounds().max.x < m_model->GetBounds().max.x &&
-				frameMovementRight < 0.0f)
+			//Ground in the middle
+			if ( (m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+				m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y) || 
+			//Ground from bottom
+				(m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+					m_model->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+					m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y) ||
+			//Ground from top
+				(m_model->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+					m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+					m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y))
 			{
-				speed = abs(speed);
-				frameMovementRight = speed;
-			}
-			else if (m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x &&
-				m_graphics->GetGroundModel(i)->GetBounds().min.x > m_model->GetBounds().min.x &&
-				frameMovementRight > 0.0f)
-			{
-				speed = -abs(speed);
-				frameMovementRight = speed;
+				if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x &&
+					m_graphics->GetGroundModel(i)->GetBounds().max.x < m_model->GetBounds().max.x &&
+					frameMovementRight < 0.0f)
+				{
+					speed = abs(speed);
+					frameMovementRight = speed;
+				}
+				else if (m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x &&
+					m_graphics->GetGroundModel(i)->GetBounds().min.x > m_model->GetBounds().min.x &&
+					frameMovementRight > 0.0f)
+				{
+					speed = -abs(speed);
+					frameMovementRight = speed;
+				}
 			}
 		}		
 
@@ -98,7 +113,6 @@ void EnemyBase::Update()
 	}
 
 	m_model->SetTranslation(m_model->GetTranslation().x, m_model->GetTranslation().y + frameMovementUp, 0.0f);
-	Move(frameMovementRight);
 }
 
 void EnemyBase::Move(float x)
@@ -108,8 +122,6 @@ void EnemyBase::Move(float x)
 
 bool EnemyBase::TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY)
 {
-	
-
 	if ((m_model->GetBounds().min.x < playerMaxX && playerMaxX < m_model->GetBounds().max.x) || //Enter from the left side		
 		(m_model->GetBounds().max.x > playerMinX && playerMinX > m_model->GetBounds().min.x)) //Enter from the right side
 	{

@@ -126,9 +126,13 @@ void Player::Update()
 			//float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
 
 			if (frameMovementUp > 0.0f && //Check if player is moving up
-				//Check if player is inside environment
-				m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-				m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y
+				//Check if player is inside environment #1 - in the middle
+				( (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+					m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y) ||
+				//Check if player is inside environment #2 - at the top
+				(m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+					m_playerModel->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+					m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y))
 				//Check if player is in horizontal bounds of environment
 				&& m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
 					&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
@@ -184,7 +188,6 @@ void Player::Update()
 	{		
 		newState = FALLING;
 	}
-
 
 	SetNewAnimation(newState);
 	Move();
