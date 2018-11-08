@@ -49,6 +49,8 @@ public:
 	///First argument is min bounds, second argument is max bounds
 	///</summary>
 	Bounds GetBounds();
+	void SetScale(float x, float y, float z);
+	D3DXVECTOR3 GetScale();
 
 public:
 	/* Physics based components */
@@ -64,7 +66,8 @@ private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
 	int m_vertexCount, m_indexCount;
 	int m_width, m_height;
-	float m_scale;
+	int m_widthOriginal, m_heightOriginal;
+	float m_scaleX, m_scaleY, m_scaleZ;
 	float m_translationX, m_translationY, m_translationZ;
 };
 

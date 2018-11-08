@@ -63,6 +63,7 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 	if (!enemyFlying->Init(graphicsClass, 8, 8))
 		return false;
 
+	enemyFlying->SetPlayer(player);
 	enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
 
 	return true;

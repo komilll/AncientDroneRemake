@@ -44,6 +44,7 @@ public:
 	int GetGroundModelCount();
 	void SetPlayerAnimation(int index);
 	void AddEnemyModel(ModelClass* enemyModel);
+	void AddBombModel(ModelClass* bombModel);
 
 private:
 	bool Render();
@@ -62,6 +63,7 @@ private:
 	TextureShaderGeneralClass* m_TextureShaderBackground;
 	TextureShaderClass* m_TextureShader;
 	std::vector<ModelClass*> m_enemyModels;
+	std::vector<ModelClass*> m_bombModels;
 
 	int a = 0;
 	int index = 0;

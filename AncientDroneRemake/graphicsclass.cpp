@@ -18,6 +18,8 @@ GraphicsClass::GraphicsClass()
 	{
 		groundModel[i] = nullptr;
 	}
+
+	m_bombModels.reserve(10);
 }
 
 
@@ -268,6 +270,11 @@ void GraphicsClass::AddEnemyModel(ModelClass * enemyModel)
 	m_enemyModels.push_back(enemyModel);
 }
 
+void GraphicsClass::AddBombModel(ModelClass * bombModel)
+{
+	m_bombModels.push_back(bombModel);
+}
+
 
 bool GraphicsClass::Render()
 {
@@ -335,6 +342,24 @@ bool GraphicsClass::Render()
 		m_enemyModels[i]->Render(m_D3D->GetDeviceContext());
 
 		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_enemyModels[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+		if (!result)
+		{
+			return false;
+		}		
+	}
+
+	for (int i = 0; i < m_bombModels.size(); i++)
+	{
+		m_ColorShader->SetColor(D3DXVECTOR4(1.0f, 0.5f, 0.3f, 1.0f));
+		m_D3D->GetWorldMatrix(worldMatrix);
+		D3DXMATRIX scaleMatrix;
+		D3DXMatrixScaling(&scaleMatrix, m_bombModels[i]->GetScale().x, m_bombModels[i]->GetScale().y, 1.0f);
+		D3DXMatrixTranslation(&worldMatrix, m_bombModels[i]->GetTranslation().x, m_bombModels[i]->GetTranslation().y, m_bombModels[i]->GetTranslation().z);
+		D3DXMatrixMultiply(&worldMatrix, &scaleMatrix, &worldMatrix);
+
+		m_bombModels[i]->Render(m_D3D->GetDeviceContext());
+
+		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_bombModels[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
 		if (!result)
 		{
 			return false;

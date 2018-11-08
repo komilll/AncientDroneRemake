@@ -8,6 +8,7 @@ ModelClass::ModelClass()
 {
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
+	SetScale(1.0f, 1.0f, 1.0f);
 }
 
 
@@ -27,6 +28,9 @@ bool ModelClass::Initialize(ID3D11Device* device, int width, int height)
 
 	m_width = width;
 	m_height = height;
+
+	m_widthOriginal = m_width;
+	m_heightOriginal = m_height;
 
 	SetBounds(-m_width, m_width, -m_height, m_height);
 
@@ -93,6 +97,26 @@ Bounds ModelClass::GetBounds()
 	return localBounds;
 }
 
+void ModelClass::SetScale(float x, float y, float z)
+{
+	m_scaleX = x;
+	m_scaleY = y;
+	m_scaleZ = z;
+
+	float newWidth = m_widthOriginal * m_scaleX;
+	float newHeight = m_heightOriginal * m_scaleY;
+
+	m_width = newWidth;
+	m_height = newHeight;
+
+	SetBounds(-newWidth, newWidth, -newHeight, newHeight);
+}
+
+D3DXVECTOR3 ModelClass::GetScale()
+{
+	return D3DXVECTOR3(m_scaleX, m_scaleY, m_scaleZ);
+}
+
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;
@@ -121,8 +145,6 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	{
 		return false;
 	}
-
-	m_scale = 1.0f;
 
 	// Load the vertex array with data.
 	float right = m_width;
