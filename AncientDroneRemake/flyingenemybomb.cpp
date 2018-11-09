@@ -9,7 +9,24 @@ FlyingEnemyBomb::FlyingEnemyBomb(GraphicsClass* graphicsClass, float radius, flo
 	m_used = false;
 	m_init = false;
 
-	Init(graphicsClass, radius, explosionTime, maxScale, gravityScale);
+	if ((m_graphics = graphicsClass) == nullptr)
+		return;
+
+	m_model = new ModelClass();
+	if (!m_model)
+		return;
+
+	if (!m_model->Initialize(m_graphics->GetD3D()->GetDevice(), radius, radius))
+		return;
+
+	m_explosionRadius = radius;
+	m_explosionTime = explosionTime;
+	m_explosionMinScale = 1.0f;
+	m_explosionMaxScale = maxScale;
+	m_gravityScale = gravityScale;
+
+	float framesToExplode = explosionTime * 60.0f;
+	m_scalePerFrame = (m_explosionMaxScale - m_explosionMinScale) / (int)framesToExplode;
 }
 
 void FlyingEnemyBomb::Update()
@@ -64,10 +81,12 @@ void FlyingEnemyBomb::Update()
 			}
 		}
 
-		m_currentScale += 0.025f;
+		m_currentScale += m_scalePerFrame;
 		if (m_currentScale > m_explosionMaxScale)
 		{
 			m_currentScale = m_explosionMaxScale;
+			m_init = false;
+			m_graphics->RemoveBombModel(m_model);
 		}
 		m_model->SetScale(m_currentScale, m_currentScale, 1.0f);
 		return;
@@ -79,33 +98,24 @@ ModelClass * FlyingEnemyBomb::GetModel()
 	return m_model;
 }
 
-void FlyingEnemyBomb::Init(GraphicsClass* graphicsClass, float radius, float explosionTime, float maxScale, float gravityScale)
+void FlyingEnemyBomb::Init(float spawnPosX, float spawnPosY)
 {
-	if ( (m_graphics = graphicsClass) == nullptr)
-		return;
-
-	m_model = new ModelClass();
-	if (!m_model)
-		return;
-
-	if (!m_model->Initialize(m_graphics->GetD3D()->GetDevice(), radius, radius))
-		return;
-
+	m_model->SetTranslation(spawnPosX, spawnPosY, 0.0f);
 	m_graphics->AddBombModel(m_model);
 
-	m_explosionRadius = radius;
-	m_explosionTime = explosionTime;
-	m_explosionMinScale = 1.0f;
-	m_explosionMaxScale = maxScale;
-	m_gravityScale = gravityScale;
-
 	m_currentScale = m_explosionMinScale;
+	m_model->SetScale(m_currentScale, m_currentScale, 1.0f);
 
+	m_isExploding = false;
+	m_used = false;
 	m_init = true;
 }
 
 bool FlyingEnemyBomb::TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY)
 {
+	if (!m_init || m_used)
+		return false;
+
 	if ((m_model->GetBounds().min.x < playerMaxX && playerMaxX < m_model->GetBounds().max.x) || //Enter from the left side		
 		(m_model->GetBounds().max.x > playerMinX && playerMinX > m_model->GetBounds().min.x)) //Enter from the right side
 	{

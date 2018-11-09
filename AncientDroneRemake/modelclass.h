@@ -51,6 +51,7 @@ public:
 	Bounds GetBounds();
 	void SetScale(float x, float y, float z);
 	D3DXVECTOR3 GetScale();
+	D3DXVECTOR2 GetSize();
 
 public:
 	/* Physics based components */

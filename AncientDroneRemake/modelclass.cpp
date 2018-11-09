@@ -117,6 +117,11 @@ D3DXVECTOR3 ModelClass::GetScale()
 	return D3DXVECTOR3(m_scaleX, m_scaleY, m_scaleZ);
 }
 
+D3DXVECTOR2 ModelClass::GetSize()
+{
+	return D3DXVECTOR2(m_width, m_height);
+}
+
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;

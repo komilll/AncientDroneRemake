@@ -14,6 +14,7 @@
 #include "textureshaderclass.h"
 #include "textureshadergeneralclass.h"
 #include <vector>
+#include <algorithm>
 
 /////////////
 // GLOBALS //
@@ -45,6 +46,7 @@ public:
 	void SetPlayerAnimation(int index);
 	void AddEnemyModel(ModelClass* enemyModel);
 	void AddBombModel(ModelClass* bombModel);
+	void RemoveBombModel(ModelClass* bombModel);
 
 private:
 	bool Render();

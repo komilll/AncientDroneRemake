@@ -69,6 +69,12 @@
     <ClInclude Include="flyingenemybomb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="enemyarcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enemyarcherarrow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="systemclass.cpp">
@@ -123,6 +129,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="flyingenemybomb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyarcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enemyarcherarrow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

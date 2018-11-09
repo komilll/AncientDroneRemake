@@ -14,9 +14,7 @@ public:
 	void Update();
 	ModelClass* GetModel();
 	bool TouchedPlayer(Player * player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY);
-
-private:
-	void Init(GraphicsClass* graphicsClass, float radius, float explosionTime, float maxScale, float gravityScale);
+	void Init(float spawnPosX, float spawnPosY);
 
 private:
 	GraphicsClass* m_graphics;
@@ -27,6 +25,7 @@ private:
 	bool m_init = false;
 
 	float m_currentScale;
+	float m_scalePerFrame;
 
 	float m_explosionRadius;
 	float m_explosionTime;

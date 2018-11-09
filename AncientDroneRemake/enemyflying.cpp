@@ -5,7 +5,6 @@ EnemyFlying::EnemyFlying()
 	EnemyBase::EnemyBase();
 	gravity = 0.0f;
 	useGravity = false;
-	m_bomb = 0;
 }
 
 EnemyFlying::EnemyFlying(const EnemyFlying &)
@@ -18,7 +17,10 @@ EnemyFlying::~EnemyFlying()
 
 bool EnemyFlying::Init(GraphicsClass* graphicsClass, float width, float height, float translationX, float translationY)
 {
-	m_bomb = new FlyingEnemyBomb(graphicsClass, 4, 1.0f);	
+	for (int i = 0; i < 5; i++)
+	{
+		m_bomb.push_back(new FlyingEnemyBomb(graphicsClass, 4, 0.35f));
+	}
 	return EnemyBase::Init(graphicsClass, width, height, translationX, translationY);
 }
 
@@ -26,6 +28,32 @@ void EnemyFlying::Update()
 {
 	EnemyBase::Update();
 
+	Move(frameMovementRight);
+}
+
+void EnemyFlying::FixedUpdate()
+{
+	EnemyBase::FixedUpdate();
+
+	m_bombCooldownCurrent += 0.02f;
+	if (m_bombCooldownCurrent >= m_bombCooldownTime)
+	{
+		m_bombCooldownCurrent = 0.0f;
+
+		m_bombIndex = m_bombIndex % m_bomb.size();
+		m_bomb[m_bombIndex]->Init(m_model->GetTranslation().x, m_model->GetTranslation().y - m_model->GetSize().y * .5f - m_bomb[m_bombIndex]->GetModel()->GetSize().y * .5f);
+		m_bombIndex++;
+	}
+
+	for (std::vector<FlyingEnemyBomb*>::iterator bombIter = m_bomb.begin(); bombIter != m_bomb.end(); ++bombIter)
+	{
+		FlyingEnemyBomb* ptr = *(bombIter._Ptr);
+		if (ptr != nullptr)
+		{
+			ptr->Update();
+			ptr->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+		}
+	}
 
 	if (m_model->GetBounds().max.x > rightWaypoint.x && frameMovementRight > 0.0f)
 	{
@@ -36,15 +64,8 @@ void EnemyFlying::Update()
 	{
 		speed = abs(speed);
 		frameMovementRight = speed;
-	}	
-
-	Move(frameMovementRight);
-
-	if (m_bomb)
-	{
-		m_bomb->Update();
-		m_bomb->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
+
 }
 
 void EnemyFlying::Move(float x)

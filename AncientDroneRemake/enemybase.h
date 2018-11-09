@@ -16,6 +16,7 @@ public:
 
 	virtual bool Init(GraphicsClass* graphicsClass, float width = 16, float height = 16, float translationX = 0.0f, float translationY = 0.0f);
 	virtual void Update();
+	virtual void FixedUpdate(); //Update function for physics called in fixed time
 	virtual void Move(float x);
 	virtual bool TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY);
 

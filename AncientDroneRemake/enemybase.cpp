@@ -46,73 +46,79 @@ void EnemyBase::Update()
 
 	if (timer >= 20.0f) //20ms = 0.02s
 	{
-		bool isFalling = useGravity;
-		bool isGround = false;
+		FixedUpdate();
+	}
+}
 
-		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
+void EnemyBase::FixedUpdate()
+{
+	bool isFalling = useGravity;
+	bool isGround = false;
+
+	for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
+	{
+		float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
+
+		if (m_model->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y + groundThickness)
 		{
-			float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
-
-			if (m_model->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y + groundThickness)
+			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
+				&& m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
 			{
-				if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
-					&& m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
-				{
-					if (useGravity)
-						frameMovementUp = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_model->GetBounds().min.y);
-					isFalling = false;
-					isGround = true;
-				}
-				else if (m_model->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x)
-				{
-					if (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
-						frameMovementRight = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x;
-				}
-				else if (m_model->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
-				{
-					float temp_ = -(m_model->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
-
-					if (temp_ >= 0.0f && frameMovementRight < 0.0f)
-						frameMovementRight = temp_;
-				}
+				if (useGravity)
+					frameMovementUp = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_model->GetBounds().min.y);
+				isFalling = false;
+				isGround = true;
 			}
+			else if (m_model->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x)
+			{
+				if (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
+					frameMovementRight = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x;
+			}
+			else if (m_model->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
+			{
+				float temp_ = -(m_model->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
 
-			//Ground in the middle
-			if ( (m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-				m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y) || 
+				if (temp_ >= 0.0f && frameMovementRight < 0.0f)
+					frameMovementRight = temp_;
+			}
+		}
+
+		//Ground in the middle
+		if ((m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+			m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y) ||
 			//Ground from bottom
-				(m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-					m_model->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
-					m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y) ||
+			(m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+				m_model->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+				m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y) ||
 			//Ground from top
 				(m_model->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
 					m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y &&
 					m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y))
+		{
+			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x &&
+				m_graphics->GetGroundModel(i)->GetBounds().max.x < m_model->GetBounds().max.x &&
+				frameMovementRight < 0.0f)
 			{
-				if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x &&
-					m_graphics->GetGroundModel(i)->GetBounds().max.x < m_model->GetBounds().max.x &&
-					frameMovementRight < 0.0f)
-				{
-					speed = abs(speed);
-					frameMovementRight = speed;
-				}
-				else if (m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x &&
-					m_graphics->GetGroundModel(i)->GetBounds().min.x > m_model->GetBounds().min.x &&
-					frameMovementRight > 0.0f)
-				{
-					speed = -abs(speed);
-					frameMovementRight = speed;
-				}
+				speed = abs(speed);
+				frameMovementRight = speed;
 			}
-		}		
-
-		if (isFalling)
-			frameMovementUp -= gravity;
-
-		timer -= 20.0f;
+			else if (m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x &&
+				m_graphics->GetGroundModel(i)->GetBounds().min.x > m_model->GetBounds().min.x &&
+				frameMovementRight > 0.0f)
+			{
+				speed = -abs(speed);
+				frameMovementRight = speed;
+			}
+		}
 	}
 
+	if (isFalling)
+		frameMovementUp -= gravity;
+
+	timer -= 20.0f;
+
 	m_model->SetTranslation(m_model->GetTranslation().x, m_model->GetTranslation().y + frameMovementUp, 0.0f);
+	//Move(frameMovementRight);
 }
 
 void EnemyBase::Move(float x)

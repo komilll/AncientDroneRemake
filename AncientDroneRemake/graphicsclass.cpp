@@ -275,6 +275,11 @@ void GraphicsClass::AddBombModel(ModelClass * bombModel)
 	m_bombModels.push_back(bombModel);
 }
 
+void GraphicsClass::RemoveBombModel(ModelClass * bombModel)
+{
+	m_bombModels.erase(std::remove(m_bombModels.begin(), m_bombModels.end(), bombModel));
+}
+
 
 bool GraphicsClass::Render()
 {

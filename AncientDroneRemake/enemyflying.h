@@ -13,6 +13,7 @@ public:
 
 	bool Init(GraphicsClass* graphicsClass, float width = 16, float height = 16, float translationX = 0.0f, float translationY = 0.0f) override;
 	void Update() override;
+	void FixedUpdate() override;
 	void Move(float x) override;
 
 	void SetPlayer(Player* player);
@@ -22,6 +23,12 @@ private:
 	D3DXVECTOR2 leftWaypoint;
 	D3DXVECTOR2 rightWaypoint;
 
-	FlyingEnemyBomb* m_bomb;
 	Player* player;
+
+	//Bombs
+	std::vector<FlyingEnemyBomb*> m_bomb;
+	float m_bombCooldownTime = 2.0f;
+	float m_bombCooldownCurrent = 0.0f;
+	int m_bombIndex = 0;
+
 };
