@@ -47,6 +47,8 @@ public:
 	void AddEnemyModel(ModelClass* enemyModel);
 	void AddBombModel(ModelClass* bombModel);
 	void RemoveBombModel(ModelClass* bombModel);
+	bool AddTextureShader(TextureShaderClass* textureShader);
+	void RemoveTextureShader(TextureShaderClass* textureShader);
 
 private:
 	bool Render();
@@ -63,7 +65,7 @@ private:
 	ModelClass* groundModel[GROUND_MODEL_LENGTH];
 
 	TextureShaderGeneralClass* m_TextureShaderBackground;
-	TextureShaderClass* m_TextureShader;
+	std::vector<TextureShaderClass*> m_TextureShaders;
 	std::vector<ModelClass*> m_enemyModels;
 	std::vector<ModelClass*> m_bombModels;
 

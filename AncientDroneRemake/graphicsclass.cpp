@@ -10,7 +10,6 @@ GraphicsClass::GraphicsClass()
 	m_Camera = 0;
 	playerModel = 0;	
 	m_ColorShader = 0;
-	m_TextureShader = 0;
 	m_TextureShaderBackground = 0;
 	m_backgroundModel = 0;
 
@@ -20,6 +19,7 @@ GraphicsClass::GraphicsClass()
 	}
 
 	m_bombModels.reserve(10);
+	m_TextureShaders.reserve(10);
 }
 
 
@@ -119,18 +119,18 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	m_TextureShader = new TextureShaderClass;
-	if (!m_TextureShader)
-	{
-		return false;
-	}
+	//m_TextureShader = new TextureShaderClass;
+	//if (!m_TextureShader)
+	//{
+	//	return false;
+	//}
 
-	result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
-	if (!result)
-	{
-		MessageBox(hwnd, "Could not initialize the texture shader object.", "Error", MB_OK);
-		return false;
-	}
+	//result = m_TextureShader->Initialize(m_D3D->GetDevice(), hwnd);
+	//if (!result)
+	//{
+	//	MessageBox(hwnd, "Could not initialize the texture shader object.", "Error", MB_OK);
+	//	return false;
+	//}
 
 	m_TextureShaderBackground = new TextureShaderGeneralClass;
 	if (!m_TextureShaderBackground)
@@ -161,11 +161,18 @@ void GraphicsClass::Shutdown()
 		m_TextureShaderBackground = 0;
 	}
 
-	if (m_TextureShader)
+	if (!m_TextureShaders.empty())
 	{
-		m_TextureShader->Shutdown();
-		delete m_TextureShader;
-		m_TextureShader = 0;
+		for (std::vector<TextureShaderClass*>::iterator shader_ = m_TextureShaders.begin(); shader_ != m_TextureShaders.end(); ++shader_)
+		{
+			(*(shader_._Ptr))->Shutdown();
+			delete (*(shader_._Ptr));
+			(*(shader_._Ptr)) = 0;
+		}		
+		
+		//m_TextureShader->Shutdown();
+		//delete m_TextureShader;
+		//m_TextureShader = 0;
 	}
 
 	if (m_ColorShader)
@@ -230,7 +237,8 @@ bool GraphicsClass::Frame()
 		return false;
 	}
 
-	m_TextureShader->CheckNextFrame();	
+	for (int i = 0; i < m_TextureShaders.size(); i++)
+		m_TextureShaders.at(i)->CheckNextFrame();	
 
 	return true;
 }
@@ -262,7 +270,8 @@ int GraphicsClass::GetGroundModelCount()
 
 void GraphicsClass::SetPlayerAnimation(int index)
 {
-	m_TextureShader->SetNewAnimation(index);
+	for (int i = 0; i < m_TextureShaders.size(); i++)
+		m_TextureShaders.at(i)->SetNewAnimation(index);
 }
 
 void GraphicsClass::AddEnemyModel(ModelClass * enemyModel)
@@ -278,6 +287,29 @@ void GraphicsClass::AddBombModel(ModelClass * bombModel)
 void GraphicsClass::RemoveBombModel(ModelClass * bombModel)
 {
 	m_bombModels.erase(std::remove(m_bombModels.begin(), m_bombModels.end(), bombModel));
+}
+
+bool GraphicsClass::AddTextureShader(TextureShaderClass * textureShader)
+{
+	if (textureShader == nullptr)
+		return false;
+
+	for (int i = 0; i < m_TextureShaders.size(); i++)
+	{
+		if (m_TextureShaders.at(i) == nullptr)
+			continue;
+
+		if (m_TextureShaders.at(i)->GetAnimationSheetFilename() == textureShader->GetAnimationSheetFilename())
+			return false;
+	}
+
+	m_TextureShaders.push_back(textureShader);
+	return true;
+}
+
+void GraphicsClass::RemoveTextureShader(TextureShaderClass * textureShader)
+{
+	m_TextureShaders.erase(std::remove(m_TextureShaders.begin(), m_TextureShaders.end(), textureShader));
 }
 
 
@@ -312,12 +344,11 @@ bool GraphicsClass::Render()
 
 	m_D3D->TurnOnAlphaBlending();
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	m_ColorShader->SetColor(D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f));
 	D3DXMatrixTranslation(&worldMatrix, playerModel->GetTranslation().x, playerModel->GetTranslation().y, playerModel->GetTranslation().z);
 	playerModel->Render(m_D3D->GetDeviceContext());
 
 	// Render the model using the color shader.	
-	result = m_TextureShader->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, playerModel->movingRight);
+	result = m_TextureShaders.at(0)->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, playerModel->movingRight);
 	if (!result)
 	{
 		return false;
@@ -339,19 +370,42 @@ bool GraphicsClass::Render()
 		}
 	}
 
-	for (int i = 0; i < m_enemyModels.size(); i++)
+	for (int i = 1; i < m_TextureShaders.size(); i++)
 	{
-		m_ColorShader->SetColor(D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f));
-		m_D3D->GetWorldMatrix(worldMatrix);
-		D3DXMatrixTranslation(&worldMatrix, m_enemyModels[i]->GetTranslation().x, m_enemyModels[i]->GetTranslation().y, m_enemyModels[i]->GetTranslation().z);
-		m_enemyModels[i]->Render(m_D3D->GetDeviceContext());
+		int b = i;
 
-		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_enemyModels[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-		if (!result)
+		if (m_TextureShaders.at(i) == nullptr)
+			continue;
+
+		ModelClass* model = nullptr;		
+
+		for (int k = 0; k < m_TextureShaders.at(i)->GetModels().size(); k++)
 		{
-			return false;
-		}		
+			if ((model = m_TextureShaders.at(i)->GetModels().at(k)) == nullptr)
+				continue;
+
+			m_D3D->GetWorldMatrix(worldMatrix);
+			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
+			model->Render(m_D3D->GetDeviceContext());
+
+			if (!m_TextureShaders.at(i)->Render(m_D3D->GetDeviceContext(), model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix))
+				return false;
+		}
 	}
+
+	//for (int i = 0; i < m_enemyModels.size(); i++)
+	//{
+	//	//m_ColorShader->SetColor(D3DXVECTOR4(0.0f, 1.0f, 0.0f, 1.0f));
+	//	m_D3D->GetWorldMatrix(worldMatrix);
+	//	D3DXMatrixTranslation(&worldMatrix, m_enemyModels[i]->GetTranslation().x, m_enemyModels[i]->GetTranslation().y, m_enemyModels[i]->GetTranslation().z);
+	//	m_enemyModels[i]->Render(m_D3D->GetDeviceContext());
+
+	//	result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_enemyModels[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	//	if (!result)
+	//	{
+	//		return false;
+	//	}		
+	//}
 
 	for (int i = 0; i < m_bombModels.size(); i++)
 	{

@@ -34,6 +34,11 @@ void GameManager::Update()
 	{
 		enemyFlying->Update();
 	}
+
+	if (enemyArcher)
+	{
+		enemyArcher->Update();
+	}
 }
 
 bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClass *graphicsClass)
@@ -49,22 +54,29 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 	if (!player->Initialize())
 		return false;
 	
-	enemyWanderer = new EnemyWanderer();
-	if (enemyWanderer == nullptr)
+	//enemyWanderer = new EnemyWanderer();
+	//if (enemyWanderer == nullptr)
+	//	return false;
+
+	//if (!enemyWanderer->Init(graphicsClass))
+	//	return false;
+
+	//enemyFlying = new EnemyFlying();
+	//if (enemyFlying == nullptr)
+	//	return false;
+
+	//if (!enemyFlying->Init(graphicsClass, 8, 8))
+	//	return false;
+
+	//enemyFlying->SetPlayer(player);
+	//enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
+
+	enemyArcher = new EnemyArcher();
+	if (enemyArcher == nullptr)
 		return false;
 
-	if (!enemyWanderer->Init(graphicsClass))
+	if (!enemyArcher->Init(graphicsClass, 12, 12))
 		return false;
-
-	enemyFlying = new EnemyFlying();
-	if (enemyFlying == nullptr)
-		return false;
-
-	if (!enemyFlying->Init(graphicsClass, 8, 8))
-		return false;
-
-	enemyFlying->SetPlayer(player);
-	enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
 
 	return true;
 }

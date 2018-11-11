@@ -14,7 +14,7 @@ EnemyWanderer::~EnemyWanderer()
 {
 }
 
-bool EnemyWanderer::Init(GraphicsClass* graphicsClass, float width, float height, float translationX, float translationY)
+bool EnemyWanderer::Init(GraphicsClass* graphicsClass, float width, float height, float translationX, float translationY, CHAR* animationSheetName)
 {
 	return EnemyBase::Init(graphicsClass, width, height, translationX, translationY);
 }

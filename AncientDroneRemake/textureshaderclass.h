@@ -10,7 +10,10 @@
 #include <d3dx10math.h>
 #include <d3dx11async.h>
 #include <fstream>
+#include <vector>
+
 #include "animationimporter.h"
+#include "modelclass.h"
 
 using namespace std;
 
@@ -46,7 +49,7 @@ public:
 	TextureShaderClass(const TextureShaderClass&);
 	~TextureShaderClass();
 
-	bool Initialize(ID3D11Device*, HWND);
+	bool Initialize(ID3D11Device *device, HWND hwnd, CHAR* animationSheetFilename);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, bool movingRight = true);
 	void SetColor(D3DXVECTOR4 newColor);
@@ -54,9 +57,15 @@ public:
 	void SetNextFrame();
 	void CheckNextFrame();
 	void SetNewAnimation(int index);
+	void CreateNewAnimation(int frames, int timePerFrame, int row = -1, bool loop = true);
+	void ImportFile(int frameWidth, int frameHeight, int textureWidth, int textureHeight);
+	void PrepareImportFile(ID3D11Device * device, LPCSTR filename);
+	CHAR* GetAnimationSheetFilename();
+	void AddModel(ModelClass* model);
+	std::vector<ModelClass*> GetModels();
 
 private:
-	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*);
+	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*, CHAR*);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, CHAR*);
 
@@ -64,6 +73,12 @@ private:
 	void RenderShader(ID3D11DeviceContext*, int);
 
 private:
+	//Helper variables
+	HWND* m_hwnd;
+	ID3D11Device* m_device;
+	LPCSTR m_animationSheetFilename;
+
+	//Animation variables
 	TextureBufferType m_texBufferType;
 	AnimationImporter* m_animationImporter;
 	int m_currentAnimationFrame = 0;
@@ -71,6 +86,7 @@ private:
 	int m_currentFrameTime = 0;	
 	bool m_reverseX = false;
 
+	//Buffers and resources
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
 	ID3D11InputLayout* m_layout;
@@ -78,6 +94,9 @@ private:
 	ID3D11Buffer* m_textureBuffer;
 	ID3D11SamplerState* m_sampleState;
 	ID3D11ShaderResourceView* texture;
+
+	//Rendering variables
+	std::vector<ModelClass*> m_models;
 };
 
 #endif

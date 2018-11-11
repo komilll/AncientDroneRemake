@@ -42,17 +42,32 @@ bool Player::Initialize()
 	if (m_graphics == nullptr)
 		return false;
 
-	m_playerAnimation = new PlayerAnimationStates();
+	m_playerAnimation = new PlayerAnimationStates(4);
 	if (m_playerAnimation == nullptr)
 		return false;
 
-	m_playerModel->SetBounds(-4, 4, m_playerModel->GetBounds().min.y, m_playerModel->GetBounds().max.y - 3);
+	m_shaderClass = new TextureShaderClass();
+	if (m_shaderClass == nullptr)
+		return false;
+
+	if (!m_shaderClass->Initialize(m_d3d->GetDevice(), *m_graphics->GetHWND(), "player.dds"))
+		return false;
+
+	m_graphics->AddTextureShader(m_shaderClass);
+//PREPARE ANIMATIONS
+	m_shaderClass->ImportFile(64, 64, 1024, 1024);
+	m_shaderClass->CreateNewAnimation(4, 10, 0); //IDLE
+	m_shaderClass->CreateNewAnimation(6, 7, 1); //MOVING
+	m_shaderClass->CreateNewAnimation(7, 5, 3); //COMMAND
+	m_shaderClass->CreateNewAnimation(3, 5, 4, false); //FALLING
 
 	m_playerAnimation->PrepareAnimationPose(IDLE, IDLE);
 	m_playerAnimation->PrepareAnimationPose(MOVING, MOVING);
 	m_playerAnimation->PrepareAnimationPose(COMMAND, COMMAND);
 	m_playerAnimation->PrepareAnimationPose(FALLING, FALLING);
 	m_playerAnimation->SetState(IDLE);
+///////////////////
+	m_playerModel->SetBounds(-4, 4, m_playerModel->GetBounds().min.y, m_playerModel->GetBounds().max.y - 3);
 
 	m_graphics->SetPlayerModel(m_playerModel);
 	movementUp += 10.0f;

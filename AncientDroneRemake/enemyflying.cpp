@@ -15,7 +15,7 @@ EnemyFlying::~EnemyFlying()
 {
 }
 
-bool EnemyFlying::Init(GraphicsClass* graphicsClass, float width, float height, float translationX, float translationY)
+bool EnemyFlying::Init(GraphicsClass* graphicsClass, float width, float height, float translationX, float translationY, CHAR* animationSheetName)
 {
 	for (int i = 0; i < 5; i++)
 	{

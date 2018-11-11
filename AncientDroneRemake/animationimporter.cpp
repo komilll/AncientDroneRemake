@@ -66,6 +66,9 @@ bool AnimationImporter::CreateAnimation(int frames, int timePerFrame, int row, b
 
 AnimationData* AnimationImporter::GetAnimationData(int index, int currentFrame)
 {
+	if (animationData == nullptr)
+		return nullptr;
+
 	animationData->timePerFrame = animationPose[index]->timePerFrame;
 	animationData->loop = animationPose[index]->loop;
 	animationData->row = animationPose[index]->row;

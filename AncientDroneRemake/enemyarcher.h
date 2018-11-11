@@ -6,12 +6,16 @@
 
 class EnemyArcher : public EnemyBase
 {
+	enum ArcherState{
+		IDLE, SHOOTING
+	};
+
 public:
 	EnemyArcher();
 	EnemyArcher(const EnemyArcher&);
 	~EnemyArcher();
 
-	bool Init(GraphicsClass* graphicsClass, float width = 16, float height = 16, float translationX = 0.0f, float translationY = 0.0f) override;
+	bool Init(GraphicsClass* graphicsClass, float width = 16, float height = 16, float translationX = 0.0f, float translationY = 0.0f, CHAR* animationSheetName = "") override;
 	void Update() override;
 	void FixedUpdate() override;
 
@@ -25,4 +29,6 @@ private:
 	float m_arrowCooldownTime = 2.0f;
 	float m_arrowCooldownCurrent = 0.0f;
 	int m_arrowIndex = 0;
+	D3DXVECTOR2 arrowSpawnPoint; //Relative
+	bool lookingRight = true;
 };

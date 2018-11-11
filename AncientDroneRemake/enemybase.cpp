@@ -2,6 +2,7 @@
 
 EnemyBase::EnemyBase()
 {
+	m_shader = 0;
 	timer = 0;
 	lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
@@ -14,18 +15,31 @@ EnemyBase::~EnemyBase()
 {
 }
 
-bool EnemyBase::Init(GraphicsClass* graphicsClass, float width, float height, float translationX, float translationY)
+bool EnemyBase::Init(GraphicsClass* graphicsClass, float width, float height, float translationX, float translationY, CHAR* animationSheetName)
 {
 	m_graphics = graphicsClass;
-	if (m_graphics == nullptr)
-	{	
+	if (m_graphics == nullptr)	
 		return false;
-	}
-
+	
 	m_model = new ModelClass();
-	if (!m_model)
-	{
+	if (!m_model)	
 		return false;
+	
+	if (animationSheetName != "")
+	{
+		m_shader = new TextureShaderClass();
+		if (!m_shader)		
+			return false;
+		
+		if (!m_shader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), animationSheetName))
+			return false;
+
+		if (!m_graphics->AddTextureShader(m_shader))
+		{
+			m_shader->Shutdown();
+			delete m_shader;
+			m_shader = 0;
+		}
 	}
 
 	m_model->Initialize(m_graphics->GetD3D()->GetDevice(), width, height);

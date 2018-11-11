@@ -18,12 +18,14 @@ TextureShaderClass::~TextureShaderClass()
 {
 }
 
-bool TextureShaderClass::Initialize(ID3D11Device *device, HWND hwnd)
+bool TextureShaderClass::Initialize(ID3D11Device *device, HWND hwnd, CHAR* animationSheetFilename)
 {
 	bool result;
 
+	m_hwnd = &hwnd;
+
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, "texture.vs", "texture.ps");
+	result = InitializeShader(device, hwnd, "texture.vs", "texture.ps", animationSheetFilename);
 	if (!result)
 	{
 		return false;
@@ -94,6 +96,9 @@ void TextureShaderClass::SetNextFrame()
 
 void TextureShaderClass::CheckNextFrame()
 {
+	if (m_animationImporter->GetAnimationData(0, 0) == nullptr)
+		return;
+
 	m_currentFrameTime++;
 	if (m_animationImporter->GetAnimationData(m_currentAnimationIndex, m_currentAnimationFrame)->timePerFrame == m_currentFrameTime)
 	{		
@@ -109,7 +114,51 @@ void TextureShaderClass::SetNewAnimation(int index)
 	m_currentFrameTime = 0;
 }
 
-bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename)
+void TextureShaderClass::CreateNewAnimation(int frames, int timePerFrame, int row, bool loop)
+{
+	if (m_animationImporter == nullptr)
+	{
+		MessageBox(*m_hwnd, "Animation importer is missing!", "Animation error", MB_OK);
+		return;
+	}
+
+	if (m_animationImporter->CreateAnimation(frames, timePerFrame, row, loop) == false) //IDLE	
+		MessageBox(*m_hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
+}
+
+void TextureShaderClass::ImportFile(int frameWidth, int frameHeight, int textureWidth, int textureHeight)
+{
+	if (m_animationImporter == nullptr)
+	{
+		MessageBox(*m_hwnd, "Animation importer is missing!", "Animation error", MB_OK);
+		return;
+	}
+
+	m_animationImporter->ImportFile(m_device, m_animationSheetFilename, frameWidth, frameHeight, textureWidth, textureHeight);
+}
+
+void TextureShaderClass::PrepareImportFile(ID3D11Device * device, LPCSTR filename)
+{
+	m_device = device;
+	m_animationSheetFilename = filename;
+}
+
+CHAR * TextureShaderClass::GetAnimationSheetFilename()
+{
+	return (CHAR*)m_animationSheetFilename;
+}
+
+void TextureShaderClass::AddModel(ModelClass * model)
+{
+	m_models.push_back(model);
+}
+
+std::vector<ModelClass*> TextureShaderClass::GetModels()
+{
+	return m_models;
+}
+
+bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename, CHAR* animationSheetFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -273,39 +322,15 @@ bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR*
 		return false;
 	}	
 
-	LPCSTR name = "player.dds";
-	result = D3DX11CreateShaderResourceViewFromFile(device, "player.dds", NULL, NULL, &texture, NULL);
+	LPCSTR name = animationSheetFilename;
+	result = D3DX11CreateShaderResourceViewFromFile(device, name, NULL, NULL, &texture, NULL);
 	if (FAILED(result))
 	{
 		return false;
 	}
 	// SetAnimationData(0, 0, 64.0f, 64.0f, 1024.0f, 1024.0f);
 	m_animationImporter = new AnimationImporter();
-
-	m_animationImporter->ImportFile(device, name, 64, 64, 1024, 1024);
-	if (m_animationImporter->CreateAnimation(4, 10, 0) == false) //IDLE
-	{
-		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
-		return false;
-	}
-
-	if (m_animationImporter->CreateAnimation(6, 7, 1) == false) //MOVING
-	{
-		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
-		return false;
-	}
-
-	if (m_animationImporter->CreateAnimation(7, 5, 3) == false) //COMMAND
-	{
-		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
-		return false;
-	}
-
-	if (m_animationImporter->CreateAnimation(3, 5, 4, false) == false) //FALLING
-	{
-		MessageBox(hwnd, "Animation can't be 0 or less frames long", "Animation error", MB_OK);
-		return false;
-	}
+	PrepareImportFile(device, name);
 	//MessageBox(hwnd, "", "TEST", MB_OK);	
 
 	return true;

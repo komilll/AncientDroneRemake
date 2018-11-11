@@ -13,6 +13,13 @@
 ///<summary>Class for on-screen character input and gameplay values</summary>
 class Player
 {
+	enum StatePlayer {
+		IDLE,
+		MOVING,
+		COMMAND,
+		FALLING
+	};
+
 public:
 	Player();
 	Player(InputClass *inputClass, D3DClass *d3d, GraphicsClass *graphicsClass);
@@ -37,6 +44,7 @@ private:
 	GraphicsClass *m_graphics;
 	//////////////////
 	ModelClass *m_playerModel;
+	TextureShaderClass* m_shaderClass;
 	PlayerAnimationStates *m_playerAnimation;
 	
 	void SetNewAnimation(StatePlayer newState);

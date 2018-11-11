@@ -6,6 +6,7 @@
 
 #include "player.h"
 #include "graphicsclass.h"
+#include "playeranimationstates.h"
 
 class EnemyBase
 {
@@ -14,7 +15,7 @@ public:
 	EnemyBase(const EnemyBase&);
 	~EnemyBase();
 
-	virtual bool Init(GraphicsClass* graphicsClass, float width = 16, float height = 16, float translationX = 0.0f, float translationY = 0.0f);
+	virtual bool Init(GraphicsClass* graphicsClass, float width = 16, float height = 16, float translationX = 0.0f, float translationY = 0.0f, CHAR* animationSheetName = "");
 	virtual void Update();
 	virtual void FixedUpdate(); //Update function for physics called in fixed time
 	virtual void Move(float x);
@@ -38,4 +39,8 @@ protected:
 
 	float gravity = 1.75f;
 	bool useGravity = true;
+	PlayerAnimationStates* m_animation;
+	TextureShaderClass* m_shader;
+
+private:
 };
