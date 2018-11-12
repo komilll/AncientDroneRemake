@@ -14,6 +14,7 @@
 
 #include "animationimporter.h"
 #include "modelclass.h"
+#include "IEanimationobject.h"
 
 using namespace std;
 
@@ -57,12 +58,14 @@ public:
 	void SetNextFrame();
 	void CheckNextFrame();
 	void SetNewAnimation(int index);
+	void SetNewAnimationOneShot(int index, int previousAnimation);
 	void CreateNewAnimation(int frames, int timePerFrame, int row = -1, bool loop = true);
 	void ImportFile(int frameWidth, int frameHeight, int textureWidth, int textureHeight);
 	void PrepareImportFile(ID3D11Device * device, LPCSTR filename);
 	CHAR* GetAnimationSheetFilename();
 	void AddModel(ModelClass* model);
 	std::vector<ModelClass*> GetModels();
+	void SetAnimationObject(IEAnimationObject* animObject);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*, CHAR*);
@@ -77,13 +80,15 @@ private:
 	HWND* m_hwnd;
 	ID3D11Device* m_device;
 	LPCSTR m_animationSheetFilename;
+	IEAnimationObject* m_animObject; //Changing logical state of animation in PlayerAnimationStates
 
 	//Animation variables
 	TextureBufferType m_texBufferType;
 	AnimationImporter* m_animationImporter;
 	int m_currentAnimationFrame = 0;
 	int m_currentAnimationIndex = 0;
-	int m_currentFrameTime = 0;	
+	int m_currentFrameTime = 0;
+	int m_savedAnimationToPlay = -1; //Animation that will be played in loop after playing one shot
 	bool m_reverseX = false;
 
 	//Buffers and resources

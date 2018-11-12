@@ -86,7 +86,17 @@ void TextureShaderClass::SetAnimationData(int row, int column, float imageWidth,
 
 void TextureShaderClass::SetNextFrame()
 {
-	if (!m_animationImporter->GetAnimationData(m_currentAnimationIndex, m_currentAnimationFrame)->loop && m_currentAnimationFrame == m_animationImporter->GetMaxFrames(m_currentAnimationIndex) - 1)
+	//One shot finished, back to saved animation
+	if (m_savedAnimationToPlay != -1 && m_currentAnimationFrame == m_animationImporter->GetMaxFrames(m_currentAnimationIndex) - 1)
+	{
+		if (m_animObject != nullptr)
+			m_animObject->SetNewAnimation(m_savedAnimationToPlay);
+		m_savedAnimationToPlay = -1;
+		SetNextFrame();
+		return;
+	}
+	//No looping, last frame
+	else if (!m_animationImporter->GetAnimationData(m_currentAnimationIndex, m_currentAnimationFrame)->loop && m_currentAnimationFrame == m_animationImporter->GetMaxFrames(m_currentAnimationIndex) - 1)
 	{
 		//Do nothing, already reached last frame, stay this way		
 	}
@@ -112,6 +122,16 @@ void TextureShaderClass::SetNewAnimation(int index)
 	m_currentAnimationIndex = index;
 	m_currentAnimationFrame = 0;
 	m_currentFrameTime = 0;
+}
+
+void TextureShaderClass::SetNewAnimationOneShot(int index, int previousAnimation)
+{
+	if (previousAnimation == -1)
+		m_savedAnimationToPlay = m_currentAnimationIndex;
+	else
+		m_savedAnimationToPlay = previousAnimation;
+
+	SetNewAnimation(index);
 }
 
 void TextureShaderClass::CreateNewAnimation(int frames, int timePerFrame, int row, bool loop)
@@ -156,6 +176,11 @@ void TextureShaderClass::AddModel(ModelClass * model)
 std::vector<ModelClass*> TextureShaderClass::GetModels()
 {
 	return m_models;
+}
+
+void TextureShaderClass::SetAnimationObject(IEAnimationObject * animObject)
+{
+	m_animObject = animObject;
 }
 
 bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename, CHAR* animationSheetFilename)

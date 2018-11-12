@@ -9,9 +9,10 @@
 #include "d3dclass.h"
 #include "graphicsclass.h"
 #include "playeranimationstates.h"
+#include "IEanimationobject.h"
 
 ///<summary>Class for on-screen character input and gameplay values</summary>
-class Player
+class Player : IEAnimationObject
 {
 	enum StatePlayer {
 		IDLE,
@@ -36,6 +37,8 @@ public:
 
 private:
 	void PlayerDeath();
+	void SetNewAnimation(int newState) override final; //IE
+	void OnDestroy();
 
 private:	
 	//External Classes
@@ -47,9 +50,6 @@ private:
 	TextureShaderClass* m_shaderClass;
 	PlayerAnimationStates *m_playerAnimation;
 	
-	void SetNewAnimation(StatePlayer newState);
-	void OnDestroy();
-
 	//Input Options
 	int btn_moveRight = VK_RIGHT;
 	int btn_moveLeft = VK_LEFT;

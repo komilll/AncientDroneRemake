@@ -268,10 +268,24 @@ int GraphicsClass::GetGroundModelCount()
 	return GROUND_MODEL_LENGTH;
 }
 
-void GraphicsClass::SetPlayerAnimation(int index)
+void GraphicsClass::SetPlayerAnimation(int index, TextureShaderClass* shader)
 {
 	for (int i = 0; i < m_TextureShaders.size(); i++)
-		m_TextureShaders.at(i)->SetNewAnimation(index);
+		if (shader == m_TextureShaders.at(i))
+		{
+			m_TextureShaders.at(i)->SetNewAnimation(index);
+			break;
+		}
+}
+
+void GraphicsClass::SetPlayerAnimationOneShot(int index, TextureShaderClass * shader, int previousIndex)
+{
+	for (int i = 0; i < m_TextureShaders.size(); i++)
+		if (shader == m_TextureShaders.at(i))
+		{
+			m_TextureShaders.at(i)->SetNewAnimationOneShot(index, previousIndex);
+			break;
+		}
 }
 
 void GraphicsClass::AddEnemyModel(ModelClass * enemyModel)
@@ -294,14 +308,14 @@ bool GraphicsClass::AddTextureShader(TextureShaderClass * textureShader)
 	if (textureShader == nullptr)
 		return false;
 
-	for (int i = 0; i < m_TextureShaders.size(); i++)
-	{
-		if (m_TextureShaders.at(i) == nullptr)
-			continue;
+	//for (int i = 0; i < m_TextureShaders.size(); i++)
+	//{
+	//	if (m_TextureShaders.at(i) == nullptr)
+	//		continue;
 
-		if (m_TextureShaders.at(i)->GetAnimationSheetFilename() == textureShader->GetAnimationSheetFilename())
-			return false;
-	}
+	//	if (m_TextureShaders.at(i)->GetAnimationSheetFilename() == textureShader->GetAnimationSheetFilename())
+	//		return false;
+	//}
 
 	m_TextureShaders.push_back(textureShader);
 	return true;
@@ -353,6 +367,30 @@ bool GraphicsClass::Render()
 	{
 		return false;
 	}
+
+	for (int i = 1; i < m_TextureShaders.size(); i++)
+	{
+		int b = i;
+
+		if (m_TextureShaders.at(i) == nullptr)
+			continue;
+
+		ModelClass* model = nullptr;
+
+		for (int k = 0; k < m_TextureShaders.at(i)->GetModels().size(); k++)
+		{
+			if ((model = m_TextureShaders.at(i)->GetModels().at(k)) == nullptr)
+				continue;
+
+			m_D3D->GetWorldMatrix(worldMatrix);
+			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
+			model->Render(m_D3D->GetDeviceContext());
+
+			if (!m_TextureShaders.at(i)->Render(m_D3D->GetDeviceContext(), model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, model->movingRight))
+				return false;
+		}
+	}
+
 	m_D3D->TurnOffAlphaBlending();
 
 
@@ -367,29 +405,6 @@ bool GraphicsClass::Render()
 		if (!result)
 		{
 			return false;
-		}
-	}
-
-	for (int i = 1; i < m_TextureShaders.size(); i++)
-	{
-		int b = i;
-
-		if (m_TextureShaders.at(i) == nullptr)
-			continue;
-
-		ModelClass* model = nullptr;		
-
-		for (int k = 0; k < m_TextureShaders.at(i)->GetModels().size(); k++)
-		{
-			if ((model = m_TextureShaders.at(i)->GetModels().at(k)) == nullptr)
-				continue;
-
-			m_D3D->GetWorldMatrix(worldMatrix);
-			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
-			model->Render(m_D3D->GetDeviceContext());
-
-			if (!m_TextureShaders.at(i)->Render(m_D3D->GetDeviceContext(), model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix))
-				return false;
 		}
 	}
 

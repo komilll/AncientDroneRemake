@@ -135,9 +135,11 @@
     <ClInclude Include="flyingenemybomb.h" />
     <ClInclude Include="gamemanager.h" />
     <ClInclude Include="graphicsclass.h" />
+    <ClInclude Include="IEanimationobject.h" />
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="modelclass.h" />
+    <ClInclude Include="movingobjectprototype.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playeranimationstates.h" />
     <ClInclude Include="systemclass.h" />
@@ -160,6 +162,7 @@
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelclass.cpp" />
+    <ClCompile Include="movingobjectprototype.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playeranimationstates.cpp" />
     <ClCompile Include="systemclass.cpp" />

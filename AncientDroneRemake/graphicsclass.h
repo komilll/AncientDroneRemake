@@ -43,7 +43,8 @@ public:
 	void SetPlayerModel(ModelClass* player);
 	ModelClass* GetGroundModel(int index);
 	int GetGroundModelCount();
-	void SetPlayerAnimation(int index);
+	void SetPlayerAnimation(int index, TextureShaderClass* shader);
+	void SetPlayerAnimationOneShot(int index, TextureShaderClass* shader, int previousIndex = -1);
 	void AddEnemyModel(ModelClass* enemyModel);
 	void AddBombModel(ModelClass* bombModel);
 	void RemoveBombModel(ModelClass* bombModel);

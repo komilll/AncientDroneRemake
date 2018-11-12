@@ -78,5 +78,7 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 	if (!enemyArcher->Init(graphicsClass, 12, 12))
 		return false;
 
+	enemyArcher->SetPlayer(player);
+
 	return true;
 }

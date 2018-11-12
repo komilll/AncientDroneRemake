@@ -241,13 +241,13 @@ void Player::PlayerDeath()
 	movementUp += 100.0f;
 }
 
-void Player::SetNewAnimation(StatePlayer newState)
+void Player::SetNewAnimation(int newState)
 {
 	if (newState == m_playerAnimation->GetCurrentState())
 		return;
 
 	m_playerAnimation->SetState(newState);
-	m_graphics->SetPlayerAnimation(m_playerAnimation->GetCurrentState());
+	m_graphics->SetPlayerAnimation(m_playerAnimation->GetCurrentState(), m_shaderClass);
 }
 
 void Player::OnDestroy()

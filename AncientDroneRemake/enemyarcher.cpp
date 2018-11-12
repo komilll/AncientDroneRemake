@@ -33,6 +33,9 @@ bool EnemyArcher::Init(GraphicsClass * graphicsClass, float width, float height,
 	m_animation->PrepareAnimationPose(SHOOTING, SHOOTING);
 	m_animation->SetState(IDLE);
 
+	m_model->SetBounds(-width + 8, width - 8, -height, height);
+	arrowSpawnPoint = D3DXVECTOR2(0.25f, 0.75f);
+
 	return toReturn;
 }
 
@@ -49,12 +52,25 @@ void EnemyArcher::Update()
 
 		lookingRight = m_model->movingRight;
 	}
-
+	
 }
 
 void EnemyArcher::FixedUpdate()
 {
 	EnemyBase::FixedUpdate();
+
+	m_arrowCooldownCurrent += 0.02f;
+	if (m_arrowCooldownCurrent >= m_arrowCooldownTime)
+	{
+		m_arrowCooldownCurrent = 0.0f;
+		PlayOneShotAnimation(SHOOTING);
+
+		m_arrowIndex %= m_arrow.size();
+		m_arrow.at(m_arrowIndex);
+		m_arrowIndex++;
+
+		//m_arrow.at(m_arrowIndex)->Init(m_graphics, 8.0f, 8.0f, 0.0f, 0.0f, "mob_archer.dds");
+	}
 }
 
 void EnemyArcher::SetPlayer(Player * player_)
