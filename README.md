@@ -16,7 +16,7 @@ There is also an EnemyArcher that is stationary enemy which shoots left/right ba
 Generally I've really enjoyed and I'm really proud of my work this week. It doesn't seem that much changed but I've established universal rendering pipelines for enemies and it's almost done for basic moving objects and that will improve working speed much in the future.
 
 <a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.4">https://github.com/komilll/AncientDroneRemake/releases/tag/0.4</a> - Week #4 release
-<center><img src="Blog/gif_3.gif"></center>
+<center><img src="Blog/gif_4.gif"></center>
 <center><i>Week #4: Gif #4 – Enemy attack animation</i></center>
 
 <h2>Week #3</h2>
