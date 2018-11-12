@@ -10,6 +10,7 @@ Project itself is a remake of 2D Platformer game that I’ve made with my friend
 <h2>Week #4</h2>
 And that's finaly time for some gameplay. I've added EnemyWanderer which moves right/left until it meets obstacle. Also it deals damage by dealing player damage on touch. Second enemy is EnemyFlying, that's the crow that flies from waypoint A to B and spawns bombs that explode on impact. Unfortunatelly both of them are not working due to last-minute changes in enemies inheritence changes and pipeline modifications.
 
+
 There is also an EnemyArcher that is stationary enemy which shoots left/right based on player's relative position. I managed to finish graphics pipeline for it and it works great. However shooting spawned arrow and killing player with it isn't done yet.
 
 Generally I've really enjoyed and I'm really proud of my work this week. It doesn't seem that much changed but I've established universal rendering pipelines for enemies and it's almost done for basic moving objects and that will improve working speed much in the future.
