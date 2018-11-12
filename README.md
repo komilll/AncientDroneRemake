@@ -7,6 +7,17 @@ To start with – it isn’t a tutorial series. I wanted to start a blog to moti
 Project itself is a remake of 2D Platformer game that I’ve made with my friend for Ludum Dare 36
 <a href="https://azargaz.itch.io/ancient-drone">https://azargaz.itch.io/ancient-drone</a>. This time I’d like to make it from scratch using DirectX 11. I will create flipbook animation system, basic physics engine, enemies with simple AI and other things essential to complete this remake. Let’s get started!
 
+<h2>Week #4</h2>
+And that's finaly time for some gameplay. I've added EnemyWanderer which moves right/left until it meets obstacle. Also it deals damage by dealing player damage on touch. Second enemy is EnemyFlying, that's the crow that flies from waypoint A to B and spawns bombs that explode on impact. Unfortunatelly both of them are not working due to last-minute changes in enemies inheritence changes and pipeline modifications.
+
+There is also an EnemyArcher that is stationary enemy which shoots left/right based on player's relative position. I managed to finish graphics pipeline for it and it works great. However shooting spawned arrow and killing player with it isn't done yet.
+
+Generally I've really enjoyed and I'm really proud of my work this week. It doesn't seem that much changed but I've established universal rendering pipelines for enemies and it's almost done for basic moving objects and that will improve working speed much in the future.
+
+<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.4">https://github.com/komilll/AncientDroneRemake/releases/tag/0.4</a> - Week #4 release
+<center><img src="Blog/gif_3.gif"></center>
+<center><i>Week #4: Gif #4 – Enemy attack animation</i></center>
+
 <h2>Week #3</h2>
 As I implemented animation pipeline in previous week, I used it for three basic player animations. In case if player is standing still, idle animation is playing. There is also movement animation and jump animation which freezes at last frame and doesn't loop (based on boolean).
 
