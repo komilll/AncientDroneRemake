@@ -38,6 +38,7 @@ void GameManager::Update()
 	if (enemyArcher)
 	{
 		enemyArcher->Update();
+		enemyArcher->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
 }
 

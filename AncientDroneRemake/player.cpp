@@ -53,7 +53,7 @@ bool Player::Initialize()
 	if (!m_shaderClass->Initialize(m_d3d->GetDevice(), *m_graphics->GetHWND(), "player.dds"))
 		return false;
 
-	m_graphics->AddTextureShader(m_shaderClass);
+	m_graphics->AddTextureShader(m_shaderClass);	
 //PREPARE ANIMATIONS
 	m_shaderClass->ImportFile(64, 64, 1024, 1024);
 	m_shaderClass->CreateNewAnimation(4, 10, 0); //IDLE

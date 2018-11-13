@@ -45,6 +45,7 @@ protected:
 
 	float gravity = 1.75f;
 	bool useGravity = true;
+	bool m_hitedWall = false;
 	PlayerAnimationStates* m_animation;
 	TextureShaderClass* m_shader;	
 

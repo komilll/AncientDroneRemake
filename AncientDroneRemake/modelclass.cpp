@@ -54,12 +54,15 @@ void ModelClass::Shutdown()
 }
 
 
-void ModelClass::Render(ID3D11DeviceContext* deviceContext)
+bool ModelClass::Render(ID3D11DeviceContext* deviceContext)
 {
+	if (m_isVisibile == false)
+		return false;
+
 	// Put the vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	RenderBuffers(deviceContext);
 
-	return;
+	return true;
 }
 
 
@@ -120,6 +123,11 @@ D3DXVECTOR3 ModelClass::GetScale()
 D3DXVECTOR2 ModelClass::GetSize()
 {
 	return D3DXVECTOR2(m_width, m_height);
+}
+
+void ModelClass::SetVisibility(bool enable)
+{
+	m_isVisibile = enable;
 }
 
 bool ModelClass::InitializeBuffers(ID3D11Device* device)

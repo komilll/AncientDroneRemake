@@ -72,8 +72,20 @@ void MovingObjectPrototype::FixedUpdate()
 	for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 	{
 		float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
+		//Ground in the middle
+		bool groundInTheMiddle = (m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+			m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y);
+		//Ground from bottom
+		bool groundFromTheBottom = (m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+			m_model->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+			m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y);
+		//Ground from top
+		bool groundFromTheTop = (m_model->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+			m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+			m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y);
 
-		if (m_model->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y + groundThickness)
+
+		if (m_model->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y)		
 		{
 			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
 				&& m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
@@ -93,28 +105,18 @@ void MovingObjectPrototype::FixedUpdate()
 				float temp_ = -(m_model->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
 
 				if (temp_ >= 0.0f && frameMovementRight < 0.0f)
-					frameMovementRight = temp_;
+					frameMovementRight = temp_;								
 			}
 		}
 
-		//Ground in the middle
-		if ((m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-			m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y) ||
-			//Ground from bottom
-			(m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-				m_model->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
-				m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y) ||
-			//Ground from top
-				(m_model->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-					m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y &&
-					m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y))
+		if (groundInTheMiddle || groundFromTheBottom || groundFromTheTop)
 		{
 			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x &&
 				m_graphics->GetGroundModel(i)->GetBounds().max.x < m_model->GetBounds().max.x &&
 				frameMovementRight < 0.0f)
 			{
 				speed = abs(speed);
-				frameMovementRight = speed;
+				frameMovementRight = speed;				
 			}
 			else if (m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x &&
 				m_graphics->GetGroundModel(i)->GetBounds().min.x > m_model->GetBounds().min.x &&
@@ -146,9 +148,10 @@ bool MovingObjectPrototype::TouchedPlayer(Player * player, float playerMinX, flo
 	{
 		if (playerMinY < m_model->GetBounds().max.y && playerMaxY > m_model->GetBounds().max.y || //Enter from the bottom
 			playerMaxY > m_model->GetBounds().min.y && m_model->GetBounds().max.y > playerMinY) //Enter from the top
-
+		{
 			player->DealDamage(1);
-		return true;
+			return true;
+		}
 	}
 
 	return false;

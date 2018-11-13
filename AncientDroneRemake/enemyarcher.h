@@ -18,6 +18,7 @@ public:
 	bool Init(GraphicsClass* graphicsClass, float width = 16, float height = 16, float translationX = 0.0f, float translationY = 0.0f, CHAR* animationSheetName = "") override;
 	void Update() override;
 	void FixedUpdate() override;
+	virtual bool TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY) override;
 
 	void SetPlayer(Player* player);
 

@@ -37,7 +37,7 @@ public:
 
 	bool Initialize(ID3D11Device*, int width, int height);
 	void Shutdown();
-	void Render(ID3D11DeviceContext*);
+	bool Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();
 	void SetTranslation(float x, float y, float z);
@@ -52,6 +52,7 @@ public:
 	void SetScale(float x, float y, float z);
 	D3DXVECTOR3 GetScale();
 	D3DXVECTOR2 GetSize();
+	void SetVisibility(bool enable);
 
 public:
 	/* Physics based components */
@@ -70,6 +71,7 @@ private:
 	int m_widthOriginal, m_heightOriginal;
 	float m_scaleX, m_scaleY, m_scaleZ;
 	float m_translationX, m_translationY, m_translationZ;
+	bool m_isVisibile = true;
 };
 
 #endif

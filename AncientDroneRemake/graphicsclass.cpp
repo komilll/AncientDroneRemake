@@ -326,7 +326,6 @@ void GraphicsClass::RemoveTextureShader(TextureShaderClass * textureShader)
 	m_TextureShaders.erase(std::remove(m_TextureShaders.begin(), m_TextureShaders.end(), textureShader));
 }
 
-
 bool GraphicsClass::Render()
 {
 	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
@@ -384,7 +383,8 @@ bool GraphicsClass::Render()
 
 			m_D3D->GetWorldMatrix(worldMatrix);
 			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
-			model->Render(m_D3D->GetDeviceContext());
+			if (!model->Render(m_D3D->GetDeviceContext()))
+				continue;
 
 			if (!m_TextureShaders.at(i)->Render(m_D3D->GetDeviceContext(), model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, model->movingRight))
 				return false;
