@@ -41,6 +41,14 @@ void EnemyArcherArrow::Update()
 
 void EnemyArcherArrow::FixedUpdate()
 {
+	currentTimeToDestroy += 0.02f;
+	if (currentTimeToDestroy >= timeToDestroy)
+	{
+		currentTimeToDestroy = 0.0f;
+		DestroyArrow();
+		return;
+	}
+
 	m_model->movingRight = frameMovementRight > 0;
 	MovingObjectPrototype::FixedUpdate();
 	Move(frameMovementRight);		
@@ -68,4 +76,9 @@ void EnemyArcherArrow::DestroyArrow()
 {
 	SetNewAnimation(DESTROY);
 	m_isMoving = false;
+}
+
+void EnemyArcherArrow::HitedWall()
+{
+	DestroyArrow();
 }

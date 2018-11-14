@@ -95,28 +95,34 @@ void MovingObjectPrototype::FixedUpdate()
 				isFalling = false;
 				isGround = true;
 			}
-			else if (m_model->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x)
-			{
-				if (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
-					frameMovementRight = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x;
-			}
-			else if (m_model->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
-			{
-				float temp_ = -(m_model->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
 
-				if (temp_ >= 0.0f && frameMovementRight < 0.0f)
-					frameMovementRight = temp_;								
+			if (groundInTheMiddle || groundFromTheBottom || groundFromTheTop)
+			{
+				if (m_model->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x)
+				{
+					if (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
+						frameMovementRight = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x;
+
+				}
+				else if (m_model->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
+				{
+					float temp_ = -(m_model->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
+
+					if (temp_ >= 0.0f && frameMovementRight < 0.0f)
+						frameMovementRight = temp_;
+				}
 			}
 		}
 
-		if (groundInTheMiddle || groundFromTheBottom || groundFromTheTop)
+
+		if (m_wander && (groundInTheMiddle || groundFromTheBottom || groundFromTheTop))
 		{
 			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x &&
 				m_graphics->GetGroundModel(i)->GetBounds().max.x < m_model->GetBounds().max.x &&
 				frameMovementRight < 0.0f)
 			{
 				speed = abs(speed);
-				frameMovementRight = speed;				
+				frameMovementRight = speed;
 			}
 			else if (m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x &&
 				m_graphics->GetGroundModel(i)->GetBounds().min.x > m_model->GetBounds().min.x &&
@@ -124,6 +130,30 @@ void MovingObjectPrototype::FixedUpdate()
 			{
 				speed = -abs(speed);
 				frameMovementRight = speed;
+			}
+		}		
+
+		float mMaxY = m_model->GetBounds().max.y;
+		float mMinY = m_model->GetBounds().min.y;
+		float gMaxY = m_graphics->GetGroundModel(i)->GetBounds().max.y;
+		float gMinY = m_graphics->GetGroundModel(i)->GetBounds().min.y;
+		
+		bool heightTest = (gMaxY > mMaxY && mMinY > gMinY) || (mMaxY > gMaxY && mMinY < gMinY) || (mMaxY > gMaxY && mMinY > gMinY && mMinY < gMaxY) || 
+			(mMaxY < gMaxY && mMinY < gMinY && mMaxY > gMinY);
+
+		if (heightTest)
+		{
+			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x &&
+				m_graphics->GetGroundModel(i)->GetBounds().max.x < m_model->GetBounds().max.x &&
+				frameMovementRight < 0.0f)
+			{
+				HitedWall();
+			}
+			else if (m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x &&
+				m_graphics->GetGroundModel(i)->GetBounds().min.x > m_model->GetBounds().min.x &&
+				frameMovementRight > 0.0f)
+			{
+				HitedWall();
 			}
 		}
 	}
@@ -173,4 +203,8 @@ void MovingObjectPrototype::PlayOneShotAnimation(int newState, int previousState
 
 	m_animation->SetState(newState);
 	m_graphics->SetPlayerAnimationOneShot(m_animation->GetCurrentState(), m_shader, previousState);
+}
+
+void MovingObjectPrototype::HitedWall()
+{
 }

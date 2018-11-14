@@ -19,10 +19,12 @@ public:
 	bool IsActive();
 	void SetDirection(bool movingRight, float posX = -1.0f, float posY = -1.0f);
 	void DestroyArrow();
+	void HitedWall() override;
 
 private:
 	bool m_init = false;
 	bool m_isMoving = false;
-
+	float timeToDestroy = 2.0f;
+	float currentTimeToDestroy = 0.0f;
 };
 #endif // !_ENEMY_ARCHER_ARROW_H_

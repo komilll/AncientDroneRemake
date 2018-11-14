@@ -19,7 +19,7 @@ bool EnemyArcher::Init(GraphicsClass * graphicsClass, float width, float height,
 	if (!toReturn)
 		return false;
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		m_arrow.push_back(new EnemyArcherArrow());
 		m_arrow.at(i)->Init(m_graphics, 8.0f, 8.0f, 0.0f, 0.0f, "mob_archer.dds");
@@ -74,7 +74,11 @@ void EnemyArcher::FixedUpdate()
 		PlayOneShotAnimation(SHOOTING);
 
 		m_arrowIndex %= m_arrow.size();
-		m_arrow.at(m_arrowIndex);
+		if (m_arrow.at(m_arrowIndex)->IsActive())
+		{			
+			m_arrow.insert(m_arrow.begin() + m_arrowIndex, new EnemyArcherArrow());
+			m_arrow.at(m_arrowIndex)->Init(m_graphics, 8.0f, 8.0f, 0.0f, 0.0f, "mob_archer.dds");
+		}
 
 		float posX = m_model->movingRight ? m_model->GetBounds().max.x : m_model->GetBounds().min.x;
 		float posY = m_model->GetBounds().min.y + (m_model->GetBounds().max.y - m_model->GetBounds().min.y) * arrowSpawnPoint.y;

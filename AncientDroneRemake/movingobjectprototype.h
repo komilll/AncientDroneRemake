@@ -26,6 +26,7 @@ public:
 	virtual bool TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY);
 	void SetNewAnimation(int newState) override;
 	virtual void PlayOneShotAnimation(int state, int previousState = -1);
+	virtual void HitedWall();
 
 private:
 	//Function
@@ -46,6 +47,7 @@ protected:
 	float gravity = 1.75f;
 	bool useGravity = true;
 	bool m_hitedWall = false;
+	bool m_wander = false;
 	PlayerAnimationStates* m_animation;
 	TextureShaderClass* m_shader;	
 
