@@ -61,6 +61,7 @@ bool EnemyArcherArrow::IsActive()
 
 void EnemyArcherArrow::SetDirection(bool movingRight, float posX, float posY)
 {
+	currentTimeToDestroy = 0.0f;
 	m_isMoving = true;
 	speed = abs(speed) * movingRight ? 1.0f : -1.0f;
 	m_model->SetVisibility(true);

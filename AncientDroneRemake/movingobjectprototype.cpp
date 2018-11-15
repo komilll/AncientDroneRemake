@@ -44,7 +44,8 @@ bool MovingObjectPrototype::Init(GraphicsClass * graphicsClass, float width, flo
 
 	m_model->Initialize(m_graphics->GetD3D()->GetDevice(), width, height);
 	m_model->SetTranslation(translationX, translationY, 0.0f);
-	m_shader->SetAnimationObject(this);
+	if (m_shader)
+		m_shader->SetAnimationObject(this);
 
 	return true;
 }
@@ -71,6 +72,16 @@ void MovingObjectPrototype::FixedUpdate()
 
 	for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 	{
+		float mMaxY = m_model->GetBounds().max.y;
+		float mMinY = m_model->GetBounds().min.y;
+		float gMaxY = m_graphics->GetGroundModel(i)->GetBounds().max.y;
+		float gMinY = m_graphics->GetGroundModel(i)->GetBounds().min.y;
+
+		float mMaxX = m_model->GetBounds().max.x;
+		float mMinX = m_model->GetBounds().min.x;
+		float gMaxX = m_graphics->GetGroundModel(i)->GetBounds().max.x;
+		float gMinX = m_graphics->GetGroundModel(i)->GetBounds().min.x;
+
 		float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
 		//Ground in the middle
 		bool groundInTheMiddle = (m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
@@ -117,26 +128,17 @@ void MovingObjectPrototype::FixedUpdate()
 
 		if (m_wander && (groundInTheMiddle || groundFromTheBottom || groundFromTheTop))
 		{
-			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x &&
-				m_graphics->GetGroundModel(i)->GetBounds().max.x < m_model->GetBounds().max.x &&
-				frameMovementRight < 0.0f)
+			if (mMinX <= gMaxX && gMaxX < mMaxX && speed < 0.0f)
 			{
 				speed = abs(speed);
 				frameMovementRight = speed;
 			}
-			else if (m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x &&
-				m_graphics->GetGroundModel(i)->GetBounds().min.x > m_model->GetBounds().min.x &&
-				frameMovementRight > 0.0f)
+			else if (mMaxX >= gMinX && mMinX < gMinX && mMaxX < gMaxX && speed > 0.0f)
 			{
 				speed = -abs(speed);
 				frameMovementRight = speed;
 			}
 		}		
-
-		float mMaxY = m_model->GetBounds().max.y;
-		float mMinY = m_model->GetBounds().min.y;
-		float gMaxY = m_graphics->GetGroundModel(i)->GetBounds().max.y;
-		float gMinY = m_graphics->GetGroundModel(i)->GetBounds().min.y;
 		
 		bool heightTest = (gMaxY > mMaxY && mMinY > gMinY) || (mMaxY > gMaxY && mMinY < gMinY) || (mMaxY > gMaxY && mMinY > gMinY && mMinY < gMaxY) || 
 			(mMaxY < gMaxY && mMinY < gMinY && mMaxY > gMinY);
