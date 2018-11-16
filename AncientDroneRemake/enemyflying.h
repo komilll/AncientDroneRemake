@@ -6,6 +6,10 @@
 
 class EnemyFlying : public EnemyBase
 {
+	enum EnemyState {
+		IDLE, MOVING, ATTACKING
+	};
+
 public:
 	EnemyFlying();
 	EnemyFlying(const EnemyFlying&);

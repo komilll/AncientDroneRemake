@@ -55,22 +55,22 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 	if (!player->Initialize())
 		return false;
 	
-	enemyWanderer = new EnemyWanderer();
-	if (enemyWanderer == nullptr)
-		return false;
-
-	if (!enemyWanderer->Init(graphicsClass, 16.0f, 16.0f, 0.0f, 0.0f, "mob_spikyback.dds"))
-		return false;
-
-	//enemyFlying = new EnemyFlying();
-	//if (enemyFlying == nullptr)
+	//enemyWanderer = new EnemyWanderer();
+	//if (enemyWanderer == nullptr)
 	//	return false;
 
-	//if (!enemyFlying->Init(graphicsClass, 8, 8))
+	//if (!enemyWanderer->Init(graphicsClass, 16.0f, 16.0f, 0.0f, 0.0f, "mob_spikyback.dds"))
 	//	return false;
 
-	//enemyFlying->SetPlayer(player);
-	//enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
+	enemyFlying = new EnemyFlying();
+	if (enemyFlying == nullptr)
+		return false;
+
+	if (!enemyFlying->Init(graphicsClass, 16, 16))
+		return false;
+
+	enemyFlying->SetPlayer(player);
+	enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
 
 	//enemyArcher = new EnemyArcher();
 	//if (enemyArcher == nullptr)

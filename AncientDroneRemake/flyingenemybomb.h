@@ -23,6 +23,7 @@ private:
 	bool m_isExploding = false;
 	bool m_used = false;
 	bool m_init = false;
+	bool m_damaged = false;
 
 	float m_currentScale;
 	float m_scalePerFrame;

@@ -21,7 +21,29 @@ bool EnemyFlying::Init(GraphicsClass* graphicsClass, float width, float height, 
 	{
 		m_bomb.push_back(new FlyingEnemyBomb(graphicsClass, 4, 0.35f));
 	}
-	return EnemyBase::Init(graphicsClass, width, height, translationX, translationY);
+	bool toReturn = EnemyBase::Init(graphicsClass, width, height, translationX, translationY, "mob_crow.dds");
+	if (!toReturn)
+		return false;
+
+	m_shader->AddModel(m_model);
+	//Animations
+	m_animation = new PlayerAnimationStates(2);
+	m_shader->ImportFile(128, 128, 1024, 1024);
+	m_shader->CreateNewAnimation(1, 10, 0); //IDLE
+	m_shader->CreateNewAnimation(6, 5, 0); //MOVING
+	m_shader->CreateNewAnimation(3, 5, 1, false); //ATTACKING
+
+	m_animation->PrepareAnimationPose(IDLE, IDLE);
+	m_animation->PrepareAnimationPose(MOVING, MOVING);
+	m_animation->PrepareAnimationPose(ATTACKING, ATTACKING);
+	m_animation->SetState(IDLE);
+	SetNewAnimation(MOVING);
+
+	m_wander = true;
+
+	m_model->SetBounds(-width, width, -height + 2, height);
+
+	return toReturn;
 }
 
 void EnemyFlying::Update()

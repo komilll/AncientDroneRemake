@@ -8,6 +8,7 @@ FlyingEnemyBomb::FlyingEnemyBomb(GraphicsClass* graphicsClass, float radius, flo
 	m_isExploding = false;
 	m_used = false;
 	m_init = false;
+	m_damaged = false;
 
 	if ((m_graphics = graphicsClass) == nullptr)
 		return;
@@ -109,11 +110,12 @@ void FlyingEnemyBomb::Init(float spawnPosX, float spawnPosY)
 	m_isExploding = false;
 	m_used = false;
 	m_init = true;
+	m_damaged = false;
 }
 
 bool FlyingEnemyBomb::TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY)
 {
-	if (!m_init || m_used)
+	if (!m_init || m_used || m_damaged)
 		return false;
 
 	if ((m_model->GetBounds().min.x < playerMaxX && playerMaxX < m_model->GetBounds().max.x) || //Enter from the left side		
@@ -121,9 +123,12 @@ bool FlyingEnemyBomb::TouchedPlayer(Player* player, float playerMinX, float play
 	{
 		if (playerMinY < m_model->GetBounds().max.y && playerMaxY > m_model->GetBounds().max.y || //Enter from the bottom
 			playerMaxY > m_model->GetBounds().min.y && m_model->GetBounds().max.y > playerMinY) //Enter from the top
-
+		{
 			player->DealDamage(1);
-		return true;
+			m_isExploding = true;
+			m_damaged = true;
+			return true;
+		}
 	}
 
 	return false;
