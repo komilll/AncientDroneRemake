@@ -7,6 +7,15 @@ To start with – it isn’t a tutorial series. I wanted to start a blog to moti
 Project itself is a remake of 2D Platformer game that I’ve made with my friend for Ludum Dare 36
 <a href="https://azargaz.itch.io/ancient-drone">https://azargaz.itch.io/ancient-drone</a>. This time I’d like to make it from scratch using DirectX 11. I will create flipbook animation system, basic physics engine, enemies with simple AI and other things essential to complete this remake. Let’s get started!
 
+<h2>Week #5</h2>
+Implemented behaviours for all enemies that were created in original game jam version. Although there was also boss, I would rather not implement it because of harder AI, animations and other gameplay difficulties. Purpose of creating this engine is mostly to learn graphics pipeline and creating basic game engine, not to implement full hard gameplay features.
+
+This week was mostly upgrading AI, creating EnemyBase class and parent class for general dynamic objects. Also I've been creating better animation pipeline and implemented all animations for enemies that will be needed until the end of project.
+
+<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.5">https://github.com/komilll/AncientDroneRemake/releases/tag/0.5</a> - Week #5 release
+<center><img src="Blog/gif_5.gif"></center>
+<center><i>Week #5: Gif #5 – All enemies animations</i></center>
+
 <h2>Week #4</h2>
 And that's finaly time for some gameplay. I've added EnemyWanderer which moves right/left until it meets obstacle. Also it deals damage by dealing player damage on touch. Second enemy is EnemyFlying, that's the crow that flies from waypoint A to B and spawns bombs that explode on impact. Unfortunatelly both of them are not working due to last-minute changes in enemies inheritence changes and pipeline modifications.
 
