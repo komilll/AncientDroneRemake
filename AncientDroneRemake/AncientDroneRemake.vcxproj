@@ -127,6 +127,8 @@
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="colorshaderclass.h" />
     <ClInclude Include="d3dclass.h" />
+    <ClInclude Include="dronecontroller.h" />
+    <ClInclude Include="dronespearclass.h" />
     <ClInclude Include="enemyarcher.h" />
     <ClInclude Include="enemyarcherarrow.h" />
     <ClInclude Include="enemybase.h" />
@@ -139,6 +141,7 @@
     <ClInclude Include="inputclass.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="modelclass.h" />
+    <ClInclude Include="mouseclass.h" />
     <ClInclude Include="movingobjectprototype.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playeranimationstates.h" />
@@ -151,6 +154,8 @@
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
+    <ClCompile Include="dronecontroller.cpp" />
+    <ClCompile Include="dronespearclass.cpp" />
     <ClCompile Include="enemyarcher.cpp" />
     <ClCompile Include="enemyarcherarrow.cpp" />
     <ClCompile Include="enemybase.cpp" />
@@ -162,6 +167,7 @@
     <ClCompile Include="inputclass.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="modelclass.cpp" />
+    <ClCompile Include="mouseclass.cpp" />
     <ClCompile Include="movingobjectprototype.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playeranimationstates.cpp" />

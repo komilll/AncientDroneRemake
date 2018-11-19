@@ -61,15 +61,16 @@ bool SystemClass::Initialize()
 	}
 
 	m_GameManager = new GameManager;
-	if (!m_GameManager)
-	{
-		return false;
-	}
-
+	if (!m_GameManager)	
+		return false;	
 	if (!m_GameManager->Initialize(GetInputController(), m_Graphics->GetD3D(), m_Graphics))
-	{
 		return false;
-	}
+
+	m_Mouse = new MouseClass;
+	if (!m_Mouse) 	
+		return false;
+	if (!m_Mouse->Initialize(m_hinstance, m_hwnd))
+		return false;
 
 	return true;
 }
@@ -166,6 +167,13 @@ bool SystemClass::Frame()
 	if (!result)
 	{
 		return false;
+	}
+
+	m_Mouse->Frame();
+	if (m_Mouse->GetLMBPressed())
+	{
+		m_GameManager->LMBPressed();
+		m_Mouse->SetLMBPressed(false);
 	}
 
 	return true;

@@ -4,6 +4,7 @@
 #include "enemywanderer.h"
 #include "enemyflying.h"
 #include "enemyarcher.h"
+#include "dronecontroller.h"
 
 class GameManager
 {
@@ -14,6 +15,7 @@ public:
 
 	void Update();
 	bool Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClass *graphicsClass);
+	void LMBPressed();
 
 private:
 	InputClass* m_inputClass; //Singleton
@@ -21,4 +23,5 @@ private:
 	EnemyWanderer* enemyWanderer;
 	EnemyFlying* enemyFlying;
 	EnemyArcher* enemyArcher;
+	DroneController* droneController;
 };

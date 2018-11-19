@@ -23,6 +23,7 @@
 #include "inputclass.h"
 #include "graphicsclass.h"
 #include "gamemanager.h"
+#include "mouseclass.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,6 +55,7 @@ private:
 
 	InputClass* m_Input;
 	GraphicsClass* m_Graphics;
+	MouseClass* m_Mouse;
 	GameManager* m_GameManager;
 	SystemClass *m_self;
 };
