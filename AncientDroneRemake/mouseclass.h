@@ -6,8 +6,12 @@
 #pragma comment(lib, "dxguid.lib")
 
 #include <dinput.h>
+#include "graphicsclass.h"
+#include "textureshadergeneralclass.h"
+#include "modelclass.h"
+#include "IEanimationobject.h"
 
-class MouseClass
+class MouseClass 
 {
 public:
 	MouseClass();
@@ -15,7 +19,7 @@ public:
 	~MouseClass();
 
 public:
-	bool Initialize(HINSTANCE hInstance, HWND hwnd);
+	bool Initialize(HINSTANCE hInstance, HWND hwnd, GraphicsClass *graphicsClass);
 	void Shutdown();
 	bool Frame();
 	bool ReadMouse();
@@ -33,4 +37,9 @@ private:
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
+	float m_mouseSpeedSlowdown = 4.0f;
+
+	//Graphics object settings
+	ModelClass* m_model;
+	TextureShaderGeneralClass* m_shader;
 };

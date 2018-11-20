@@ -138,12 +138,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	result = m_TextureShaderBackground->Initialize(m_D3D->GetDevice(), hwnd);
+	result = m_TextureShaderBackground->Initialize(m_D3D->GetDevice(), hwnd, "background.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, "Could not initialize the texture shader object - Texture Shader General", "Error", MB_OK);
 		return false;
-	}	
+	}
+	//AddTextureShaderGeneral(m_TextureShaderBackground);
 
 	//Spawn enemies
 
@@ -326,6 +327,20 @@ void GraphicsClass::RemoveTextureShader(TextureShaderClass * textureShader)
 	m_TextureShaders.erase(std::remove(m_TextureShaders.begin(), m_TextureShaders.end(), textureShader));
 }
 
+bool GraphicsClass::AddTextureShaderGeneral(TextureShaderGeneralClass * textureShader)
+{
+	if (textureShader == nullptr)
+		return false;
+
+	m_TextureShadersGeneral.push_back(textureShader);
+	return true;
+}
+
+void GraphicsClass::RemoveTextureShaderGeneral(TextureShaderGeneralClass * textureShader)
+{
+	m_TextureShadersGeneral.erase(std::remove(m_TextureShadersGeneral.begin(), m_TextureShadersGeneral.end(), textureShader));
+}
+
 bool GraphicsClass::Render()
 {
 	D3DXMATRIX worldMatrix, viewMatrix, projectionMatrix;
@@ -393,6 +408,33 @@ bool GraphicsClass::Render()
 
 	m_D3D->TurnOffAlphaBlending();
 
+	for (int i = 0; i < m_TextureShadersGeneral.size(); i++)
+	{
+		int b = i;
+
+		if (m_TextureShadersGeneral.at(i) == nullptr)
+			continue;
+
+		ModelClass* model = nullptr;
+
+		if (m_TextureShadersGeneral.at(i)->IsTransparent())
+			m_D3D->TurnOnAlphaBlending();
+
+		for (int k = 0; k < m_TextureShadersGeneral.at(i)->GetModels().size(); k++)
+		{
+			if ((model = m_TextureShadersGeneral.at(i)->GetModels().at(k)) == nullptr)
+				continue;
+
+			m_D3D->GetWorldMatrix(worldMatrix);
+			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
+			if (!model->Render(m_D3D->GetDeviceContext()))
+				continue;
+
+			if (!m_TextureShadersGeneral.at(i)->Render(m_D3D->GetDeviceContext(), model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, model->movingRight))
+				return false;
+		}
+		m_D3D->TurnOffAlphaBlending();
+	}
 
 	for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
 	{		

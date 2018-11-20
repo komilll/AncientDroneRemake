@@ -14,7 +14,7 @@ MouseClass::~MouseClass()
 {
 }
 
-bool MouseClass::Initialize(HINSTANCE hInstance, HWND hwnd)
+bool MouseClass::Initialize(HINSTANCE hInstance, HWND hwnd, GraphicsClass* graphicsClass)
 {
 	HRESULT result;
 
@@ -53,6 +53,32 @@ bool MouseClass::Initialize(HINSTANCE hInstance, HWND hwnd)
 	{
 		return false;
 	}
+
+	if (graphicsClass == nullptr)
+		return false;
+
+	m_model = new ModelClass();
+	if (!m_model)
+		return false;
+
+	m_shader = new TextureShaderGeneralClass();
+	if (!m_shader)
+		return false;
+
+	if (!m_shader->Initialize(graphicsClass->GetD3D()->GetDevice(), hwnd, "crosshair.dds"))
+		return false;
+
+	if (!graphicsClass->AddTextureShaderGeneral(m_shader))
+	{
+		m_shader->Shutdown();
+		delete m_shader;
+		m_shader = 0;
+	}
+	
+	m_model->Initialize(graphicsClass->GetD3D()->GetDevice(), 5.0f, 5.0f);
+	m_model->SetTranslation(0.0f, 0.0f, 0.0f);
+	m_shader->AddModel(m_model);
+	m_shader->SetAsTransparent(true);
 
 	return true;
 }
@@ -109,18 +135,31 @@ bool MouseClass::ReadMouse()
 
 void MouseClass::ProcessInput()
 {
-	m_mouseX += m_mouseState.lX;
-	m_mouseY += m_mouseState.lY;
+	//if (m_mouseState.lX / m_mouseSpeedSlowdown > 0.0f && m_mouseState.lX / m_mouseSpeedSlowdown < 1.0f)
+	//	m_mouseX += 1;
+	//else if (m_mouseState.lX / m_mouseSpeedSlowdown < 0.0f && m_mouseState.lX / m_mouseSpeedSlowdown > -1.0f)
+	//	m_mouseX -= 1;
+	//else
+		m_mouseX += (m_mouseState.lX / m_mouseSpeedSlowdown);
 
-	if (m_mouseX < 0)
-		m_mouseX = 0;
-	if (m_mouseY < 0)
-		m_mouseY = 0;
+	//if (m_mouseState.lY / m_mouseSpeedSlowdown > 0.0f && m_mouseState.lY / m_mouseSpeedSlowdown < 1.0f)
+	//	m_mouseY -= 1;
+	//else if (m_mouseState.lY / m_mouseSpeedSlowdown < 0.0f && m_mouseState.lY / m_mouseSpeedSlowdown > -1.0f)
+	//	m_mouseY += 1;
+	//else
+		m_mouseY -= (m_mouseState.lY / m_mouseSpeedSlowdown);
 
-	if (m_mouseX > m_screenWidth)
-		m_mouseX = m_screenWidth;
-	if (m_mouseY > m_screenHeight)
-		m_mouseY = m_screenHeight;
+	if (m_mouseX < -141)
+		m_mouseX = -141;
+	if (m_mouseY < -106)
+		m_mouseY = -106;
+
+	if (m_mouseX > 141)
+		m_mouseX = 141;
+	if (m_mouseY > 106)
+		m_mouseY = 106;
+
+	m_model->SetTranslation(m_mouseX, m_mouseY, 0.0f);
 }
 
 void MouseClass::GetMouseLocation(int & mouseX, int & mouseY)

@@ -69,7 +69,7 @@ bool SystemClass::Initialize()
 	m_Mouse = new MouseClass;
 	if (!m_Mouse) 	
 		return false;
-	if (!m_Mouse->Initialize(m_hinstance, m_hwnd))
+	if (!m_Mouse->Initialize(m_hinstance, m_hwnd, m_Graphics))
 		return false;
 
 	return true;

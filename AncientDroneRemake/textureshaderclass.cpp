@@ -439,7 +439,7 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 	unsigned int bufferNumber;
 
 	AnimationData* a = m_animationImporter->GetAnimationData(m_currentAnimationIndex, m_currentAnimationFrame);
-	SetAnimationData(a->row, a->column, a->imageWidth, a->imageHeight, a->fullScreenWidth, a->fullScreenHeight);
+	SetAnimationData(a->row, a->column, a->imageWidth, a->imageHeight, a->fullScreenWidth, a->fullScreenHeight);	
 
 	// Transpose the matrices to prepare them for the shader.
 	D3DXMatrixTranspose(&worldMatrix, &worldMatrix);

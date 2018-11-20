@@ -17,12 +17,12 @@ TextureShaderGeneralClass::~TextureShaderGeneralClass()
 {
 }
 
-bool TextureShaderGeneralClass::Initialize(ID3D11Device *device, HWND hwnd)
+bool TextureShaderGeneralClass::Initialize(ID3D11Device *device, HWND hwnd, CHAR* filename)
 {
 	bool result;
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, "texturegeneral.vs", "texturegeneral.ps");
+	result = InitializeShader(device, hwnd, "texturegeneral.vs", "texturegeneral.ps", filename);
 	if (!result)
 	{
 		return false;
@@ -64,7 +64,27 @@ void TextureShaderGeneralClass::SetColor(D3DXVECTOR4 newColor)
 	//m_color = newColor;
 }
 
-bool TextureShaderGeneralClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename)
+void TextureShaderGeneralClass::SetAsTransparent(bool isTransparent)
+{
+	m_isTransparent = isTransparent;
+}
+
+bool TextureShaderGeneralClass::IsTransparent()
+{
+	return m_isTransparent;
+}
+
+void TextureShaderGeneralClass::AddModel(ModelClass * model)
+{
+	m_models.push_back(model);
+}
+
+std::vector<ModelClass*> TextureShaderGeneralClass::GetModels()
+{
+	return m_models;
+}
+
+bool TextureShaderGeneralClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename, CHAR* textureFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
@@ -207,7 +227,7 @@ bool TextureShaderGeneralClass::InitializeShader(ID3D11Device* device, HWND hwnd
 
 
 	// Create a texture sampler state description.
-	samplerDesc.Filter = D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -228,7 +248,7 @@ bool TextureShaderGeneralClass::InitializeShader(ID3D11Device* device, HWND hwnd
 		return false;
 	}	
 
-	LPCSTR name = "background.dds";
+	LPCSTR name = textureFilename;
 	result = D3DX11CreateShaderResourceViewFromFile(device, name, NULL, NULL, &texture, NULL);
 	if (FAILED(result))
 	{

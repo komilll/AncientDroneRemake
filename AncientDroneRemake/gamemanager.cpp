@@ -81,12 +81,12 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 
 	//enemyArcher->SetPlayer(player);
 
-	droneController = new DroneController();
-	if (droneController == nullptr)
-		return false;
+	//droneController = new DroneController();
+	//if (droneController == nullptr)
+	//	return false;
 
-	if (!droneController->Init(graphicsClass, 12.0f, 12.0f, 0.0f, 15.0f, "ancient_ball.dds"))
-		return false;
+	//if (!droneController->Init(graphicsClass, 12.0f, 12.0f, 0.0f, 15.0f, "ancient_ball.dds"))
+	//	return false;
 
 	return true;
 }

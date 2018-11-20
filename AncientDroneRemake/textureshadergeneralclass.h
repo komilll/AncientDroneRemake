@@ -10,7 +10,9 @@
 #include <d3dx10math.h>
 #include <d3dx11async.h>
 #include <fstream>
+#include <vector>
 #include "animationimporter.h"
+#include "modelclass.h"
 
 using namespace std;
 
@@ -46,13 +48,17 @@ public:
 	TextureShaderGeneralClass(const TextureShaderGeneralClass&);
 	~TextureShaderGeneralClass();
 
-	bool Initialize(ID3D11Device*, HWND);
+	bool Initialize(ID3D11Device*, HWND, CHAR*);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, bool movingRight = true);
 	void SetColor(D3DXVECTOR4 newColor);
+	void SetAsTransparent(bool isTransparent);
+	bool IsTransparent();
+	void AddModel(ModelClass * model);
+	std::vector<ModelClass*> GetModels();
 
 private:
-	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*);
+	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*, CHAR*);
 	void ShutdownShader();
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, CHAR*);
 
@@ -61,7 +67,9 @@ private:
 
 private:
 	TextureBufferType m_texBufferType;
+	std::vector<ModelClass*> m_models;
 	bool m_reverseX = false;
+	bool m_isTransparent = false;
 
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
