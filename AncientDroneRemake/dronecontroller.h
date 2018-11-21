@@ -24,9 +24,16 @@ public:
 	void PlayOneShotAnimation(int state, int previousState = -1) override;
 	void HitedWall() override;
 
+	//Local functions
 	bool Attack();
+	void SetDestination(float destX, float destY);
 
 private:
 	std::vector<DroneSpearClass*> m_spears;
+	float m_destX, m_destY;
+	float m_epsilon = 0.01f;
+	float m_epsilonDistance = 0.1f;
+	float m_attackCooldown = 1.0f;
+	float m_attackCooldownCurrent = 0.0f;
 };
 #endif // !_DRONE_CONTORLLER_H_

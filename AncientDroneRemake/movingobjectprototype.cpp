@@ -210,3 +210,18 @@ void MovingObjectPrototype::PlayOneShotAnimation(int newState, int previousState
 void MovingObjectPrototype::HitedWall()
 {
 }
+
+ModelClass* MovingObjectPrototype::GetModel()
+{
+	return m_model;
+}
+
+D3DXVECTOR2 MovingObjectPrototype::Position()
+{
+	float posX = GetModel()->GetBounds().min.x +
+		(GetModel()->GetBounds().max.x - GetModel()->GetBounds().min.x) / 2.0f;
+	float posY = GetModel()->GetBounds().min.y +
+		(GetModel()->GetBounds().max.y - GetModel()->GetBounds().min.y) / 2.0f;
+
+	return D3DXVECTOR2(posX, posY);
+}

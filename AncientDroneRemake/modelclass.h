@@ -42,6 +42,9 @@ public:
 	int GetIndexCount();
 	void SetTranslation(float x, float y, float z);
 	D3DXVECTOR3 GetTranslation();
+	void SetRotation(float z);
+	float GetRotation();
+	bool UseRotation();
 
 	/* Physics based methods */
 	void SetBounds(float minX, float maxX, float minY, float maxY);
@@ -57,7 +60,7 @@ public:
 public:
 	/* Physics based components */
 	Bounds bounds;
-	bool movingRight;
+	bool movingRight = true;
 
 private:
 	bool InitializeBuffers(ID3D11Device*);
@@ -72,6 +75,8 @@ private:
 	float m_scaleX, m_scaleY, m_scaleZ;
 	float m_translationX, m_translationY, m_translationZ;
 	bool m_isVisibile = true;
+	bool m_useRotation;
+	float m_rotationX, m_rotationY, m_rotationZ;
 };
 
 #endif

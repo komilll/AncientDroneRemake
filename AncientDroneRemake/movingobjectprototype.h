@@ -27,6 +27,11 @@ public:
 	void SetNewAnimation(int newState) override;
 	virtual void PlayOneShotAnimation(int state, int previousState = -1);
 	virtual void HitedWall();
+	///////////////////////////
+	ModelClass* GetModel();
+	D3DXVECTOR2 Position();
+	float m_posX() { return Position().x; };
+	float m_posY() { return Position().y; };
 
 private:
 	//Function

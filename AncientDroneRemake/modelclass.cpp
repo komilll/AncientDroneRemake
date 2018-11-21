@@ -83,6 +83,23 @@ D3DXVECTOR3 ModelClass::GetTranslation()
 	return D3DXVECTOR3(m_translationX, m_translationY, m_translationZ);
 }
 
+void ModelClass::SetRotation(float z)
+{
+	m_rotationZ = z;
+
+	m_useRotation = true;
+}
+
+float ModelClass::GetRotation()
+{
+	return m_rotationZ;
+}
+
+bool ModelClass::UseRotation()
+{
+	return m_useRotation;
+}
+
 void ModelClass::SetBounds(float minX, float maxX, float minY, float maxY)
 {
 	bounds.min = D3DXVECTOR2(minX, minY);

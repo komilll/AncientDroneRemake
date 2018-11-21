@@ -40,6 +40,11 @@ void GameManager::Update()
 		enemyArcher->Update();
 		enemyArcher->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
+
+	if (droneController)
+	{
+		droneController->Update();
+	}
 }
 
 bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClass *graphicsClass)
@@ -81,12 +86,12 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 
 	//enemyArcher->SetPlayer(player);
 
-	//droneController = new DroneController();
-	//if (droneController == nullptr)
-	//	return false;
+	droneController = new DroneController();
+	if (droneController == nullptr)
+		return false;
 
-	//if (!droneController->Init(graphicsClass, 12.0f, 12.0f, 0.0f, 15.0f, "ancient_ball.dds"))
-	//	return false;
+	if (!droneController->Init(graphicsClass, 12.0f, 12.0f, 0.0f, 15.0f, "ancient_ball.dds"))
+		return false;
 
 	return true;
 }
@@ -95,4 +100,28 @@ void GameManager::LMBPressed()
 {
 	if (droneController)
 		droneController->Attack();
+}
+
+void GameManager::SetDroneRotation(float mousePosX, float mousePosY)
+{
+	if (droneController)
+	{
+		float droneMidX = droneController->GetModel()->GetBounds().min.x + 
+			(droneController->GetModel()->GetBounds().max.x - droneController->GetModel()->GetBounds().min.x) / 2.0f;
+		float droneMidY = droneController->GetModel()->GetBounds().min.y +
+			(droneController->GetModel()->GetBounds().max.y - droneController->GetModel()->GetBounds().min.y) / 2.0f;
+
+		float angle = atan2(mousePosX - droneMidX, -(mousePosY - droneMidY)) - 3.14f / 2.0f;
+		//angle = angle * 180 / 3.14f;
+		//angle -= 90.0f;
+		droneController->GetModel()->SetRotation(angle);
+	}
+}
+
+void GameManager::SetDroneDestination(float destX, float destY)
+{
+	if (droneController)
+	{
+		droneController->SetDestination(destX, destY);
+	}
 }

@@ -397,7 +397,15 @@ bool GraphicsClass::Render()
 				continue;
 
 			m_D3D->GetWorldMatrix(worldMatrix);
-			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
+			if (model->UseRotation())
+			{
+				D3DXMATRIX rotationMatrix;
+				D3DXMatrixRotationZ(&rotationMatrix, model->GetRotation());
+				D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
+				D3DXMatrixMultiply(&worldMatrix, &rotationMatrix, &worldMatrix);
+			}
+			else
+				D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
 			if (!model->Render(m_D3D->GetDeviceContext()))
 				continue;
 

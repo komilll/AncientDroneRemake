@@ -7,7 +7,7 @@
 class DroneSpearClass : public MovingObjectPrototype
 {
 	enum SpearState {
-		IDLE, ATTACKING
+		IDLE, DESTROY
 	};
 
 public:
@@ -22,6 +22,18 @@ public:
 	void SetNewAnimation(int newState) override;
 	void PlayOneShotAnimation(int state, int previousState = -1) override;
 	void HitedWall() override;
+
+	//Local functions
+	void Spawn();
+
+private:
+	void Destroy();
+
+private:
+	bool m_init = false;
+	bool m_isMoving = false;
+	float timeToDestroy = 2.0f;
+	float currentTimeToDestroy = 0.0f;
 };
 
 #endif // !_DRONE_SPEAR_H_

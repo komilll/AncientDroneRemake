@@ -16,6 +16,8 @@ public:
 	void Update();
 	bool Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClass *graphicsClass);
 	void LMBPressed();
+	void SetDroneRotation(float mousePosX, float mousePosY);
+	void SetDroneDestination(float destX, float destY);
 
 private:
 	InputClass* m_inputClass; //Singleton

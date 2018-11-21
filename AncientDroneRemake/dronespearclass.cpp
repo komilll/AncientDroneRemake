@@ -18,10 +18,10 @@ bool DroneSpearClass::Init(GraphicsClass * graphicsClass, float width, float hei
 	m_animation = new PlayerAnimationStates(2);
 	m_shader->ImportFile(64, 64, 1024, 1024);
 	m_shader->CreateNewAnimation(1, 10, 0); //IDLE
-	m_shader->CreateNewAnimation(4, 5, 0, false); //ATTACKING
+	m_shader->CreateNewAnimation(5, 5, 0, false); //DESTROY
 
 	m_animation->PrepareAnimationPose(IDLE, IDLE);
-	m_animation->PrepareAnimationPose(ATTACKING, ATTACKING);
+	m_animation->PrepareAnimationPose(DESTROY, DESTROY);
 	m_animation->SetState(IDLE);
 	SetNewAnimation(IDLE);
 
@@ -29,18 +29,34 @@ bool DroneSpearClass::Init(GraphicsClass * graphicsClass, float width, float hei
 	useGravity = false;
 
 	m_model->SetBounds(-width, width, -height, height);
+	m_model->SetVisibility(false);
 
 	return toReturn;
 }
 
 void DroneSpearClass::Update()
 {
-	MovingObjectPrototype::Update();
+	if (m_init)
+		MovingObjectPrototype::Update();
 }
 
 void DroneSpearClass::FixedUpdate()
 {
+	//MovingObjectPrototype::FixedUpdate();
+	if (!m_isMoving)
+		return;
+
+	currentTimeToDestroy += 0.02f;
+	if (currentTimeToDestroy >= timeToDestroy)
+	{
+		currentTimeToDestroy = 0.0f;
+		Destroy();
+		return;
+	}
+
+	//m_model->movingRight = frameMovementRight > 0;
 	MovingObjectPrototype::FixedUpdate();
+	Move(frameMovementRight);
 }
 
 void DroneSpearClass::Move(float x)
@@ -65,5 +81,20 @@ void DroneSpearClass::PlayOneShotAnimation(int state, int previousState)
 
 void DroneSpearClass::HitedWall()
 {
-	return;
+	Destroy();
+}
+
+void DroneSpearClass::Spawn()
+{
+	SetNewAnimation(IDLE);
+	m_init = true;
+	m_isMoving = true;
+	m_model->SetVisibility(true);
+}
+
+void DroneSpearClass::Destroy()
+{
+	SetNewAnimation(DESTROY);
+	m_isMoving = false;
+	m_init = false;
 }

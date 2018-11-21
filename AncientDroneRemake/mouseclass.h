@@ -28,6 +28,7 @@ public:
 	bool SetMouseLocation(int mouseX, int mouseY);
 	bool GetLMBPressed();
 	void SetLMBPressed(bool enable);
+	D3DXVECTOR2 GetMouseModelLocation();
 
 private:
 	IDirectInput8* m_directInput;
