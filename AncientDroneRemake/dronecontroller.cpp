@@ -13,7 +13,7 @@ bool DroneController::Init(GraphicsClass * graphicsClass, float width, float hei
 	if (!toReturn)
 		return false;
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		m_spears.push_back(new DroneSpearClass());
 		m_spears.at(i)->Init(m_graphics, 8.0f, 8.0f, 0.0f, 0.0f, "mob_archer.dds");		
@@ -101,10 +101,13 @@ bool DroneController::Attack()
 
 	PlayOneShotAnimation(ATTACKING);
 	m_attackCooldownCurrent = m_attackCooldown;
-	m_spears.at(0)->GetModel()->SetTranslation(m_model->GetBounds().max.x, m_model->GetTranslation().y, 0.0f);
-	//m_spears.at(0)->GetModel()->SetRotation(m_model->GetRotation());
-	m_spears.at(0)->Spawn();
-	//TODO Check if attack is not on cooldown
+
+	m_spears.at(m_spearIndex)->GetModel()->SetTranslation(m_model->GetTranslation().x + (m_model->GetSize().x * Forward().x), 
+		m_model->GetTranslation().y + (m_model->GetSize().y * Forward().y), 0.0f);
+	m_spears.at(m_spearIndex)->GetModel()->SetRotation(m_model->GetRotation());
+	m_spears.at(m_spearIndex)->Spawn();
+	m_spearIndex = (m_spearIndex + 1) % m_spears.size();
+
 	return true;
 }
 

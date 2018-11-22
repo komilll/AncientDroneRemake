@@ -33,6 +33,10 @@ public:
 	float m_posX() { return Position().x; };
 	float m_posY() { return Position().y; };
 
+protected:
+	float Lerp(float a, float b, float val);
+	D3DXVECTOR2 Forward();
+
 private:
 	//Function
 
@@ -40,6 +44,8 @@ public:
 	//Variable
 
 protected:
+	const double PI = 22.0f / 7.0f;
+
 	GraphicsClass *m_graphics;
 	ModelClass *m_model;
 	float timer;

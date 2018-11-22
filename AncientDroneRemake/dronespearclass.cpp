@@ -4,7 +4,9 @@ DroneSpearClass::DroneSpearClass()
 {
 	MovingObjectPrototype::MovingObjectPrototype();
 
-	speed = 0.5f;
+	speed = 5.0f;
+	m_wander = false;
+	useGravity = false;
 }
 
 bool DroneSpearClass::Init(GraphicsClass * graphicsClass, float width, float height, float translationX, float translationY, CHAR * animationSheetName)
@@ -18,7 +20,7 @@ bool DroneSpearClass::Init(GraphicsClass * graphicsClass, float width, float hei
 	m_animation = new PlayerAnimationStates(2);
 	m_shader->ImportFile(64, 64, 1024, 1024);
 	m_shader->CreateNewAnimation(1, 10, 0); //IDLE
-	m_shader->CreateNewAnimation(5, 5, 0, false); //DESTROY
+	m_shader->CreateNewAnimation(5, 4, 0, false); //DESTROY
 
 	m_animation->PrepareAnimationPose(IDLE, IDLE);
 	m_animation->PrepareAnimationPose(DESTROY, DESTROY);
@@ -36,13 +38,11 @@ bool DroneSpearClass::Init(GraphicsClass * graphicsClass, float width, float hei
 
 void DroneSpearClass::Update()
 {
-	if (m_init)
-		MovingObjectPrototype::Update();
+	MovingObjectPrototype::Update();
 }
 
 void DroneSpearClass::FixedUpdate()
 {
-	//MovingObjectPrototype::FixedUpdate();
 	if (!m_isMoving)
 		return;
 
@@ -56,7 +56,7 @@ void DroneSpearClass::FixedUpdate()
 
 	//m_model->movingRight = frameMovementRight > 0;
 	MovingObjectPrototype::FixedUpdate();
-	Move(frameMovementRight);
+	//Move(frameMovementRight);
 }
 
 void DroneSpearClass::Move(float x)

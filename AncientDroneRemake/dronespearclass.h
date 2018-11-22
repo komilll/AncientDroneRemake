@@ -32,7 +32,7 @@ private:
 private:
 	bool m_init = false;
 	bool m_isMoving = false;
-	float timeToDestroy = 2.0f;
+	float timeToDestroy = 3.5f;
 	float currentTimeToDestroy = 0.0f;
 };
 

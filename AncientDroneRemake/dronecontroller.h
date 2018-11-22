@@ -29,7 +29,10 @@ public:
 	void SetDestination(float destX, float destY);
 
 private:
+	//SPEAR
 	std::vector<DroneSpearClass*> m_spears;
+	int m_spearIndex = 0;
+
 	float m_destX, m_destY;
 	float m_epsilon = 0.01f;
 	float m_epsilonDistance = 0.1f;

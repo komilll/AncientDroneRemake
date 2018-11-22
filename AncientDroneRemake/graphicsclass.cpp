@@ -75,13 +75,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the model object.
-	result = groundModel[0]->Initialize(m_D3D->GetDevice(), 5, 25);
-	groundModel[0]->SetTranslation(-80.0f, -40, 0.0f);
-	if (!result) return false;
+	//result = groundModel[0]->Initialize(m_D3D->GetDevice(), 5, 25);
+	//groundModel[0]->SetTranslation(-80.0f, -40, 0.0f);
+	//if (!result) return false;
 
-	result = groundModel[1]->Initialize(m_D3D->GetDevice(), 5, 25);
-	groundModel[1]->SetTranslation(80.0f, -90, 0.0f);
-	if (!result) return false;
+	//result = groundModel[1]->Initialize(m_D3D->GetDevice(), 5, 25);
+	//groundModel[1]->SetTranslation(80.0f, -90, 0.0f);
+	//if (!result) return false;
 
 	//result = groundModel[1]->Initialize(m_D3D->GetDevice(), 10, 1);
 	//groundModel[1]->SetTranslation(-60, -60.0f, 0.0f);
@@ -95,8 +95,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	//groundModel[3]->SetTranslation(80, -70, 0.0f);
 	//if (!result) return false;
 
-	result = groundModel[2]->Initialize(m_D3D->GetDevice(), 200, 1);
-	groundModel[2]->SetTranslation(0.0f, -90.0f, 0.0f);
+	result = groundModel[0]->Initialize(m_D3D->GetDevice(), 200, 1);
+	groundModel[0]->SetTranslation(0.0f, -90.0f, 0.0f);
 	if (!result) return false;
 
 	m_backgroundModel = new ModelClass;

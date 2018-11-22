@@ -107,13 +107,12 @@ void MovingObjectPrototype::FixedUpdate()
 				isGround = true;
 			}
 
-			if (groundInTheMiddle || groundFromTheBottom || groundFromTheTop)
+			if (useGravity && (groundInTheMiddle || groundFromTheBottom || groundFromTheTop))
 			{
 				if (m_model->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x)
 				{
 					if (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
 						frameMovementRight = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x;
-
 				}
 				else if (m_model->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
 				{
@@ -145,16 +144,19 @@ void MovingObjectPrototype::FixedUpdate()
 
 		if (heightTest)
 		{
-			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x &&
-				m_graphics->GetGroundModel(i)->GetBounds().max.x < m_model->GetBounds().max.x &&
-				frameMovementRight < 0.0f)
+			bool test_1 = mMinY < gMaxY;
+			bool test_2 = mMaxY > gMaxY;
+			bool test_3 = frameMovementRight * Forward().x < 0.0f;
+			if (mMinX < gMaxX && gMaxX < mMaxX && frameMovementRight * Forward().x < 0.0f)
 			{
+				m_model->SetTranslation(m_model->GetTranslation().x - (m_graphics->GetGroundModel(i)->GetBounds().max.x - m_model->GetBounds().min.x) * Forward().x,
+					m_model->GetTranslation().y, m_model->GetTranslation().z);
 				HitedWall();
 			}
-			else if (m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x &&
-				m_graphics->GetGroundModel(i)->GetBounds().min.x > m_model->GetBounds().min.x &&
-				frameMovementRight > 0.0f)
+			else if (mMaxX > gMinX && mMinX > gMinX && frameMovementRight * Forward().x > 0.0f)
 			{
+				m_model->SetTranslation(m_model->GetTranslation().x + (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x) * Forward().x,
+					m_model->GetTranslation().y, m_model->GetTranslation().z);
 				HitedWall();
 			}
 		}
@@ -165,7 +167,7 @@ void MovingObjectPrototype::FixedUpdate()
 
 	timer -= 20.0f;
 
-	m_model->SetTranslation(m_model->GetTranslation().x, m_model->GetTranslation().y + frameMovementUp, 0.0f);
+	m_model->SetTranslation(m_model->GetTranslation().x + Forward().x * frameMovementRight, m_model->GetTranslation().y + Forward().y * frameMovementRight, m_model->GetTranslation().z);
 }
 
 void MovingObjectPrototype::Move(float x)
@@ -224,4 +226,33 @@ D3DXVECTOR2 MovingObjectPrototype::Position()
 		(GetModel()->GetBounds().max.y - GetModel()->GetBounds().min.y) / 2.0f;
 
 	return D3DXVECTOR2(posX, posY);
+}
+
+float MovingObjectPrototype::Lerp(float a, float b, float val)
+{
+	return (a * (1.0 - val)) + (b * val);
+}
+
+D3DXVECTOR2 MovingObjectPrototype::Forward()
+{
+	//float rotZ = m_model->GetRotation();
+	//float xForward = 0.0f;
+	//float yForward = 0.0f;
+
+	//if (rotZ >= 0 && rotZ <= PI / 4.0f)
+	//{
+	//	xForward = Lerp(1.0f, sqrt(2.0f) / 2.0f, rotZ / (PI / 4.0f));
+	//	yForward = Lerp(0, sqrt(2.0f) / 2.0f, rotZ / (PI / 4.0f));
+	//}
+	//else if (rotZ >= PI / 4.0f && rotZ <= PI / 2.0f) 
+	//{
+	//	xForward = Lerp(sqrt(2.0f) / 2.0f, 0.0f, (rotZ - PI / 4.0f) / (PI / 4.0f));
+	//	yForward = Lerp(sqrt(2.0f) / 2.0f, 1.0f, (rotZ - PI / 4.0f) / (PI / 4.0f));
+	//}
+	//else if (rotZ >= -PI / 4.0f && rotZ <= 0.0f)
+	//{
+	//	xForward = Lerp(0.0f, -sqrt(2.0f) / 2.0f, rotZ / (-PI / 4.0f));
+	//	yForward = Lerp(1.0f, sqrt(2.0f) / 2.0f, rotZ / (-PI / 4.0f));
+	//}
+	return D3DXVECTOR2(cos(m_model->GetRotation()), sin(m_model->GetRotation()));
 }

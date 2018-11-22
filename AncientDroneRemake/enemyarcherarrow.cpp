@@ -51,7 +51,7 @@ void EnemyArcherArrow::FixedUpdate()
 
 	m_model->movingRight = frameMovementRight > 0;
 	MovingObjectPrototype::FixedUpdate();
-	Move(frameMovementRight);		
+	//Move(frameMovementRight);		
 }
 
 bool EnemyArcherArrow::IsActive()
