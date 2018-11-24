@@ -241,6 +241,8 @@ bool GraphicsClass::Frame()
 	for (int i = 0; i < m_TextureShaders.size(); i++)
 		m_TextureShaders.at(i)->CheckNextFrame();	
 
+	//m_Camera->SetPosition(m_Camera->GetPosition().x - 0.5f, m_Camera->GetPosition().y, m_Camera->GetPosition().z);
+
 	return true;
 }
 
@@ -339,6 +341,20 @@ bool GraphicsClass::AddTextureShaderGeneral(TextureShaderGeneralClass * textureS
 void GraphicsClass::RemoveTextureShaderGeneral(TextureShaderGeneralClass * textureShader)
 {
 	m_TextureShadersGeneral.erase(std::remove(m_TextureShadersGeneral.begin(), m_TextureShadersGeneral.end(), textureShader));
+}
+
+bool GraphicsClass::AddColorShader(ColorShaderClass * colorShader)
+{
+	if (colorShader == nullptr)
+		return false;
+
+	m_ColorShaders.push_back(colorShader);
+	return true;
+}
+
+void GraphicsClass::RemoveColorShader(ColorShaderClass * colorShader)
+{
+	m_ColorShaders.erase(std::remove(m_ColorShaders.begin(), m_ColorShaders.end(), colorShader));
 }
 
 bool GraphicsClass::Render()
@@ -441,7 +457,8 @@ bool GraphicsClass::Render()
 			if (!m_TextureShadersGeneral.at(i)->Render(m_D3D->GetDeviceContext(), model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, model->movingRight))
 				return false;
 		}
-		m_D3D->TurnOffAlphaBlending();
+
+		m_D3D->TurnOffAlphaBlending();		
 	}
 
 	for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
@@ -455,6 +472,28 @@ bool GraphicsClass::Render()
 		if (!result)
 		{
 			return false;
+		}
+	}
+
+	for (int i = 0; i < m_ColorShaders.size(); i++)
+	{
+		if (m_ColorShaders.at(i) == nullptr)
+			continue;
+
+		ModelClass* model = nullptr;
+
+		for (int k = 0; k < m_ColorShaders.at(i)->GetModels().size(); k++)
+		{
+			if ((model = m_ColorShaders.at(i)->GetModels().at(k)) == nullptr)
+				continue;
+
+			m_D3D->GetWorldMatrix(worldMatrix);
+			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
+			if (!model->Render(m_D3D->GetDeviceContext()))
+				continue;
+
+			if (!m_ColorShaders.at(i)->Render(m_D3D->GetDeviceContext(), model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix))
+				return false;
 		}
 	}
 

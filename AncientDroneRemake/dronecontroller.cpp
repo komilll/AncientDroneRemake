@@ -116,3 +116,14 @@ void DroneController::SetDestination(float destX, float destY)
 	m_destX = destX;
 	m_destY = destY;
 }
+
+void DroneController::CheckSpearsDamage(MovingObjectPrototype *object)
+{
+	for (int i = 0; i < m_spears.size(); i++)
+	{
+		if (m_spears.at(i)->TouchedEnemy(object))
+		{
+			//Hitted enemy, handled in spear script
+		}
+	}
+}

@@ -73,6 +73,15 @@ void ColorShaderClass::SetColor(D3DXVECTOR4 newColor)
 	m_color = newColor;
 }
 
+void ColorShaderClass::AddModel(ModelClass * model)
+{
+	m_models.push_back(model);
+}
+
+std::vector<ModelClass*> ColorShaderClass::GetModels()
+{
+	return m_models;
+}
 
 bool ColorShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename)
 {

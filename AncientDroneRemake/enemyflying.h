@@ -24,6 +24,9 @@ public:
 	void SetWaypoints(D3DXVECTOR2 waypoint1, D3DXVECTOR2 waypoint2);
 
 private:
+	void UpdateBombs();
+
+private:
 	D3DXVECTOR2 leftWaypoint;
 	D3DXVECTOR2 rightWaypoint;
 

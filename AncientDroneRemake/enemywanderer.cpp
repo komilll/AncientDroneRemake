@@ -3,6 +3,7 @@
 EnemyWanderer::EnemyWanderer()
 {
 	EnemyBase::EnemyBase();
+	useGravity = true;
 	gravity = 5.0f;
 }
 

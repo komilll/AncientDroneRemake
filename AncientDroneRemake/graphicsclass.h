@@ -55,6 +55,9 @@ public:
 	bool AddTextureShaderGeneral(TextureShaderGeneralClass* textureShader);
 	void RemoveTextureShaderGeneral(TextureShaderGeneralClass* textureShader);
 
+	bool AddColorShader(ColorShaderClass* colorShader);
+	void RemoveColorShader(ColorShaderClass* colorShader);
+
 private:
 	bool Render();
 
@@ -72,6 +75,7 @@ private:
 	TextureShaderGeneralClass* m_TextureShaderBackground;
 	std::vector<TextureShaderClass*> m_TextureShaders;
 	std::vector<TextureShaderGeneralClass*> m_TextureShadersGeneral;
+	std::vector<ColorShaderClass*> m_ColorShaders;
 	std::vector<ModelClass*> m_enemyModels;
 	std::vector<ModelClass*> m_bombModels;
 

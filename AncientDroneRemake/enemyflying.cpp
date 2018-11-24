@@ -51,12 +51,24 @@ void EnemyFlying::Update()
 	EnemyBase::Update();
 
 	Move(frameMovementRight);
+
+	if (m_destroyed)
+	{
+		__int64 now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		timer += (now - lastTime);
+		lastTime = now;
+
+		if (timer >= 20.0f) //20ms = 0.02s		
+			UpdateBombs();		
+	}
 }
 
 void EnemyFlying::FixedUpdate()
 {
-	EnemyBase::FixedUpdate();
+	UpdateBombs();
 
+	EnemyBase::FixedUpdate();
+	
 	m_bombCooldownCurrent += 0.02f;
 	if (m_bombCooldownCurrent >= m_bombCooldownTime)
 	{
@@ -65,16 +77,6 @@ void EnemyFlying::FixedUpdate()
 		m_bombIndex = m_bombIndex % m_bomb.size();
 		m_bomb[m_bombIndex]->Init(m_model->GetTranslation().x, m_model->GetTranslation().y - m_model->GetSize().y * .5f - m_bomb[m_bombIndex]->GetModel()->GetSize().y * .5f);
 		m_bombIndex++;
-	}
-
-	for (std::vector<FlyingEnemyBomb*>::iterator bombIter = m_bomb.begin(); bombIter != m_bomb.end(); ++bombIter)
-	{
-		FlyingEnemyBomb* ptr = *(bombIter._Ptr);
-		if (ptr != nullptr)
-		{
-			ptr->Update();
-			ptr->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
-		}
 	}
 
 	if (m_model->GetBounds().max.x > rightWaypoint.x && frameMovementRight > 0.0f)
@@ -117,4 +119,17 @@ void EnemyFlying::SetWaypoints(D3DXVECTOR2 waypoint1, D3DXVECTOR2 waypoint2)
 		MessageBox(*m_graphics->GetHWND(), "Waypoint x positions are the same", "EnemyFlying.cpp", MB_OK);
 	}
 
+}
+
+void EnemyFlying::UpdateBombs()
+{
+	for (std::vector<FlyingEnemyBomb*>::iterator bombIter = m_bomb.begin(); bombIter != m_bomb.end(); ++bombIter)
+	{
+		FlyingEnemyBomb* ptr = *(bombIter._Ptr);
+		if (ptr != nullptr)
+		{
+			ptr->Update();
+			ptr->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+		}
+	}
 }

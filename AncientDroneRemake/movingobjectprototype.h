@@ -27,8 +27,11 @@ public:
 	void SetNewAnimation(int newState) override;
 	virtual void PlayOneShotAnimation(int state, int previousState = -1);
 	virtual void HitedWall();
+	virtual void HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass* groundModel);
+	virtual bool DamageObject();
 	///////////////////////////
 	ModelClass* GetModel();
+	ModelClass* GetModelCollider();
 	D3DXVECTOR2 Position();
 	float m_posX() { return Position().x; };
 	float m_posY() { return Position().y; };
@@ -36,6 +39,7 @@ public:
 protected:
 	float Lerp(float a, float b, float val);
 	D3DXVECTOR2 Forward();
+	virtual void DestroyObject();
 
 private:
 	//Function
@@ -48,6 +52,7 @@ protected:
 
 	GraphicsClass *m_graphics;
 	ModelClass *m_model;
+	ModelClass* m_colliderModel;
 	float timer;
 	__int64 lastTime;
 	float speed = 0.5f;
@@ -61,6 +66,11 @@ protected:
 	bool m_wander = false;
 	PlayerAnimationStates* m_animation;
 	TextureShaderClass* m_shader;	
+
+	float m_maxHealth = 2;
+	float m_health = m_maxHealth;
+	bool m_destroyed = false;
+	bool m_destroyable = true;
 
 private:
 };

@@ -39,7 +39,7 @@ bool ModelClass::Initialize(ID3D11Device* device, int width, int height)
 	if (!result)
 	{
 		return false;
-	}
+	}	
 
 	return true;
 }
@@ -109,10 +109,20 @@ void ModelClass::SetBounds(float minX, float maxX, float minY, float maxY)
 Bounds ModelClass::GetBounds()
 {
 	Bounds localBounds;
-	localBounds.min.x = bounds.min.x + m_translationX;
-	localBounds.max.x = bounds.max.x + m_translationX;
-	localBounds.min.y = bounds.min.y + m_translationY;
-	localBounds.max.y = bounds.max.y + m_translationY;
+	//if (m_useRotation)
+	//{
+	//	localBounds.min.x = bounds.min.x * cos(m_rotationZ) + m_translationX;
+	//	localBounds.max.x = bounds.max.x * cos(m_rotationZ) + m_translationX;
+	//	localBounds.min.y = bounds.min.y * sin(m_rotationZ) + m_translationY;
+	//	localBounds.max.y = bounds.max.y * sin(m_rotationZ) + m_translationY;
+	//}
+	
+	{
+		localBounds.min.x = bounds.min.x + m_translationX;
+		localBounds.max.x = bounds.max.x + m_translationX;
+		localBounds.min.y = bounds.min.y + m_translationY;
+		localBounds.max.y = bounds.max.y + m_translationY;
+	}
 	
 	return localBounds;
 }

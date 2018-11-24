@@ -27,6 +27,7 @@ public:
 	//Local functions
 	bool Attack();
 	void SetDestination(float destX, float destY);
+	void CheckSpearsDamage(MovingObjectPrototype* object);
 
 private:
 	//SPEAR

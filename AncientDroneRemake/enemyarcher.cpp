@@ -2,7 +2,9 @@
 
 EnemyArcher::EnemyArcher()
 {
-	gravity = 10.0f;
+	gravity = 5.0f;
+	m_hitedWall = false;
+	speed = 0.0f;
 }
 
 EnemyArcher::EnemyArcher(const EnemyArcher &)

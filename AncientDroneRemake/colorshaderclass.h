@@ -12,6 +12,9 @@
 #include <d3dx10math.h>
 #include <d3dx11async.h>
 #include <fstream>
+#include <vector>
+
+#include "modelclass.h"
 using namespace std;
 
 
@@ -42,6 +45,8 @@ public:
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX);
 	void SetColor(D3DXVECTOR4 newColor);
+	void AddModel(ModelClass * model);
+	std::vector<ModelClass*> GetModels();
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*);
@@ -59,6 +64,8 @@ private:
 	ID3D11Buffer* m_colorBuffer;
 
 	D3DXVECTOR4 m_color;
+
+	std::vector<ModelClass*> m_models;
 };
 
 #endif

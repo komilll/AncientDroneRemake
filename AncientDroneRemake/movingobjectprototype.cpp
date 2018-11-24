@@ -4,6 +4,7 @@ MovingObjectPrototype::MovingObjectPrototype()
 {
 	m_shader = 0;
 	timer = 0;
+	m_colliderModel = 0;
 	lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
@@ -44,6 +45,7 @@ bool MovingObjectPrototype::Init(GraphicsClass * graphicsClass, float width, flo
 
 	m_model->Initialize(m_graphics->GetD3D()->GetDevice(), width, height);
 	m_model->SetTranslation(translationX, translationY, 0.0f);
+
 	if (m_shader)
 		m_shader->SetAnimationObject(this);
 
@@ -52,8 +54,11 @@ bool MovingObjectPrototype::Init(GraphicsClass * graphicsClass, float width, flo
 
 void MovingObjectPrototype::Update()
 {
+	if (m_destroyed)
+		return;
+
 	frameMovementRight = speed;
-	frameMovementUp = 0.0f;
+	frameMovementUp = 0.0f;	
 
 	__int64 now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	timer += (now - lastTime);
@@ -67,6 +72,9 @@ void MovingObjectPrototype::Update()
 
 void MovingObjectPrototype::FixedUpdate()
 {
+	if (m_destroyed)
+		return;
+
 	bool isFalling = useGravity;
 	bool isGround = false;
 
@@ -107,7 +115,7 @@ void MovingObjectPrototype::FixedUpdate()
 				isGround = true;
 			}
 
-			if (useGravity && (groundInTheMiddle || groundFromTheBottom || groundFromTheTop))
+			if (useGravity && (groundInTheMiddle || groundFromTheBottom || groundFromTheTop) && speed != 0.0f)
 			{
 				if (m_model->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x)
 				{
@@ -142,23 +150,9 @@ void MovingObjectPrototype::FixedUpdate()
 		bool heightTest = (gMaxY > mMaxY && mMinY > gMinY) || (mMaxY > gMaxY && mMinY < gMinY) || (mMaxY > gMaxY && mMinY > gMinY && mMinY < gMaxY) || 
 			(mMaxY < gMaxY && mMinY < gMinY && mMaxY > gMinY);
 
-		if (heightTest)
+		if (heightTest && m_hitedWall)
 		{
-			bool test_1 = mMinY < gMaxY;
-			bool test_2 = mMaxY > gMaxY;
-			bool test_3 = frameMovementRight * Forward().x < 0.0f;
-			if (mMinX < gMaxX && gMaxX < mMaxX && frameMovementRight * Forward().x < 0.0f)
-			{
-				m_model->SetTranslation(m_model->GetTranslation().x - (m_graphics->GetGroundModel(i)->GetBounds().max.x - m_model->GetBounds().min.x) * Forward().x,
-					m_model->GetTranslation().y, m_model->GetTranslation().z);
-				HitedWall();
-			}
-			else if (mMaxX > gMinX && mMinX > gMinX && frameMovementRight * Forward().x > 0.0f)
-			{
-				m_model->SetTranslation(m_model->GetTranslation().x + (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x) * Forward().x,
-					m_model->GetTranslation().y, m_model->GetTranslation().z);
-				HitedWall();
-			}
+			HeightTest(mMinX, mMaxX, mMinY, mMaxY, gMinX, gMaxX, gMinY, gMaxY, m_graphics->GetGroundModel(i));
 		}
 	}
 
@@ -167,7 +161,13 @@ void MovingObjectPrototype::FixedUpdate()
 
 	timer -= 20.0f;
 
-	m_model->SetTranslation(m_model->GetTranslation().x + Forward().x * frameMovementRight, m_model->GetTranslation().y + Forward().y * frameMovementRight, m_model->GetTranslation().z);
+	m_model->SetTranslation(m_model->GetTranslation().x + Forward().x * frameMovementRight, m_model->GetTranslation().y + Forward().y * frameMovementRight + frameMovementUp, m_model->GetTranslation().z);
+	if (m_colliderModel)
+	{
+		m_colliderModel->SetTranslation(m_model->GetTranslation().x, m_model->GetTranslation().y, m_model->GetTranslation().z);
+		if (m_model->UseRotation())
+			m_colliderModel->SetRotation(m_model->GetRotation());
+	}
 }
 
 void MovingObjectPrototype::Move(float x)
@@ -177,6 +177,9 @@ void MovingObjectPrototype::Move(float x)
 
 bool MovingObjectPrototype::TouchedPlayer(Player * player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY)
 {
+	if (m_destroyed)
+		return false;
+
 	if ((m_model->GetBounds().min.x < playerMaxX && playerMaxX < m_model->GetBounds().max.x) || //Enter from the left side		
 		(m_model->GetBounds().max.x > playerMinX && playerMinX > m_model->GetBounds().min.x)) //Enter from the right side
 	{
@@ -213,9 +216,50 @@ void MovingObjectPrototype::HitedWall()
 {
 }
 
+void MovingObjectPrototype::HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass* groundModel)
+{
+	if (mMinX < gMaxX && gMaxX < mMaxX && frameMovementRight * Forward().x < 0.0f)
+	{
+		m_model->SetTranslation(m_model->GetTranslation().x - (groundModel->GetBounds().max.x - m_model->GetBounds().min.x) * Forward().x,
+			m_model->GetTranslation().y, m_model->GetTranslation().z);
+		HitedWall();
+	}
+	else if (mMaxX > gMinX && mMinX > gMinX && frameMovementRight * Forward().x > 0.0f)
+	{
+		m_model->SetTranslation(m_model->GetTranslation().x + (groundModel->GetBounds().min.x - m_model->GetBounds().max.x) * Forward().x,
+			m_model->GetTranslation().y, m_model->GetTranslation().z);
+		HitedWall();
+	}
+}
+
+bool MovingObjectPrototype::DamageObject()
+{
+	if (m_destroyed == true || !m_destroyable)
+		return false;
+
+	if (--m_health <= 0)
+	{
+		m_destroyed = true;
+		DestroyObject();
+	}
+
+	return true;
+}
+
+void MovingObjectPrototype::DestroyObject()
+{
+	m_model->SetVisibility(false);
+
+}
+
 ModelClass* MovingObjectPrototype::GetModel()
 {
 	return m_model;
+}
+
+ModelClass * MovingObjectPrototype::GetModelCollider()
+{
+	return m_colliderModel;
 }
 
 D3DXVECTOR2 MovingObjectPrototype::Position()
