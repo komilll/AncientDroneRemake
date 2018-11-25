@@ -7,6 +7,25 @@ To start with – it isn’t a tutorial series. I wanted to start a blog to moti
 Project itself is a remake of 2D Platformer game that I’ve made with my friend for Ludum Dare 36
 <a href="https://azargaz.itch.io/ancient-drone">https://azargaz.itch.io/ancient-drone</a>. This time I’d like to make it from scratch using DirectX 11. I will create flipbook animation system, basic physics engine, enemies with simple AI and other things essential to complete this remake. Let’s get started!
 
+<h2>Week #6</h2>
+General class for dynamic objects turned out to be useful because that was pretty good base for building drone and spears it spawns. Drone can be controlled by pressing 'E' key in the place that we want it to be moved. Movement vector (and speed) is based on current distance to destination. It turned out that this solution works better than original one, where movement speed of drone was constant.
+
+Because I didn't created dedicated system for UI, I turned out to be slave od ModelClass. UI is based on sprite placed in a world which creates a problem that changing camera distance will destroy whole UI. A solution for moving camera is taking current camera position and position from previous frame:
+
+<pre><code class="cpp">
+if (m_TextureShadersGeneral.at(i)->GetIsConstantOnScreen())
+{
+	D3DXVECTOR3 posDiff = m_Camera->GetPosition() - m_lastFrameCameraPosition;
+	model->SetTranslation(model->GetTranslation().x + posDiff.x, model->GetTranslation().y + posDiff.y, model->GetTranslation().z);
+}
+</code></pre>
+
+Changing camera distance may take similar aproach. As camera is getting further from player, UI is scaling up and when it's going near player, UI is getting smaller. Of course that system has a lot of flaws because it has to be recalculated every frame (or every frame if there was changes to camera) instead of having constant coordinates. But there is an advantage because everything is based on one class for rendering sprites.
+
+<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.6">https://github.com/komilll/AncientDroneRemake/releases/tag/0.6</a> - Week #6 release
+<center><img src="Blog/gif_6.gif"></center>
+<center><i>Week #6: Gif #6 – Using drone controlled by player to kill enemy</i></center>
+
 <h2>Week #5</h2>
 Implemented behaviours for all enemies that were created in original game jam version. Although there was also boss, I would rather not implement it because of harder AI, animations and other gameplay difficulties. Purpose of creating this engine is mostly to learn graphics pipeline and creating basic game engine, not to implement full hard gameplay features.
 
