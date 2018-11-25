@@ -69,6 +69,16 @@ void TextureShaderGeneralClass::SetAsTransparent(bool isTransparent)
 	m_isTransparent = isTransparent;
 }
 
+void TextureShaderGeneralClass::SetAsConstantOnScreen()
+{
+	m_constantPosition = true;
+}
+
+bool TextureShaderGeneralClass::GetIsConstantOnScreen()
+{
+	return m_constantPosition;
+}
+
 bool TextureShaderGeneralClass::IsTransparent()
 {
 	return m_isTransparent;

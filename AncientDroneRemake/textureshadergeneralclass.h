@@ -53,6 +53,8 @@ public:
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, bool movingRight = true);
 	void SetColor(D3DXVECTOR4 newColor);
 	void SetAsTransparent(bool isTransparent);
+	void SetAsConstantOnScreen();
+	bool GetIsConstantOnScreen();
 	bool IsTransparent();
 	void AddModel(ModelClass * model);
 	std::vector<ModelClass*> GetModels();
@@ -70,6 +72,7 @@ private:
 	std::vector<ModelClass*> m_models;
 	bool m_reverseX = false;
 	bool m_isTransparent = false;
+	bool m_constantPosition = false;
 
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;

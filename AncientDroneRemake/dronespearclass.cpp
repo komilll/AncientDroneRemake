@@ -7,6 +7,8 @@ DroneSpearClass::DroneSpearClass()
 	speed = 3.0f;
 	m_wander = false;
 	useGravity = false;
+	m_destroyable = false;
+	m_hitedWall = true;
 }
 
 bool DroneSpearClass::Init(GraphicsClass * graphicsClass, float width, float height, float translationX, float translationY, CHAR * animationSheetName)
@@ -108,16 +110,20 @@ void DroneSpearClass::HitedWall()
 
 void DroneSpearClass::HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass * groundModel)
 {
-	if (mMinX < gMaxX && gMaxX < mMaxX)// && frameMovementRight * Forward().x < 0.0f)
+	if (mMinX < gMaxX && gMaxX > mMaxX && mMinX > gMinX)// && frameMovementRight * Forward().x < 0.0f)
 	{
 		//m_model->SetTranslation(m_model->GetTranslation().x - (m_graphics->GetGroundModel(i)->GetBounds().max.x - m_model->GetBounds().min.x) * Forward().x,
 		//	m_model->GetTranslation().y, m_model->GetTranslation().z);
 		HitedWall();
 	}
-	else if (mMaxX > gMinX && mMinX > gMinX)//&& frameMovementRight * Forward().x > 0.0f)
+	else if (mMaxX > gMinX && mMinX < gMinX && mMaxX < gMaxX)//&& frameMovementRight * Forward().x > 0.0f)
 	{
 		//m_model->SetTranslation(m_model->GetTranslation().x + (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x) * Forward().x,
 		//	m_model->GetTranslation().y, m_model->GetTranslation().z);
+		HitedWall();
+	}
+	else if (mMaxX > gMaxX && mMinX < gMaxX && mMinX > gMinX)
+	{
 		HitedWall();
 	}
 }
@@ -134,7 +140,7 @@ void DroneSpearClass::Spawn()
 
 bool DroneSpearClass::TouchedEnemy(MovingObjectPrototype *object)
 {
-	if (!m_init || !m_isMoving)
+	if (!m_init || !m_isMoving || object == nullptr)
 		return false;
 
 	ModelClass* enemyModel = object->GetModel();

@@ -70,24 +70,24 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 	if (!enemyWanderer->Init(graphicsClass, 16.0f, 16.0f, 0.0f, 0.0f, "mob_spikyback.dds"))
 		return false;
 
-	enemyFlying = new EnemyFlying();
-	if (enemyFlying == nullptr)
-		return false;
+	//enemyFlying = new EnemyFlying();
+	//if (enemyFlying == nullptr)
+	//	return false;
 
-	if (!enemyFlying->Init(graphicsClass, 16, 16))
-		return false;
+	//if (!enemyFlying->Init(graphicsClass, 16, 16))
+	//	return false;
 
-	enemyFlying->SetPlayer(player);
-	enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
+	//enemyFlying->SetPlayer(player);
+	//enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
 
-	enemyArcher = new EnemyArcher();
-	if (enemyArcher == nullptr)
-		return false;
+	//enemyArcher = new EnemyArcher();
+	//if (enemyArcher == nullptr)
+	//	return false;
 
-	if (!enemyArcher->Init(graphicsClass, 12, 12))
-		return false;
+	//if (!enemyArcher->Init(graphicsClass, 12, 12))
+	//	return false;
 
-	enemyArcher->SetPlayer(player);
+	//enemyArcher->SetPlayer(player);
 
 	droneController = new DroneController();
 	if (droneController == nullptr)
@@ -95,6 +95,16 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 
 	if (!droneController->Init(graphicsClass, 12.0f, 12.0f, 0.0f, 15.0f, "ancient_ball.dds"))
 		return false;
+
+	////////////////////////////////
+	////////////// UI //////////////
+	////////////////////////////////
+
+	healthBarBackground = new UIController();
+	if (healthBarBackground == nullptr)
+		return false;
+
+	healthBarBackground->Init(graphicsClass, 6*8, 6, 512, 64, -85.0f, 90.0f, "UIBackground.dds");
 
 	return true;
 }

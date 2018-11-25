@@ -23,6 +23,8 @@ const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
 const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
+const float SCREEN_WIDTH = 800.0f;
+const float SCREEN_HEIGHT = 600.0f;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +71,7 @@ private:
 
 	ModelClass* playerModel;
 	ModelClass* m_backgroundModel;
-	const static int GROUND_MODEL_LENGTH = 1;
+	const static int GROUND_MODEL_LENGTH = 3;
 	ModelClass* groundModel[GROUND_MODEL_LENGTH];
 
 	TextureShaderGeneralClass* m_TextureShaderBackground;
@@ -81,6 +83,8 @@ private:
 
 	int a = 0;
 	int index = 0;
+
+	D3DXVECTOR3 m_lastFrameCameraPosition;
 };
 
 #endif

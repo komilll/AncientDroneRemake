@@ -75,13 +75,13 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	//Initialize the model object.
-	//result = groundModel[0]->Initialize(m_D3D->GetDevice(), 5, 25);
-	//groundModel[0]->SetTranslation(-80.0f, -40, 0.0f);
-	//if (!result) return false;
+	result = groundModel[0]->Initialize(m_D3D->GetDevice(), 5, 25);
+	groundModel[0]->SetTranslation(-80.0f, -40, 0.0f);
+	if (!result) return false;
 
-	//result = groundModel[1]->Initialize(m_D3D->GetDevice(), 5, 25);
-	//groundModel[1]->SetTranslation(80.0f, -90, 0.0f);
-	//if (!result) return false;
+	result = groundModel[1]->Initialize(m_D3D->GetDevice(), 5, 25);
+	groundModel[1]->SetTranslation(80.0f, -90, 0.0f);
+	if (!result) return false;
 
 	//result = groundModel[1]->Initialize(m_D3D->GetDevice(), 10, 1);
 	//groundModel[1]->SetTranslation(-60, -60.0f, 0.0f);
@@ -95,8 +95,8 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	//groundModel[3]->SetTranslation(80, -70, 0.0f);
 	//if (!result) return false;
 
-	result = groundModel[0]->Initialize(m_D3D->GetDevice(), 200, 1);
-	groundModel[0]->SetTranslation(0.0f, -90.0f, 0.0f);
+	result = groundModel[2]->Initialize(m_D3D->GetDevice(), 200, 1);
+	groundModel[2]->SetTranslation(0.0f, -90.0f, 0.0f);
 	if (!result) return false;
 
 	m_backgroundModel = new ModelClass;
@@ -241,6 +241,7 @@ bool GraphicsClass::Frame()
 	for (int i = 0; i < m_TextureShaders.size(); i++)
 		m_TextureShaders.at(i)->CheckNextFrame();	
 
+	m_lastFrameCameraPosition = m_Camera->GetPosition();
 	//m_Camera->SetPosition(m_Camera->GetPosition().x - 0.5f, m_Camera->GetPosition().y, m_Camera->GetPosition().z);
 
 	return true;
@@ -450,6 +451,12 @@ bool GraphicsClass::Render()
 				continue;
 
 			m_D3D->GetWorldMatrix(worldMatrix);
+			if (m_TextureShadersGeneral.at(i)->GetIsConstantOnScreen())
+			{
+				D3DXVECTOR3 posDiff = m_Camera->GetPosition() - m_lastFrameCameraPosition;
+				model->SetTranslation(model->GetTranslation().x + posDiff.x, model->GetTranslation().y + posDiff.y, model->GetTranslation().z);
+			}
+
 			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
 			if (!model->Render(m_D3D->GetDeviceContext()))
 				continue;
@@ -467,7 +474,7 @@ bool GraphicsClass::Render()
 		m_D3D->GetWorldMatrix(worldMatrix);
 		D3DXMatrixTranslation(&worldMatrix, groundModel[i]->GetTranslation().x, groundModel[i]->GetTranslation().y, groundModel[i]->GetTranslation().z);
 		groundModel[i]->Render(m_D3D->GetDeviceContext());
-
+		
 		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), groundModel[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
 		if (!result)
 		{

@@ -5,6 +5,7 @@
 #include "enemyflying.h"
 #include "enemyarcher.h"
 #include "dronecontroller.h"
+#include "uicontroller.h"
 
 class GameManager
 {
@@ -26,4 +27,5 @@ private:
 	EnemyFlying* enemyFlying;
 	EnemyArcher* enemyArcher;
 	DroneController* droneController;
+	UIController* healthBarBackground;
 };
