@@ -6,6 +6,7 @@
 #include "enemyarcher.h"
 #include "dronecontroller.h"
 #include "uicontroller.h"
+#include "mouseclass.h"
 
 class GameManager
 {
@@ -15,17 +16,24 @@ public:
 	~GameManager();
 
 	void Update();
-	bool Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClass *graphicsClass);
+	bool Initialize(InputClass *inputClass, MouseClass* mouseClass, D3DClass *d3d, GraphicsClass *graphicsClass);
 	void LMBPressed();
 	void SetDroneRotation(float mousePosX, float mousePosY);
 	void SetDroneDestination(float destX, float destY);
 
 private:
 	InputClass* m_inputClass; //Singleton
+	MouseClass* m_mouseClass;
 	Player *player;
 	EnemyWanderer* enemyWanderer;
 	EnemyFlying* enemyFlying;
 	EnemyArcher* enemyArcher;
 	DroneController* droneController;
 	UIController* healthBarBackground;
+	UIController* healthBar;
+	UIController* progressBarBackground;
+	UIController* progressBar;
+	UIController* menuStartGame;
+	UIController* menuQuit;
+	UIController* menuTitle;
 };

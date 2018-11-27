@@ -28,6 +28,7 @@ public:
 	bool Attack();
 	void SetDestination(float destX, float destY);
 	void CheckSpearsDamage(MovingObjectPrototype* object);
+	float GetDroneEnergyProgress();
 
 private:
 	//SPEAR
@@ -39,5 +40,10 @@ private:
 	float m_epsilonDistance = 0.1f;
 	float m_attackCooldown = 1.0f;
 	float m_attackCooldownCurrent = 0.0f;
+	int m_energyMax = 100;
+	int m_energyLeft = m_energyMax;
+	int m_bulletEnergyCost = 25;
+	__int64 m_lastAttackTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	int m_timeToRecoverEnergy = 2000; //ms
 };
 #endif // !_DRONE_CONTORLLER_H_

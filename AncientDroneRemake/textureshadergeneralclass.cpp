@@ -102,7 +102,7 @@ bool TextureShaderGeneralClass::InitializeShader(ID3D11Device* device, HWND hwnd
 	ID3D10Blob* pixelShaderBuffer;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[3];
 	unsigned int numElements;
-	D3D11_BUFFER_DESC matrixBufferDesc, texBufferDesc;
+	D3D11_BUFFER_DESC matrixBufferDesc, texBufferDesc, texCutBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
 
 
@@ -234,7 +234,6 @@ bool TextureShaderGeneralClass::InitializeShader(ID3D11Device* device, HWND hwnd
 	{
 		return false;
 	}
-
 
 	// Create a texture sampler state description.
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;

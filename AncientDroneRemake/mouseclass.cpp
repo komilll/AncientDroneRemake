@@ -140,14 +140,28 @@ void MouseClass::ProcessInput()
 	//else if (m_mouseState.lX / m_mouseSpeedSlowdown < 0.0f && m_mouseState.lX / m_mouseSpeedSlowdown > -1.0f)
 	//	m_mouseX -= 1;
 	//else
-		m_mouseX += (m_mouseState.lX / m_mouseSpeedSlowdown);
+
+	float toAddX = (m_mouseState.lX / m_mouseSpeedSlowdown);
+	float toAddY = (m_mouseState.lY / m_mouseSpeedSlowdown);
+
+	if (toAddX > 0)
+		toAddX = ceil(toAddX);
+	else
+		toAddX = floor(toAddX);
+
+	if (toAddY > 0)
+		toAddY = ceil(toAddY);
+	else
+		toAddY = floor(toAddY);
+
+		m_mouseX += toAddX;
 
 	//if (m_mouseState.lY / m_mouseSpeedSlowdown > 0.0f && m_mouseState.lY / m_mouseSpeedSlowdown < 1.0f)
 	//	m_mouseY -= 1;
 	//else if (m_mouseState.lY / m_mouseSpeedSlowdown < 0.0f && m_mouseState.lY / m_mouseSpeedSlowdown > -1.0f)
 	//	m_mouseY += 1;
 	//else
-		m_mouseY -= (m_mouseState.lY / m_mouseSpeedSlowdown);
+		m_mouseY -= toAddY;
 
 	if (m_mouseX < -141)
 		m_mouseX = -141;

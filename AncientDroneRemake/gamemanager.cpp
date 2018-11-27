@@ -48,12 +48,31 @@ void GameManager::Update()
 		droneController->CheckSpearsDamage(enemyFlying);
 		droneController->CheckSpearsDamage(enemyArcher);
 	}
+	
+	if (healthBar && player)
+	{
+		healthBar->SetProgress(player->GetHealthProgress());
+	}
+
+	if (progressBar && droneController)
+	{
+		progressBar->SetProgress(droneController->GetDroneEnergyProgress());
+	}
+
+	if (menuQuit)
+	{
+		menuQuit->Update();
+	}
 }
 
-bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClass *graphicsClass)
-{
+bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3DClass *d3d, GraphicsClass *graphicsClass)
+{	
 	m_inputClass = inputClass;
 	if (m_inputClass == nullptr)
+		return false;
+
+	m_mouseClass = mouseClass;
+	if (m_mouseClass == nullptr)
 		return false;
 
 	player = new Player(m_inputClass, d3d, graphicsClass);
@@ -100,11 +119,57 @@ bool GameManager::Initialize(InputClass *inputClass, D3DClass *d3d, GraphicsClas
 	////////////// UI //////////////
 	////////////////////////////////
 
+	#pragma region Gameplay UI
 	healthBarBackground = new UIController();
 	if (healthBarBackground == nullptr)
 		return false;
 
 	healthBarBackground->Init(graphicsClass, 6*8, 6, 512, 64, -85.0f, 90.0f, "UIBackground.dds");
+
+	healthBar = new UIController();
+	if (healthBar == nullptr)
+		return false;
+
+	healthBar->Init(graphicsClass, 6 * 8, 6, 512, 64, -85.0f, 90.25f, "UIHealth.dds");	
+
+	progressBarBackground = new UIController();
+	if (progressBarBackground == nullptr)
+		return false;
+
+	progressBarBackground->Init(graphicsClass, 6 * 8, 6, 512, 64, -85.0f, 75.0f, "UIBackground.dds");
+
+	progressBar = new UIController();
+	if (progressBar == nullptr)
+		return false;
+
+	progressBar->Init(graphicsClass, 6 * 8, 6, 512, 64, -85.0f, 75.0f, "UIProgress.dds");
+#pragma endregion
+
+	/*#pragma region Menu UI
+	menuTitle = new UIController();
+	if (menuTitle == nullptr)
+		return false;
+
+	menuTitle->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, 60.0f, "UIMenu_Title.dds");
+	menuTitle->GetModel()->SetScale(3.0f, 3.0f, 3.0f);
+
+	menuStartGame = new UIController();
+	if (menuStartGame == nullptr)
+		return false;
+
+	menuStartGame->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -15.0f, "UIMenu_StartGame.dds");
+	menuStartGame->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
+
+	menuQuit = new UIController();
+	if (menuQuit == nullptr)
+		return false;
+
+	menuQuit->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -45.0f, "UIMenu_Quit.dds");
+	menuQuit->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
+	menuQuit->InitializeButton(m_mouseClass);
+
+#pragma endregion*/
+
 
 	return true;
 }

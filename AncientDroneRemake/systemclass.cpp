@@ -60,12 +60,13 @@ bool SystemClass::Initialize()
 	}
 
 	m_GameManager = new GameManager;
+	m_Mouse = new MouseClass;
+
 	if (!m_GameManager)	
 		return false;	
-	if (!m_GameManager->Initialize(GetInputController(), m_Graphics->GetD3D(), m_Graphics))
+	if (!m_GameManager->Initialize(GetInputController(), m_Mouse, m_Graphics->GetD3D(), m_Graphics))
 		return false;
 
-	m_Mouse = new MouseClass;
 	if (!m_Mouse) 	
 		return false;
 	if (!m_Mouse->Initialize(m_hinstance, m_hwnd, m_Graphics))

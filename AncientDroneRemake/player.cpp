@@ -81,7 +81,9 @@ bool Player::Initialize(InputClass * inputClass)
 }
 
 void Player::Update()
-{
+{	
+	invincible = false;
+
 	float frameMovementRight = 0.0f;
 	float frameMovementUp = 0.0f;
 	StatePlayer newState = IDLE;
@@ -222,18 +224,31 @@ void Player::DealDamage(int dmg)
 {
 	/*if (health <= 0)
 		return;*/
+	
+	if (invincible)
+		return;
 
+	invincible = true;
 	health -= dmg;
 	if (health <= 0)
 	{
 		health = 0;
 		PlayerDeath();
 	}
+
+	movementRight -= 25.0f;
+
+	//m_playerModel->SetTranslation(m_playerModel->GetTranslation().x - 25.0f, m_playerModel->GetTranslation().y, m_playerModel->GetTranslation().z);
 }
 
 Bounds Player::GetBounds()
 {
 	return m_playerModel->GetBounds();
+}
+
+float Player::GetHealthProgress()
+{
+	return (float)health / (float)maxHealth;
 }
 
 void Player::PlayerDeath()

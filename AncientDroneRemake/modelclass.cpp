@@ -152,6 +152,11 @@ D3DXVECTOR2 ModelClass::GetSize()
 	return D3DXVECTOR2(m_width, m_height);
 }
 
+D3DXVECTOR2 ModelClass::GetOriginalSize()
+{
+	return D3DXVECTOR2(m_widthOriginal, m_heightOriginal);
+}
+
 void ModelClass::SetVisibility(bool enable)
 {
 	m_isVisibile = enable;

@@ -55,6 +55,7 @@ public:
 	void SetScale(float x, float y, float z);
 	D3DXVECTOR3 GetScale();
 	D3DXVECTOR2 GetSize();
+	D3DXVECTOR2 GetOriginalSize();
 	void SetVisibility(bool enable);
 
 public:

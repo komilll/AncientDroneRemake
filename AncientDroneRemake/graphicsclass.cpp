@@ -457,7 +457,10 @@ bool GraphicsClass::Render()
 				model->SetTranslation(model->GetTranslation().x + posDiff.x, model->GetTranslation().y + posDiff.y, model->GetTranslation().z);
 			}
 
+			D3DXMATRIX scaleMatrix;
+			D3DXMatrixScaling(&scaleMatrix, model->GetScale().x, model->GetScale().y, 1.0f);
 			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
+			D3DXMatrixMultiply(&worldMatrix, &scaleMatrix, &worldMatrix);
 			if (!model->Render(m_D3D->GetDeviceContext()))
 				continue;
 

@@ -49,6 +49,14 @@ void DroneController::Update()
 
 void DroneController::FixedUpdate()
 {
+	if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - m_lastAttackTime > m_timeToRecoverEnergy)
+	{
+		m_energyLeft += 1;
+		//m_energyLeft = min(m_energyLeft, m_energyMax);
+		if (m_energyLeft > m_energyMax)
+			m_energyLeft = m_energyMax;
+	}
+
 	m_attackCooldownCurrent = max(m_attackCooldownCurrent - 0.02f, 0.0f);
 
 	//MovingObjectPrototype::FixedUpdate();
@@ -99,6 +107,12 @@ bool DroneController::Attack()
 	if (m_attackCooldownCurrent > 0.0f)
 		return false;
 
+	if (m_energyLeft < m_bulletEnergyCost)
+		return false;
+
+	m_lastAttackTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	m_energyLeft -= m_bulletEnergyCost;
+
 	PlayOneShotAnimation(ATTACKING);
 	m_attackCooldownCurrent = m_attackCooldown;
 
@@ -126,4 +140,9 @@ void DroneController::CheckSpearsDamage(MovingObjectPrototype *object)
 			//Hitted enemy, handled in spear script
 		}
 	}
+}
+
+float DroneController::GetDroneEnergyProgress()
+{
+	return (float)m_energyLeft / (float)m_energyMax;
 }

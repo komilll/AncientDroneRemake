@@ -5,6 +5,7 @@ EnemyWanderer::EnemyWanderer()
 	EnemyBase::EnemyBase();
 	useGravity = true;
 	gravity = 5.0f;
+	speed = 0.25f;
 }
 
 EnemyWanderer::EnemyWanderer(const EnemyWanderer &)
@@ -67,6 +68,9 @@ void EnemyWanderer::FixedUpdate()
 
 bool EnemyWanderer::TouchedPlayer(Player * player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY)
 {
+	if (m_destroyed)
+		return false;
+
 	if ((m_model->GetBounds().min.x < playerMaxX && playerMaxX < m_model->GetBounds().max.x) || //Enter from the left side		
 		(m_model->GetBounds().max.x > playerMinX && playerMinX > m_model->GetBounds().min.x)) //Enter from the right side
 	{

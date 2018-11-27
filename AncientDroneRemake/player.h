@@ -68,6 +68,7 @@ public:
 	void Move();
 	void DealDamage(int dmg);
 	Bounds GetBounds();
+	float GetHealthProgress();
 
 private:
 	void PlayerDeath();
@@ -108,5 +109,7 @@ private:
 	__int64 lastTime;
 
 	//Gameplay
-	int health = 1;
+	int maxHealth = 10;
+	int health = maxHealth;
+	bool invincible = false;
 };
