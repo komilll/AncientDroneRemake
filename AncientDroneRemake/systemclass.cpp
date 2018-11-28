@@ -150,6 +150,8 @@ bool SystemClass::Frame()
 {
 	bool result;
 
+	m_Mouse->SetLMBPressed(false);
+	m_Mouse->Frame();
 	// Check if the user pressed escape and wants to exit the application.
 	if (m_Input->IsKeyDown(VK_ESCAPE))
 	{
@@ -168,11 +170,9 @@ bool SystemClass::Frame()
 		return false;
 	}
 
-	m_Mouse->Frame();
 	if (m_Mouse->GetLMBPressed())
 	{
 		m_GameManager->LMBPressed();
-		m_Mouse->SetLMBPressed(false);
 	}	
 	m_GameManager->SetDroneRotation(m_Mouse->GetMouseModelLocation().x, m_Mouse->GetMouseModelLocation().y);
 	

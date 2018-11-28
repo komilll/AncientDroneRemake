@@ -7,6 +7,7 @@
 #include "dronecontroller.h"
 #include "uicontroller.h"
 #include "mouseclass.h"
+#include <functional>
 
 class GameManager
 {
@@ -20,7 +21,8 @@ public:
 	void LMBPressed();
 	void SetDroneRotation(float mousePosX, float mousePosY);
 	void SetDroneDestination(float destX, float destY);
-
+	void StartGame();
+	
 private:
 	InputClass* m_inputClass; //Singleton
 	MouseClass* m_mouseClass;

@@ -7,6 +7,7 @@
 #include "textureshadergeneralclass.h"
 #include "graphicsclass.h"
 #include "mouseclass.h"
+#include <functional>
 
 class UIController 
 {
@@ -20,6 +21,7 @@ public:
 	
 	void SetProgress(float progress);
 	void InitializeButton(MouseClass* mouseClass, float widthArea = 1, float heightArea = 1); //Percentage of image area that will be treated as button
+	std::function<void()> EventOnPressButton;
 
 private:
 	ModelClass* m_model;

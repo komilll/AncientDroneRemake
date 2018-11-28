@@ -59,6 +59,11 @@ void GameManager::Update()
 		progressBar->SetProgress(droneController->GetDroneEnergyProgress());
 	}
 
+	if (menuStartGame)
+	{
+		menuStartGame->Update();
+	}
+
 	if (menuQuit)
 	{
 		menuQuit->Update();
@@ -145,7 +150,7 @@ bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3D
 	progressBar->Init(graphicsClass, 6 * 8, 6, 512, 64, -85.0f, 75.0f, "UIProgress.dds");
 #pragma endregion
 
-	/*#pragma region Menu UI
+	#pragma region Menu UI
 	menuTitle = new UIController();
 	if (menuTitle == nullptr)
 		return false;
@@ -159,6 +164,8 @@ bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3D
 
 	menuStartGame->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -15.0f, "UIMenu_StartGame.dds");
 	menuStartGame->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
+	menuStartGame->InitializeButton(m_mouseClass);
+	menuStartGame->EventOnPressButton = [=]() -> void { StartGame(); };
 
 	menuQuit = new UIController();
 	if (menuQuit == nullptr)
@@ -167,8 +174,9 @@ bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3D
 	menuQuit->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -45.0f, "UIMenu_Quit.dds");
 	menuQuit->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
 	menuQuit->InitializeButton(m_mouseClass);
+	menuQuit->EventOnPressButton = []()-> void { PostQuitMessage(0); };
 
-#pragma endregion*/
+#pragma endregion
 
 
 	return true;
@@ -202,4 +210,8 @@ void GameManager::SetDroneDestination(float destX, float destY)
 	{
 		droneController->SetDestination(destX, destY);
 	}
+}
+
+void GameManager::StartGame()
+{
 }

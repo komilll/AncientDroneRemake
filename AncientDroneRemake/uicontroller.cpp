@@ -43,7 +43,7 @@ void UIController::Update()
 		m_mouse->GetMouseModelLocation().y <= m_model->GetTranslation().y + m_heightButton &&
 		m_mouse->GetLMBPressed())
 	{
-		PostQuitMessage(0);
+		EventOnPressButton();
 	}
 }
 
