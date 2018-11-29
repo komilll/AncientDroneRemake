@@ -150,6 +150,7 @@ bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3D
 	progressBar->Init(graphicsClass, 6 * 8, 6, 512, 64, -85.0f, 75.0f, "UIProgress.dds");
 #pragma endregion
 
+/*
 	#pragma region Menu UI
 	menuTitle = new UIController();
 	if (menuTitle == nullptr)
@@ -177,7 +178,7 @@ bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3D
 	menuQuit->EventOnPressButton = []()-> void { PostQuitMessage(0); };
 
 #pragma endregion
-
+*/
 
 	return true;
 }

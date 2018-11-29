@@ -43,8 +43,6 @@ public:
 	D3DClass *GetD3D();
 	HWND *GetHWND();
 	void SetPlayerModel(ModelClass* player);
-	ModelClass* GetGroundModel(int index);
-	int GetGroundModelCount();
 	void SetPlayerAnimation(int index, TextureShaderClass* shader);
 	void SetPlayerAnimationOneShot(int index, TextureShaderClass* shader, int previousIndex = -1);
 	void AddEnemyModel(ModelClass* enemyModel);
@@ -60,6 +58,11 @@ public:
 	bool AddColorShader(ColorShaderClass* colorShader);
 	void RemoveColorShader(ColorShaderClass* colorShader);
 
+	ModelClass* AddGroundModel(int width, int height, float posX, float posY);
+	ModelClass* GetGroundModel(int index);
+	int GetGroundModelCount();
+
+
 private:
 	bool Render();
 
@@ -72,7 +75,7 @@ private:
 	ModelClass* playerModel;
 	ModelClass* m_backgroundModel;
 	const static int GROUND_MODEL_LENGTH = 3;
-	ModelClass* groundModel[GROUND_MODEL_LENGTH];
+	//ModelClass* groundModel[GROUND_MODEL_LENGTH];
 
 	TextureShaderGeneralClass* m_TextureShaderBackground;
 	std::vector<TextureShaderClass*> m_TextureShaders;
@@ -80,6 +83,7 @@ private:
 	std::vector<ColorShaderClass*> m_ColorShaders;
 	std::vector<ModelClass*> m_enemyModels;
 	std::vector<ModelClass*> m_bombModels;
+	std::vector<ModelClass*> m_groundModels;
 
 	int a = 0;
 	int index = 0;

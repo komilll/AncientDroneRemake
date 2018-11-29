@@ -148,6 +148,7 @@
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureshaderclass.h" />
     <ClInclude Include="textureshadergeneralclass.h" />
+    <ClInclude Include="tiledinterpreter.h" />
     <ClInclude Include="uicontroller.h" />
   </ItemGroup>
   <ItemGroup>
@@ -175,6 +176,7 @@
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
     <ClCompile Include="textureshadergeneralclass.cpp" />
+    <ClCompile Include="tiledinterpreter.cpp" />
     <ClCompile Include="uicontroller.cpp" />
   </ItemGroup>
   <ItemGroup>

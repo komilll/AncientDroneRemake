@@ -24,6 +24,7 @@
 #include "graphicsclass.h"
 #include "gamemanager.h"
 #include "mouseclass.h"
+#include "tiledinterpreter.h"
 
 #pragma region KEYBOARD_KEYS
 
@@ -91,6 +92,7 @@ private:
 	MouseClass* m_Mouse;
 	GameManager* m_GameManager;
 	SystemClass *m_self;
+	TiledInterpreter* m_tiledInterpreter;
 };
 
 

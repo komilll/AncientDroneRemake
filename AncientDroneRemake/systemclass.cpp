@@ -72,6 +72,12 @@ bool SystemClass::Initialize()
 	if (!m_Mouse->Initialize(m_hinstance, m_hwnd, m_Graphics))
 		return false;
 
+	m_tiledInterpreter = new TiledInterpreter;
+	if (!m_tiledInterpreter)
+		return false;
+
+	m_tiledInterpreter->Initialize(m_Graphics);
+	m_tiledInterpreter->Import();
 	return true;
 }
 
@@ -91,6 +97,12 @@ void SystemClass::Shutdown()
 	{
 		delete m_Input;
 		m_Input = 0;
+	}
+
+	if (m_tiledInterpreter)
+	{
+		delete m_tiledInterpreter;
+		m_tiledInterpreter = 0;
 	}
 
 	// Shutdown the window.
