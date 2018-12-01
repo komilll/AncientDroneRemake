@@ -69,6 +69,8 @@ public:
 	void DealDamage(int dmg);
 	Bounds GetBounds();
 	float GetHealthProgress();
+	ModelClass* GetModel();
+	void ChangePosition(float x, float y);
 
 private:
 	void PlayerDeath();
@@ -102,6 +104,7 @@ private:
 	float jumpTickHeight = 3.75f;
 	int idleTime = 0;
 	int timeToSetIdleState = 15;
+	float groundEpsilon = 0.05f;
 
 	//Physics
 	float gravity = 1.75f;

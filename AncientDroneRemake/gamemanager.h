@@ -22,7 +22,8 @@ public:
 	void SetDroneRotation(float mousePosX, float mousePosY);
 	void SetDroneDestination(float destX, float destY);
 	void StartGame();
-	
+	Player* GetPlayer();
+
 private:
 	InputClass* m_inputClass; //Singleton
 	MouseClass* m_mouseClass;
@@ -31,6 +32,7 @@ private:
 	EnemyFlying* enemyFlying;
 	EnemyArcher* enemyArcher;
 	DroneController* droneController;
+
 	UIController* healthBarBackground;
 	UIController* healthBar;
 	UIController* progressBarBackground;

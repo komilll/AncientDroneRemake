@@ -76,7 +76,7 @@ bool SystemClass::Initialize()
 	if (!m_tiledInterpreter)
 		return false;
 
-	m_tiledInterpreter->Initialize(m_Graphics);
+	m_tiledInterpreter->Initialize(m_Graphics, m_GameManager->GetPlayer());
 	m_tiledInterpreter->Import();
 	return true;
 }

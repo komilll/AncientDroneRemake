@@ -248,7 +248,10 @@ bool GraphicsClass::Frame()
 		m_TextureShaders.at(i)->CheckNextFrame();	
 
 	m_lastFrameCameraPosition = m_Camera->GetPosition();
-	//m_Camera->SetPosition(m_Camera->GetPosition().x - 0.5f, m_Camera->GetPosition().y, m_Camera->GetPosition().z);
+	D3DXVECTOR3 playerPosDiff = playerModel->GetTranslation() - m_lastPlayerPosition;
+	m_lastPlayerPosition = playerModel->GetTranslation();
+	m_Camera->SetPosition(m_Camera->GetPosition().x + playerPosDiff.x, m_Camera->GetPosition().y + playerPosDiff.y, m_Camera->GetPosition().z);	
+	m_backgroundModel->SetTranslation(m_backgroundModel->GetTranslation().x + playerPosDiff.x, m_backgroundModel->GetTranslation().y + playerPosDiff.y, m_backgroundModel->GetTranslation().z);
 
 	return true;
 }
@@ -275,7 +278,7 @@ void GraphicsClass::SetPlayerModel(ModelClass * player)
 
 int GraphicsClass::GetGroundModelCount()
 {
-	return GROUND_MODEL_LENGTH;
+	return m_groundModels.size();
 }
 
 void GraphicsClass::SetPlayerAnimation(int index, TextureShaderClass* shader)

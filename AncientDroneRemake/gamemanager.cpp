@@ -87,12 +87,12 @@ bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3D
 	if (!player->Initialize())
 		return false;
 	
-	enemyWanderer = new EnemyWanderer();
-	if (enemyWanderer == nullptr)
-		return false;
+	//enemyWanderer = new EnemyWanderer();
+	//if (enemyWanderer == nullptr)
+	//	return false;
 
-	if (!enemyWanderer->Init(graphicsClass, 16.0f, 16.0f, 0.0f, 0.0f, "mob_spikyback.dds"))
-		return false;
+	//if (!enemyWanderer->Init(graphicsClass, 16.0f, 16.0f, 0.0f, 0.0f, "mob_spikyback.dds"))
+	//	return false;
 
 	//enemyFlying = new EnemyFlying();
 	//if (enemyFlying == nullptr)
@@ -215,4 +215,9 @@ void GameManager::SetDroneDestination(float destX, float destY)
 
 void GameManager::StartGame()
 {
+}
+
+Player * GameManager::GetPlayer()
+{
+	return player;
 }

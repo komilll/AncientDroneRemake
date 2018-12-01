@@ -89,6 +89,7 @@ private:
 	int index = 0;
 
 	D3DXVECTOR3 m_lastFrameCameraPosition;
+	D3DXVECTOR3 m_lastPlayerPosition;
 };
 
 #endif

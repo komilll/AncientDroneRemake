@@ -176,15 +176,15 @@ void Player::Update()
 						isFalling = false;
 						isGround = true;
 					}
-					else if (m_playerModel->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x)
+					else if (m_playerModel->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x && isFalling)
 					{
 						if (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_playerModel->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
 							frameMovementRight = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_playerModel->GetBounds().max.x;
 					}
-					else if (m_playerModel->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
+					else if (m_playerModel->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x && isFalling)
 					{
 						float temp_ = -(m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
-
+						//TODO Do neighbour ground test
 						if (temp_ >= 0.0f && frameMovementRight < 0.0f)
 							frameMovementRight = temp_;
 					}
@@ -249,6 +249,17 @@ Bounds Player::GetBounds()
 float Player::GetHealthProgress()
 {
 	return (float)health / (float)maxHealth;
+}
+
+ModelClass * Player::GetModel()
+{
+	return m_playerModel;
+}
+
+void Player::ChangePosition(float x, float y)
+{
+	movementRight += x;
+	movementUp += y;
 }
 
 void Player::PlayerDeath()
