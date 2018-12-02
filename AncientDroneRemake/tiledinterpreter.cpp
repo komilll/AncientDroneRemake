@@ -47,15 +47,15 @@ void TiledInterpreter::Import()
 			if (tab[i][k] >= TILE_MIN && tab[i][k] <= TILE_MAX)
 				SpawnTile(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
 			else if (tab[i][k] == SPAWN_POINT)
-				SpawnPlayer(TILE_SIZE * (i - firstTile) * 2,/* (MAP_HEIGHT - k) * TILE_SIZE * 2*/ 0);
+				SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, /*(MAP_HEIGHT - k) * TILE_SIZE * 2*/ 0);
 		}
 	}
 }
 
 void TiledInterpreter::SpawnTile(int indeX, int indexY, int indexTile)
 {	
-	indexY = -3;
-	m_textureGeneral->AddModel(m_graphics->AddGroundModel(TILE_SIZE, TILE_SIZE, TILE_SIZE * indeX * 2 - TILE_SIZE * 5, TILE_SIZE * indexY));
+	indexY -= 5;
+	m_textureGeneral->AddModel(m_graphics->AddGroundModel(TILE_SIZE, TILE_SIZE, TILE_SIZE * indeX * 2, TILE_SIZE * indexY * 2));
 }
 
 void TiledInterpreter::ReadMapFile()

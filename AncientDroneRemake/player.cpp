@@ -70,8 +70,8 @@ bool Player::Initialize()
 	m_playerModel->SetBounds(-4, 4, m_playerModel->GetBounds().min.y, m_playerModel->GetBounds().max.y - 3);
 
 	m_graphics->SetPlayerModel(m_playerModel);
-	movementUp += 10.0f;
-	movementRight -= 60.0f;
+	//movementUp += 10.0f;
+	//movementRight -= 60.0f;
 }
 
 bool Player::Initialize(InputClass * inputClass)
@@ -86,23 +86,24 @@ void Player::Update()
 
 	float frameMovementRight = 0.0f;
 	float frameMovementUp = 0.0f;
+	movementDirection = 0.0f;
 	StatePlayer newState = IDLE;
 
 	if (m_input->IsKeyDown(btn_moveRight))
 	{
-		frameMovementRight += 1.0f;
+		movementDirection = 1.0f;
 	}
 	if (m_input->IsKeyDown(btn_moveLeft))
 	{
-		frameMovementRight -= 1.0f;
+		movementDirection = -1.0f;
 	}
-	if (frameMovementRight > 0.0f)
+	if (movementDirection > 0.0f)
 	{
 		m_playerModel->movingRight = true;
 		newState = MOVING;
 		idleTime = 0;
 	}
-	else if (frameMovementRight < 0.0f)
+	else if (movementDirection < 0.0f)
 	{
 		m_playerModel->movingRight = false;
 		newState = MOVING;
@@ -137,22 +138,87 @@ void Player::Update()
 			frameMovementUp += jumpTickHeight;
 			currentJumpTicks--;
 		}
+		/****************************************************************/
+		frameMovementRight = movementDirection * movementSpeed;
 
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 		{
-			//float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
+			bool inBounds = (m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
+				&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x);
+			bool inBoundsNextFrame = (m_playerModel->GetBounds().min.x + frameMovementRight < m_graphics->GetGroundModel(i)->GetBounds().max.x
+				&& m_playerModel->GetBounds().max.x + frameMovementRight > m_graphics->GetGroundModel(i)->GetBounds().min.x);
+			//Ground in the middle
+			bool groundInTheMiddle = (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+				m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+				m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y)
+				||
+				(m_playerModel->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+					m_playerModel->GetBounds().min.y >= m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+					m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y);
+			//Ground from bottom
+			bool groundFromTheBottom = (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+				m_playerModel->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+				m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y);
+			//Ground from top
+			bool groundFromTheTop = (m_playerModel->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+				m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+				m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y);
 
-			if (frameMovementUp > 0.0f && //Check if player is moving up
-				//Check if player is inside environment #1 - in the middle
-				( (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-					m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y) ||
-				//Check if player is inside environment #2 - at the top
-				(m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
-					m_playerModel->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-					m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y))
+			//Move right or left based on current button being held
+			if (frameMovementRight == 0.0f)
+			{
+				//No movement is involved
+			}
+			else if (frameMovementRight > 0.0f) //Move right
+			{
+				if ((groundInTheMiddle || groundFromTheTop || groundFromTheBottom) && inBounds)
+				{
+					//float newMovement = m_playerModel->GetBounds().max.x - m_graphics->GetGroundModel(i)->GetBounds().min.x;
+					//if (newMovement < frameMovementRight)
+					//	frameMovementRight = newMovement;
+					frameMovementRight = -(m_playerModel->GetBounds().max.x + frameMovementRight - m_graphics->GetGroundModel(i)->GetBounds().min.x);
+					break;
+				}
+				else if ((groundInTheMiddle || groundFromTheTop || groundFromTheBottom) && inBoundsNextFrame)
+				{
+					frameMovementRight = -(m_playerModel->GetBounds().max.x - m_graphics->GetGroundModel(i)->GetBounds().min.x);
+					break;
+				}
+			}
+			else if (frameMovementRight < 0.0f) //Move left
+			{
+				if ((groundInTheMiddle || groundFromTheTop || groundFromTheBottom) && inBounds)
+				{
+					//float newMovement = m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x;
+					//if (newMovement > frameMovementRight)
+					//	frameMovementRight = newMovement;
+					frameMovementRight = -(m_playerModel->GetBounds().min.x + frameMovementRight - m_graphics->GetGroundModel(i)->GetBounds().max.x);
+					break;
+				}
+				else if ((groundInTheMiddle || groundFromTheTop || groundFromTheBottom) && inBoundsNextFrame)
+				{
+					frameMovementRight = -(m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
+					break;
+				}
+			}
+		}
+
+		/****************************************************************/
+		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
+		{
+			//float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
+			//Check if player is inside environment #1 - in the middle
+			bool inMiddle = (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+				m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y);
+			//Check if player is inside environment #2 - at the top
+			bool atTop = (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+				m_playerModel->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+				m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y);
 				//Check if player is in horizontal bounds of environment
-				&& m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
-					&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
+			bool inBounds = (m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
+				&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x);
+
+			if (frameMovementUp > 0.0f && inMiddle && atTop && inBounds) //Check if player is moving up
 			{
 				isFalling = true;
 				currentJumpTicks = 0;
@@ -178,14 +244,33 @@ void Player::Update()
 					}
 					else if (m_playerModel->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x && isFalling)
 					{
-						if (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_playerModel->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
-							frameMovementRight = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_playerModel->GetBounds().max.x;
+						float temp_ = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_playerModel->GetBounds().max.x;
+						if (temp_ <= 0.0f && frameMovementRight > 0.0f)
+							frameMovementRight = temp_;
 					}
 					else if (m_playerModel->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x && isFalling)
 					{
 						float temp_ = -(m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
-						//TODO Do neighbour ground test
-						if (temp_ >= 0.0f && frameMovementRight < 0.0f)
+						bool canContinue = false;
+						//Do neighbour ground test
+						if (i == m_graphics->GetGroundModelCount() - 1)
+						{
+							//Continue
+							canContinue = true;
+						}
+						else if (m_graphics->GetGroundModelCount() - 1 > i && m_graphics->GetGroundModel(i + 1)->GetTranslation().y != m_graphics->GetGroundModel(i)->GetTranslation().y)
+						{
+							//Continue
+							canContinue = true;
+						}
+						else if (m_graphics->GetGroundModelCount() - 1 > i && m_graphics->GetGroundModel(i + 1)->GetTranslation().y == m_graphics->GetGroundModel(i)->GetTranslation().y &&
+							m_graphics->GetGroundModel(i + 1)->GetBounds().min.x + 1.0f > m_graphics->GetGroundModel(i)->GetBounds().max.x)
+						{
+							//STOP
+							canContinue = false;
+						}
+
+						if (temp_ >= 0.0f && frameMovementRight < 0.0f && canContinue)
 							frameMovementRight = temp_;
 					}
 				}
@@ -196,18 +281,18 @@ void Player::Update()
 			frameMovementUp -= gravity;
 
 		timer -= 20.0f;		
+
+		movementRight += frameMovementRight;
+		movementUp += frameMovementUp;
+
+		if (isGround == false)
+		{
+			newState = FALLING;
+		}
+
+		SetNewAnimation(newState);
+		Move();
 	}
-
-	movementRight += frameMovementRight;
-	movementUp += frameMovementUp;
-
-	if (isGround == false)
-	{		
-		newState = FALLING;
-	}
-
-	SetNewAnimation(newState);
-	Move();
 }
 
 void Player::FixedUpdate()

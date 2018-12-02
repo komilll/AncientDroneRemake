@@ -96,12 +96,14 @@ private:
 	///////////////
 
 	//Movement
+	int movementDirection = 0;
 	int movementRight;
 	int movementUp;
+	float movementSpeed = 1.0f;
 	bool isGround = false;
 	int jumpTicks = 8;
 	int currentJumpTicks = 0;
-	float jumpTickHeight = 3.75f;
+	float jumpTickHeight = 4.75f;
 	int idleTime = 0;
 	int timeToSetIdleState = 15;
 	float groundEpsilon = 0.05f;
