@@ -67,17 +67,18 @@ bool SystemClass::Initialize()
 	if (!m_GameManager->Initialize(GetInputController(), m_Mouse, m_Graphics->GetD3D(), m_Graphics))
 		return false;
 
-	if (!m_Mouse) 	
-		return false;
-	if (!m_Mouse->Initialize(m_hinstance, m_hwnd, m_Graphics))
-		return false;
-
 	m_tiledInterpreter = new TiledInterpreter;
 	if (!m_tiledInterpreter)
 		return false;
 
 	m_tiledInterpreter->Initialize(m_Graphics, m_GameManager->GetPlayer());
 	m_tiledInterpreter->Import();
+
+	if (!m_Mouse) 	
+		return false;
+	if (!m_Mouse->Initialize(m_hinstance, m_hwnd, m_Graphics))
+		return false;
+
 	return true;
 }
 

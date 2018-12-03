@@ -68,12 +68,37 @@ void DroneController::FixedUpdate()
 	else if (distance < m_epsilonDistance)
 	{
 		//Snap to correct position
-		m_model->SetTranslation(m_destX, m_destY, 0.0f);
+		m_model->SetTranslation(m_destX, m_destY, 0.0f);	
+		if (m_droneForceToPlayer)
+			m_droneOnPlayer = true;
+		m_droneForceToPlayer = false;
 	}
 	else
 	{		
 		m_model->SetTranslation(m_model->GetTranslation().x + (m_destX - m_posX()) * speed * 0.02f,
 			m_model->GetTranslation().y + (m_destY - m_posY()) * speed * 0.02f, 0.0f);
+	}
+
+	if (m_model->GetTranslation().x < m_graphics->GetPlayerPosition().x - m_boundsScreenX ||
+		m_model->GetTranslation().x > m_graphics->GetPlayerPosition().x + m_boundsScreenX ||
+		m_model->GetTranslation().y < m_graphics->GetPlayerPosition().y - m_boundsScreenY ||
+		m_model->GetTranslation().y > m_graphics->GetPlayerPosition().y + m_boundsScreenY)
+	{
+		DroneOutsideScreen();
+	}
+
+	if (m_droneForceToPlayer)
+	{
+		m_destX = m_graphics->GetPlayerPosition().x + m_distToPlayerX;
+		m_destY = m_graphics->GetPlayerPosition().y + m_distToPlayerY;
+	}
+
+	if (m_droneOnPlayer)
+	{
+		if (m_graphics->GetPlayerModel()->movingRight)
+			SetDestination(m_graphics->GetPlayerPosition().x + m_distToPlayerX, m_graphics->GetPlayerPosition().y + m_distToPlayerY);
+		else
+			SetDestination(m_graphics->GetPlayerPosition().x - m_distToPlayerX, m_graphics->GetPlayerPosition().y + m_distToPlayerY);
 	}
 }
 
@@ -127,6 +152,7 @@ bool DroneController::Attack()
 
 void DroneController::SetDestination(float destX, float destY)
 {
+	m_droneOnPlayer = true;
 	m_destX = destX;
 	m_destY = destY;
 }
@@ -145,4 +171,11 @@ void DroneController::CheckSpearsDamage(MovingObjectPrototype *object)
 float DroneController::GetDroneEnergyProgress()
 {
 	return (float)m_energyLeft / (float)m_energyMax;
+}
+
+void DroneController::DroneOutsideScreen()
+{
+	m_droneForceToPlayer = true;
+	m_destX = m_graphics->GetPlayerPosition().x + m_distToPlayerX;
+	m_destY = m_graphics->GetPlayerPosition().y + m_distToPlayerY;
 }

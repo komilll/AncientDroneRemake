@@ -29,6 +29,8 @@ Player::~Player()
 
 bool Player::Initialize()
 {
+	//gravity = 0.0f;
+
 	m_playerModel = new ModelClass();
 	if (!m_playerModel)
 		return false;

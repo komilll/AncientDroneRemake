@@ -62,6 +62,9 @@ public:
 	ModelClass* GetGroundModel(int index);
 	int GetGroundModelCount();
 
+	D3DXVECTOR3 GetPlayerPositionDiff();
+	D3DXVECTOR3 GetPlayerPosition();
+	ModelClass* GetPlayerModel();
 
 private:
 	bool Render();
@@ -90,6 +93,7 @@ private:
 
 	D3DXVECTOR3 m_lastFrameCameraPosition;
 	D3DXVECTOR3 m_lastPlayerPosition;
+	D3DXVECTOR3 m_playerPosDiff;
 };
 
 #endif

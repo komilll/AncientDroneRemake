@@ -38,9 +38,11 @@ private:
 
 	int m_screenWidth, m_screenHeight;
 	int m_mouseX, m_mouseY;
+	float m_mouseMaxX, m_mouseMaxY;
 	float m_mouseSpeedSlowdown = 4.0f;
 
 	//Graphics object settings
+	GraphicsClass* m_graphics;
 	ModelClass* m_model;
 	TextureShaderGeneralClass* m_shader;
 };

@@ -29,6 +29,7 @@ public:
 	void SetDestination(float destX, float destY);
 	void CheckSpearsDamage(MovingObjectPrototype* object);
 	float GetDroneEnergyProgress();
+	void DroneOutsideScreen();
 
 private:
 	//SPEAR
@@ -45,5 +46,13 @@ private:
 	int m_bulletEnergyCost = 25;
 	__int64 m_lastAttackTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	int m_timeToRecoverEnergy = 2000; //ms
+
+	//Movement
+	bool m_droneOnPlayer = false;
+	bool m_droneForceToPlayer = false;
+	float m_distToPlayerX = -7.5f;
+	float m_distToPlayerY = 11.0f;
+	float m_boundsScreenX = 141;
+	float m_boundsScreenY = 106;
 };
 #endif // !_DRONE_CONTORLLER_H_

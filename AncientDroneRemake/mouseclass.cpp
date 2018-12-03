@@ -4,6 +4,8 @@ MouseClass::MouseClass()
 {
 	m_directInput = 0;
 	m_mouse = 0;
+	m_mouseMaxX = 141;
+	m_mouseMaxY = 106;
 }
 
 MouseClass::MouseClass(const MouseClass &)
@@ -17,6 +19,7 @@ MouseClass::~MouseClass()
 bool MouseClass::Initialize(HINSTANCE hInstance, HWND hwnd, GraphicsClass* graphicsClass)
 {
 	HRESULT result;
+	m_graphics = graphicsClass;
 
 	m_screenWidth = 800;
 	m_screenHeight = 600;
@@ -163,15 +166,18 @@ void MouseClass::ProcessInput()
 	//else
 		m_mouseY -= toAddY;
 
-	if (m_mouseX < -141)
-		m_mouseX = -141;
-	if (m_mouseY < -106)
-		m_mouseY = -106;
+		m_mouseX += m_graphics->GetPlayerPositionDiff().x;
+		m_mouseY += m_graphics->GetPlayerPositionDiff().y;
 
-	if (m_mouseX > 141)
-		m_mouseX = 141;
-	if (m_mouseY > 106)
-		m_mouseY = 106;
+	if (m_mouseX < -m_mouseMaxX + m_graphics->GetPlayerPosition().x)
+		m_mouseX = -m_mouseMaxX + m_graphics->GetPlayerPosition().x;
+	if (m_mouseY < -m_mouseMaxY + m_graphics->GetPlayerPosition().y)
+		m_mouseY = -m_mouseMaxY + m_graphics->GetPlayerPosition().y;
+
+	if (m_mouseX > m_mouseMaxX + m_graphics->GetPlayerPosition().x)
+		m_mouseX = m_mouseMaxX + m_graphics->GetPlayerPosition().x;
+	if (m_mouseY > m_mouseMaxY + m_graphics->GetPlayerPosition().y)
+		m_mouseY = m_mouseMaxY + m_graphics->GetPlayerPosition().y;
 
 	m_model->SetTranslation(m_mouseX, m_mouseY, 0.0f);
 }
