@@ -202,7 +202,7 @@ void Player::Update()
 					frameMovementRight = -(m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
 					break;
 				}
-			}
+			}			
 		}
 
 		/****************************************************************/
@@ -277,6 +277,16 @@ void Player::Update()
 					}
 				}
 			}
+
+			//Ground from bottom
+			bool groundFromTheBottom = (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+				m_playerModel->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+				m_playerModel->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y);
+			if (groundFromTheBottom && inBounds && frameMovementUp <= 0.0f)
+			{
+				isFalling = false;
+				isGround = true;
+			}
 		}
 
 		if (isFalling)
@@ -304,7 +314,7 @@ void Player::FixedUpdate()
 
 void Player::Move()
 {
-	m_playerModel->SetTranslation(movementRight, movementUp, 0.0f);
+	 m_playerModel->SetTranslation(movementRight, movementUp, 0.0f);
 }
 
 void Player::DealDamage(int dmg)

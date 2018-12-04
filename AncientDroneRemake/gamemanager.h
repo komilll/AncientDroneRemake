@@ -1,4 +1,7 @@
 ///////////////////////////////
+#ifndef _GAMEMANAGER_H_
+#define _GAMEMANAGER_H_
+
 #include "player.h"
 #include "inputclass.h"
 #include "enemywanderer.h"
@@ -21,8 +24,12 @@ public:
 	void LMBPressed();
 	void SetDroneRotation(float mousePosX, float mousePosY);
 	void SetDroneDestination(float destX, float destY);
+	void CallDroneToPlayer();
 	void StartGame();
 	Player* GetPlayer();
+
+	template <typename T>
+	void AddNewEnemy(T type);
 
 private:
 	InputClass* m_inputClass; //Singleton
@@ -33,6 +40,10 @@ private:
 	EnemyArcher* enemyArcher;
 	DroneController* droneController;
 
+	std::vector<EnemyWanderer*> m_enemyWanderer;
+	std::vector<EnemyFlying*> m_enemyFlying;
+	std::vector<EnemyArcher*> m_enemyArcher;
+
 	UIController* healthBarBackground;
 	UIController* healthBar;
 	UIController* progressBarBackground;
@@ -41,3 +52,24 @@ private:
 	UIController* menuQuit;
 	UIController* menuTitle;
 };
+
+template<typename T>
+inline void GameManager::AddNewEnemy(T type)
+{
+	if (type == nullptr || type == 0)
+		return;
+
+	switch (type)
+	{
+		case EnemyWanderer*:
+			m_enemyWanderer.push_back(type);
+			break;
+		case EnemyFlying*:
+			m_enemyFlying.push_back(type);
+			break;
+		case EnemyArcher*:
+			m_enemyArcher.push_back(type);
+			break;
+	}
+}
+#endif // !_GAMEMANAGER_H_

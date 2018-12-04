@@ -5,6 +5,7 @@ DroneController::DroneController()
 	MovingObjectPrototype::MovingObjectPrototype();
 
 	speed = 5.0f;
+	m_droneOnPlayer = true;
 }
 
 bool DroneController::Init(GraphicsClass * graphicsClass, float width, float height, float translationX, float translationY, CHAR * animationSheetName)
@@ -61,11 +62,7 @@ void DroneController::FixedUpdate()
 
 	//MovingObjectPrototype::FixedUpdate();
 	float distance = abs(m_destX - m_posX());
-	if (distance < m_epsilon)
-	{
-		//Do nothing
-	}
-	else if (distance < m_epsilonDistance)
+	if ((distance < m_epsilon && m_droneForceToPlayer == false) || (distance < m_epsilonDistance && m_droneForceToPlayer == true))
 	{
 		//Snap to correct position
 		m_model->SetTranslation(m_destX, m_destY, 0.0f);	
@@ -152,7 +149,6 @@ bool DroneController::Attack()
 
 void DroneController::SetDestination(float destX, float destY)
 {
-	m_droneOnPlayer = true;
 	m_destX = destX;
 	m_destY = destY;
 }
@@ -178,4 +174,15 @@ void DroneController::DroneOutsideScreen()
 	m_droneForceToPlayer = true;
 	m_destX = m_graphics->GetPlayerPosition().x + m_distToPlayerX;
 	m_destY = m_graphics->GetPlayerPosition().y + m_distToPlayerY;
+}
+
+void DroneController::FreeDroneFromPlayer()
+{
+	m_droneOnPlayer = false;
+	m_droneForceToPlayer = false;
+}
+
+void DroneController::CallDroneToPlayer()
+{
+	m_droneForceToPlayer = true;
 }

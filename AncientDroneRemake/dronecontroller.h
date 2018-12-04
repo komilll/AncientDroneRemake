@@ -30,6 +30,8 @@ public:
 	void CheckSpearsDamage(MovingObjectPrototype* object);
 	float GetDroneEnergyProgress();
 	void DroneOutsideScreen();
+	void FreeDroneFromPlayer();
+	void CallDroneToPlayer();
 
 private:
 	//SPEAR
@@ -37,8 +39,8 @@ private:
 	int m_spearIndex = 0;
 
 	float m_destX, m_destY;
-	float m_epsilon = 0.01f;
-	float m_epsilonDistance = 0.1f;
+	float m_epsilon = 0.1f;
+	float m_epsilonDistance = 0.3f;
 	float m_attackCooldown = 1.0f;
 	float m_attackCooldownCurrent = 0.0f;
 	int m_energyMax = 100;

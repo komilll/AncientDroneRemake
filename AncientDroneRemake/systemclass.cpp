@@ -71,7 +71,7 @@ bool SystemClass::Initialize()
 	if (!m_tiledInterpreter)
 		return false;
 
-	m_tiledInterpreter->Initialize(m_Graphics, m_GameManager->GetPlayer());
+	m_tiledInterpreter->Initialize(m_Graphics, m_GameManager->GetPlayer(), m_GameManager);
 	m_tiledInterpreter->Import();
 
 	if (!m_Mouse) 	
@@ -189,9 +189,10 @@ bool SystemClass::Frame()
 	}	
 	m_GameManager->SetDroneRotation(m_Mouse->GetMouseModelLocation().x, m_Mouse->GetMouseModelLocation().y);
 	
-	if (m_Input->IsKeyDown(VK_E))	
+	if (m_Input->IsKeyDown(VK_E))
 		m_GameManager->SetDroneDestination(m_Mouse->GetMouseModelLocation().x, m_Mouse->GetMouseModelLocation().y);
-	
+	else if (m_Input->IsKeyDown(VK_R))
+		m_GameManager->CallDroneToPlayer();
 
 	return true;
 }

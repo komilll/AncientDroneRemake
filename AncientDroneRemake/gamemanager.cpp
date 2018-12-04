@@ -209,7 +209,16 @@ void GameManager::SetDroneDestination(float destX, float destY)
 {
 	if (droneController)
 	{
+		droneController->FreeDroneFromPlayer();
 		droneController->SetDestination(destX, destY);
+	}
+}
+
+void GameManager::CallDroneToPlayer()
+{
+	if (droneController)
+	{
+		droneController->CallDroneToPlayer();
 	}
 }
 

@@ -5,10 +5,11 @@ TiledInterpreter::TiledInterpreter()
 
 }
 
-void TiledInterpreter::Initialize(GraphicsClass * graphicsClass, Player* player)
+void TiledInterpreter::Initialize(GraphicsClass * graphicsClass, Player* player, GameManager* gameManager)
 {
 	m_graphics = graphicsClass;
 	m_player = player;
+	m_gameManager = gameManager;
 
 	m_textureGeneral = new TextureShaderGeneralClass();
 	m_textureGeneral->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "Tile_1.dds");
@@ -19,10 +20,6 @@ void TiledInterpreter::Initialize(GraphicsClass * graphicsClass, Player* player)
 
 void TiledInterpreter::Import()
 {
-	const int SPAWN_POINT = 9;
-	const int TILE_MIN = 1;
-	const int TILE_MAX = 8;
-
 	int firstTile = 0;
 
 	//Find most-left tile to use as start point
@@ -47,15 +44,15 @@ void TiledInterpreter::Import()
 			if (tab[i][k] >= TILE_MIN && tab[i][k] <= TILE_MAX)
 				SpawnTile(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
 			else if (tab[i][k] == SPAWN_POINT)
-				SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, /*(MAP_HEIGHT - k) * TILE_SIZE * 2*/ 0);
+				SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2);
 		}
 	}
 }
 
-void TiledInterpreter::SpawnTile(int indeX, int indexY, int indexTile)
+void TiledInterpreter::SpawnTile(int indexX, int indexY, int indexTile)
 {	
-	indexY -= 5;
-	m_textureGeneral->AddModel(m_graphics->AddGroundModel(TILE_SIZE, TILE_SIZE, TILE_SIZE * indeX * 2, TILE_SIZE * indexY * 2));
+	indexY -= 100;
+	m_textureGeneral->AddModel(m_graphics->AddGroundModel(TILE_SIZE, TILE_SIZE, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2));
 }
 
 void TiledInterpreter::ReadMapFile()
@@ -115,6 +112,23 @@ void TiledInterpreter::ReadMapFile()
 
 void TiledInterpreter::SpawnPlayer(float posX, float posY)
 {
-	m_player->ChangePosition(posX, posY);
+	m_player->ChangePosition(posX, posY - TILE_SIZE * 100 * 2);
 	m_player->Move();
+}
+
+void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy)
+{
+	indexY -= 100;
+	switch (indexEnemy)
+	{
+		case WANDERER:
+			//m_gameManager->AddNewEnemy()
+			break;
+		case ARCHER:
+			break;
+		case CROW:
+			break;
+	}
+
+	m_textureGeneral->AddModel(m_graphics->AddGroundModel(TILE_SIZE, TILE_SIZE, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2));
 }
