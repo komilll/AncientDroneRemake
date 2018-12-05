@@ -6,6 +6,9 @@
 #include "textureshadergeneralclass.h"
 #include "player.h"
 #include "gamemanager.h"
+#include "enemywanderer.h"
+#include "enemyflying.h"
+#include "enemyarcher.h"
 #include <fstream>
 #include <istream>
 #include <sstream>

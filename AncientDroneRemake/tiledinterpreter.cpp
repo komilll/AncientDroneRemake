@@ -45,6 +45,8 @@ void TiledInterpreter::Import()
 				SpawnTile(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
 			else if (tab[i][k] == SPAWN_POINT)
 				SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2);
+			else if (tab[i][k] >= WANDERER && tab[i][k] <= CROW)
+				SpawnEnemy(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
 		}
 	}
 }
@@ -119,16 +121,35 @@ void TiledInterpreter::SpawnPlayer(float posX, float posY)
 void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy)
 {
 	indexY -= 100;
+
+	EnemyWanderer* wanderer = nullptr;
+	EnemyArcher* archer = nullptr;
+	EnemyFlying* flying = nullptr;
+
 	switch (indexEnemy)
 	{
 		case WANDERER:
-			//m_gameManager->AddNewEnemy()
+			wanderer = new EnemyWanderer();
+			wanderer->Init(m_graphics, 16.0f, 16.0f, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, "mob_spikyback.dds");
+			m_gameManager->AddNewEnemy(wanderer);
 			break;
 		case ARCHER:
+			archer = new EnemyArcher();
+			archer->Init(m_graphics, 12.0f, 12.0f, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2);
+			archer->SetPlayer(m_player);
+			m_gameManager->AddNewEnemy(archer);
 			break;
 		case CROW:
+			//enemyFlying = new EnemyFlying();
+			//if (enemyFlying == nullptr)
+			//	return false;
+
+			//if (!enemyFlying->Init(graphicsClass, 16, 16))
+			//	return false;
+
+			//enemyFlying->SetPlayer(player);
+			//enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
 			break;
 	}
 
-	m_textureGeneral->AddModel(m_graphics->AddGroundModel(TILE_SIZE, TILE_SIZE, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2));
 }

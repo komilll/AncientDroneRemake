@@ -11,6 +11,8 @@
 #include "uicontroller.h"
 #include "mouseclass.h"
 #include <functional>
+#include <typeinfo>
+#include <type_traits>
 
 class GameManager
 {
@@ -30,6 +32,9 @@ public:
 
 	template <typename T>
 	void AddNewEnemy(T type);
+
+private:
+	void PushNewEnemy(void* enemy);
 
 private:
 	InputClass* m_inputClass; //Singleton
@@ -59,17 +64,6 @@ inline void GameManager::AddNewEnemy(T type)
 	if (type == nullptr || type == 0)
 		return;
 
-	switch (type)
-	{
-		case EnemyWanderer*:
-			m_enemyWanderer.push_back(type);
-			break;
-		case EnemyFlying*:
-			m_enemyFlying.push_back(type);
-			break;
-		case EnemyArcher*:
-			m_enemyArcher.push_back(type);
-			break;
-	}
+	PushNewEnemy(type);
 }
 #endif // !_GAMEMANAGER_H_

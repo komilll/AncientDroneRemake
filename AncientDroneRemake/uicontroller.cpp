@@ -8,6 +8,7 @@ UIController::UIController()
 
 void UIController::Init(GraphicsClass* graphicsClass, float width, float height, float originalWidth, float originalHeight, float positionX, float positionY, CHAR* filename, bool transparent)
 {
+	m_graphics = graphicsClass;
 	m_model = new ModelClass();
 	if (!m_model)
 		return;
@@ -63,7 +64,9 @@ void UIController::SetProgress(float progress)
 		return;
 
 	m_model->SetScale(progress, 1.0f, 1.0f);	
-	m_model->SetTranslation(m_originalTranslationX - (1.0f - progress) * m_model->GetOriginalSize().x,
+	//m_model->SetTranslation(m_originalTranslationX - (1.0f - progress) * m_model->GetOriginalSize().x,
+	//	m_model->GetTranslation().y, m_model->GetTranslation().z);
+	m_model->SetTranslation((m_originalTranslationX + m_graphics->GetPlayerModel()->GetTranslation().x) - (1.0f - progress) * m_model->GetOriginalSize().x,
 		m_model->GetTranslation().y, m_model->GetTranslation().z);
 	m_currentProgress = progress;
 }

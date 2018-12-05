@@ -18,5 +18,6 @@ public:
 	void FixedUpdate() override; //Update function for physics called in fixed time
 	bool TouchedPlayer(Player * player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY) override;
 	void Move(float x) override;
+	void HitedWall() override;
 
 };

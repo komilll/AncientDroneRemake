@@ -35,6 +35,7 @@ private:
 	float m_widthButton = -1;
 	float m_heightButton = -1;
 	MouseClass* m_mouse;
+	GraphicsClass* m_graphics;
 };
 
 

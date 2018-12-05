@@ -150,7 +150,8 @@ void MovingObjectPrototype::FixedUpdate()
 		bool heightTest = (gMaxY > mMaxY && mMinY > gMinY) || (mMaxY > gMaxY && mMinY < gMinY) || (mMaxY > gMaxY && mMinY > gMinY && mMinY < gMaxY) || 
 			(mMaxY < gMaxY && mMinY < gMinY && mMaxY > gMinY);
 
-		if (heightTest && m_hitedWall)
+		//if (heightTest && m_hitedWall)
+		if (isGround)
 		{
 			HeightTest(mMinX, mMaxX, mMinY, mMaxY, gMinX, gMaxX, gMinY, gMaxY, m_graphics->GetGroundModel(i));
 		}
@@ -214,21 +215,38 @@ void MovingObjectPrototype::PlayOneShotAnimation(int newState, int previousState
 
 void MovingObjectPrototype::HitedWall()
 {
+
 }
 
 void MovingObjectPrototype::HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass* groundModel)
 {
-	if (mMinX < gMaxX && gMaxX < mMaxX && frameMovementRight * Forward().x < 0.0f)
+	bool groundInTheMiddle = (m_model->GetBounds().max.y > groundModel->GetBounds().max.y &&
+		m_model->GetBounds().min.y < groundModel->GetBounds().min.y &&
+		m_model->GetBounds().max.y > groundModel->GetBounds().min.y)
+		||
+		(m_model->GetBounds().max.y < groundModel->GetBounds().max.y &&
+			m_model->GetBounds().min.y >= groundModel->GetBounds().min.y &&
+			m_model->GetBounds().max.y > groundModel->GetBounds().min.y);
+
+	if (!groundInTheMiddle)
+		return;
+
+	//if (gMaxX < mMinX && gMaxX < mMaxX && gMinX < mMaxX)
+	if (gMaxX > mMaxX && mMaxX > gMinX && mMinX < gMinX)
 	{
-		m_model->SetTranslation(m_model->GetTranslation().x - (groundModel->GetBounds().max.x - m_model->GetBounds().min.x) * Forward().x,
-			m_model->GetTranslation().y, m_model->GetTranslation().z);
-		HitedWall();
+		//m_model->SetTranslation(m_model->GetTranslation().x - (groundModel->GetBounds().max.x - m_model->GetBounds().min.x) * Forward().x,
+		//	m_model->GetTranslation().y, m_model->GetTranslation().z);
+		//if (frameMovementRight * Forward().x < 0.0f)
+		if (frameMovementRight > 0.0f)
+			HitedWall();
 	}
-	else if (mMaxX > gMinX && mMinX > gMinX && frameMovementRight * Forward().x > 0.0f)
+	//else if (mMaxX > gMinX && mMinX < gMinX && mMaxX < gMaxX)
+	else if (gMinX < mMinX && mMinX < gMaxX && mMaxX > gMaxX)
 	{
-		m_model->SetTranslation(m_model->GetTranslation().x + (groundModel->GetBounds().min.x - m_model->GetBounds().max.x) * Forward().x,
-			m_model->GetTranslation().y, m_model->GetTranslation().z);
-		HitedWall();
+		//m_model->SetTranslation(m_model->GetTranslation().x + (groundModel->GetBounds().min.x - m_model->GetBounds().max.x) * Forward().x,
+		//	m_model->GetTranslation().y, m_model->GetTranslation().z);
+		if (frameMovementRight < 0.0f)
+			HitedWall();
 	}
 }
 

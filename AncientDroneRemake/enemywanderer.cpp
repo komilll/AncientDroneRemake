@@ -6,6 +6,7 @@ EnemyWanderer::EnemyWanderer()
 	useGravity = true;
 	gravity = 5.0f;
 	speed = 0.25f;
+	m_hitedWall = true;
 }
 
 EnemyWanderer::EnemyWanderer(const EnemyWanderer &)
@@ -89,4 +90,10 @@ bool EnemyWanderer::TouchedPlayer(Player * player, float playerMinX, float playe
 void EnemyWanderer::Move(float x)
 {
 	EnemyBase::Move(x);
+}
+
+void EnemyWanderer::HitedWall()
+{
+	//MovingObjectPrototype::HitedWall();
+	speed = -speed;
 }

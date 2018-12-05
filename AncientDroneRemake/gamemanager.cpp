@@ -30,6 +30,12 @@ void GameManager::Update()
 		enemyWanderer->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
 
+	for (int i = 0; i < m_enemyWanderer.size(); i++)
+	{
+		m_enemyWanderer.at(i)->Update();
+		m_enemyWanderer.at(i)->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+	}
+
 	if (enemyFlying)
 	{
 		enemyFlying->Update();
@@ -229,4 +235,14 @@ void GameManager::StartGame()
 Player * GameManager::GetPlayer()
 {
 	return player;
+}
+
+void GameManager::PushNewEnemy(void * enemy)
+{
+	if (static_cast<EnemyWanderer*>(enemy))	
+		m_enemyWanderer.push_back(static_cast<EnemyWanderer*>(enemy));	
+	else if (static_cast<EnemyArcher*>(enemy))
+		m_enemyArcher.push_back(static_cast<EnemyArcher*>(enemy));
+	else if (static_cast<EnemyFlying*>(enemy))
+		m_enemyFlying.push_back(static_cast<EnemyFlying*>(enemy));
 }
