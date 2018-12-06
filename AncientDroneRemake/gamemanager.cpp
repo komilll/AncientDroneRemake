@@ -24,11 +24,11 @@ void GameManager::Update()
 		player->Update();
 	}
 
-	if (enemyWanderer)
-	{
-		enemyWanderer->Update();
-		enemyWanderer->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
-	}
+	//if (enemyWanderer)
+	//{
+	//	enemyWanderer->Update();
+	//	enemyWanderer->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+	//}
 
 	for (int i = 0; i < m_enemyWanderer.size(); i++)
 	{
@@ -36,23 +36,36 @@ void GameManager::Update()
 		m_enemyWanderer.at(i)->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
 
-	if (enemyFlying)
+	for (int i = 0; i < m_enemyFlying.size(); i++)
 	{
-		enemyFlying->Update();
+		m_enemyFlying.at(i)->Update();
 	}
+	//if (enemyFlying)
+	//{
+	//	enemyFlying->Update();
+	//}
 
-	if (enemyArcher)
+	//if (enemyArcher)
+	//{
+	//	enemyArcher->Update();
+	//	enemyArcher->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+	//}
+
+	for (int i = 0; i < m_enemyArcher.size(); i++)
 	{
-		enemyArcher->Update();
-		enemyArcher->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+		m_enemyArcher.at(i)->Update();
+		//m_enemyArcher.at(i)->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
 
 	if (droneController)
 	{
 		droneController->Update();
-		droneController->CheckSpearsDamage(enemyWanderer);
-		droneController->CheckSpearsDamage(enemyFlying);
-		droneController->CheckSpearsDamage(enemyArcher);
+		for (int i = 0; i < m_enemyWanderer.size(); i++)
+			droneController->CheckSpearsDamage(m_enemyWanderer.at(i));
+		for (int i = 0; i < m_enemyFlying.size(); i++)
+			droneController->CheckSpearsDamage(m_enemyFlying.at(i));
+		for (int i = 0; i < m_enemyArcher.size(); i++)
+			droneController->CheckSpearsDamage(m_enemyArcher.at(i));
 	}
 	
 	if (healthBar && player)
@@ -79,6 +92,7 @@ void GameManager::Update()
 bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3DClass *d3d, GraphicsClass *graphicsClass)
 {	
 	m_inputClass = inputClass;
+	m_graphics = graphicsClass;
 	if (m_inputClass == nullptr)
 		return false;
 
@@ -92,99 +106,6 @@ bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3D
 
 	if (!player->Initialize())
 		return false;
-	
-	//enemyWanderer = new EnemyWanderer();
-	//if (enemyWanderer == nullptr)
-	//	return false;
-
-	//if (!enemyWanderer->Init(graphicsClass, 16.0f, 16.0f, 0.0f, 0.0f, "mob_spikyback.dds"))
-	//	return false;
-
-	//enemyFlying = new EnemyFlying();
-	//if (enemyFlying == nullptr)
-	//	return false;
-
-	//if (!enemyFlying->Init(graphicsClass, 16, 16))
-	//	return false;
-
-	//enemyFlying->SetPlayer(player);
-	//enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
-
-	//enemyArcher = new EnemyArcher();
-	//if (enemyArcher == nullptr)
-	//	return false;
-
-	//if (!enemyArcher->Init(graphicsClass, 12, 12))
-	//	return false;
-
-	//enemyArcher->SetPlayer(player);
-
-	droneController = new DroneController();
-	if (droneController == nullptr)
-		return false;
-
-	if (!droneController->Init(graphicsClass, 12.0f, 12.0f, 0.0f, 15.0f, "ancient_ball.dds"))
-		return false;
-
-	////////////////////////////////
-	////////////// UI //////////////
-	////////////////////////////////
-
-	#pragma region Gameplay UI
-	healthBarBackground = new UIController();
-	if (healthBarBackground == nullptr)
-		return false;
-
-	healthBarBackground->Init(graphicsClass, 6*8, 6, 512, 64, -85.0f, 90.0f, "UIBackground.dds");
-
-	healthBar = new UIController();
-	if (healthBar == nullptr)
-		return false;
-
-	healthBar->Init(graphicsClass, 6 * 8, 6, 512, 64, -85.0f, 90.25f, "UIHealth.dds");	
-
-	progressBarBackground = new UIController();
-	if (progressBarBackground == nullptr)
-		return false;
-
-	progressBarBackground->Init(graphicsClass, 6 * 8, 6, 512, 64, -85.0f, 75.0f, "UIBackground.dds");
-
-	progressBar = new UIController();
-	if (progressBar == nullptr)
-		return false;
-
-	progressBar->Init(graphicsClass, 6 * 8, 6, 512, 64, -85.0f, 75.0f, "UIProgress.dds");
-#pragma endregion
-
-/*
-	#pragma region Menu UI
-	menuTitle = new UIController();
-	if (menuTitle == nullptr)
-		return false;
-
-	menuTitle->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, 60.0f, "UIMenu_Title.dds");
-	menuTitle->GetModel()->SetScale(3.0f, 3.0f, 3.0f);
-
-	menuStartGame = new UIController();
-	if (menuStartGame == nullptr)
-		return false;
-
-	menuStartGame->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -15.0f, "UIMenu_StartGame.dds");
-	menuStartGame->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
-	menuStartGame->InitializeButton(m_mouseClass);
-	menuStartGame->EventOnPressButton = [=]() -> void { StartGame(); };
-
-	menuQuit = new UIController();
-	if (menuQuit == nullptr)
-		return false;
-
-	menuQuit->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -45.0f, "UIMenu_Quit.dds");
-	menuQuit->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
-	menuQuit->InitializeButton(m_mouseClass);
-	menuQuit->EventOnPressButton = []()-> void { PostQuitMessage(0); };
-
-#pragma endregion
-*/
 
 	return true;
 }
@@ -235,6 +156,102 @@ void GameManager::StartGame()
 Player * GameManager::GetPlayer()
 {
 	return player;
+}
+
+bool GameManager::SpawnObjects()
+{
+	//enemyWanderer = new EnemyWanderer();
+	//if (enemyWanderer == nullptr)
+	//	return false;
+
+	//if (!enemyWanderer->Init(graphicsClass, 16.0f, 16.0f, 0.0f, 0.0f, "mob_spikyback.dds"))
+	//	return false;
+
+	//enemyFlying = new EnemyFlying();
+	//if (enemyFlying == nullptr)
+	//	return false;
+
+	//if (!enemyFlying->Init(graphicsClass, 16, 16))
+	//	return false;
+
+	//enemyFlying->SetPlayer(player);
+	//enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
+
+	//enemyArcher = new EnemyArcher();
+	//if (enemyArcher == nullptr)
+	//	return false;
+
+	//if (!enemyArcher->Init(graphicsClass, 12, 12))
+	//	return false;
+
+	//enemyArcher->SetPlayer(player);
+
+	droneController = new DroneController();
+	if (droneController == nullptr)
+		return false;
+
+	if (!droneController->Init(m_graphics, 12.0f, 12.0f, 0.0f, 15.0f, "ancient_ball.dds"))
+		return false;
+
+	////////////////////////////////
+	////////////// UI //////////////
+	////////////////////////////////
+
+#pragma region Gameplay UI
+	healthBarBackground = new UIController();
+	if (healthBarBackground == nullptr)
+		return false;
+
+	healthBarBackground->Init(m_graphics, 6 * 8, 6, 512, 64, -85.0f, 90.0f, "UIBackground.dds");
+
+	healthBar = new UIController();
+	if (healthBar == nullptr)
+		return false;
+
+	healthBar->Init(m_graphics, 6 * 8, 6, 512, 64, -85.0f, 90.25f, "UIHealth.dds");
+
+	progressBarBackground = new UIController();
+	if (progressBarBackground == nullptr)
+		return false;
+
+	progressBarBackground->Init(m_graphics, 6 * 8, 6, 512, 64, -85.0f, 75.0f, "UIBackground.dds");
+
+	progressBar = new UIController();
+	if (progressBar == nullptr)
+		return false;
+
+	progressBar->Init(m_graphics, 6 * 8, 6, 512, 64, -85.0f, 75.0f, "UIProgress.dds");
+#pragma endregion
+
+	/*
+	#pragma region Menu UI
+	menuTitle = new UIController();
+	if (menuTitle == nullptr)
+	return false;
+
+	menuTitle->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, 60.0f, "UIMenu_Title.dds");
+	menuTitle->GetModel()->SetScale(3.0f, 3.0f, 3.0f);
+
+	menuStartGame = new UIController();
+	if (menuStartGame == nullptr)
+	return false;
+
+	menuStartGame->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -15.0f, "UIMenu_StartGame.dds");
+	menuStartGame->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
+	menuStartGame->InitializeButton(m_mouseClass);
+	menuStartGame->EventOnPressButton = [=]() -> void { StartGame(); };
+
+	menuQuit = new UIController();
+	if (menuQuit == nullptr)
+	return false;
+
+	menuQuit->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -45.0f, "UIMenu_Quit.dds");
+	menuQuit->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
+	menuQuit->InitializeButton(m_mouseClass);
+	menuQuit->EventOnPressButton = []()-> void { PostQuitMessage(0); };
+
+	#pragma endregion
+	*/
 }
 
 void GameManager::PushNewEnemy(void * enemy)

@@ -71,6 +71,18 @@ int ModelClass::GetIndexCount()
 	return m_indexCount;
 }
 
+void ModelClass::SetAdditionalTranslation(float x, float y, float z)
+{
+	m_additionalTranslationX = x;
+	m_additionalTranslationY = y;
+	m_additionalTranslationZ = z;
+}
+
+D3DXVECTOR3 ModelClass::GetAdditionalTranslation()
+{
+	return D3DXVECTOR3(m_additionalTranslationX, m_additionalTranslationY, m_additionalTranslationZ);
+}
+
 void ModelClass::SetTranslation(float x, float y, float z)
 {
 	m_translationX = x;

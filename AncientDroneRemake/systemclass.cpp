@@ -74,6 +74,9 @@ bool SystemClass::Initialize()
 	m_tiledInterpreter->Initialize(m_Graphics, m_GameManager->GetPlayer(), m_GameManager);
 	m_tiledInterpreter->Import();
 
+	if (!m_GameManager->SpawnObjects())
+		return false;
+
 	if (!m_Mouse) 	
 		return false;
 	if (!m_Mouse->Initialize(m_hinstance, m_hwnd, m_Graphics))

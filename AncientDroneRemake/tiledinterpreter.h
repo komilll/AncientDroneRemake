@@ -13,6 +13,8 @@
 #include <istream>
 #include <sstream>
 #include <string>
+#include <algorithm>
+#include <vector>
 
 class TiledInterpreter 
 {
@@ -28,6 +30,7 @@ class TiledInterpreter
 	static const int CROW = 12;
 	/////////
 	static const int SPAWN_POINT = 13; //OTHER
+	static const int WAYPOINT = 14; //OTHER
 
 public:
 	TiledInterpreter();
@@ -39,6 +42,7 @@ private:
 	void ReadMapFile();
 	void SpawnPlayer(float posX, float posY);
 	void SpawnEnemy(int indexX, int indexY, int indexEnemy);
+	void FindFirstTileX();
 
 private:
 	GraphicsClass* m_graphics;
@@ -48,6 +52,8 @@ private:
 	static const int MAP_WIDTH = 100;
 	static const int MAP_HEIGHT = 20;
 	int tab[MAP_WIDTH][MAP_HEIGHT];
+	std::vector<D3DXVECTOR2> m_waypoints;
+	int firstTile;
 };
 
 #endif // !_TILED_INTERPRETER_H_

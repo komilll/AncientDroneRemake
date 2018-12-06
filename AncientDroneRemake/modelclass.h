@@ -40,6 +40,8 @@ public:
 	bool Render(ID3D11DeviceContext*);
 
 	int GetIndexCount();
+	void SetAdditionalTranslation(float x, float y, float z);
+	D3DXVECTOR3 GetAdditionalTranslation();
 	void SetTranslation(float x, float y, float z);
 	D3DXVECTOR3 GetTranslation();
 	void SetRotation(float z);
@@ -75,6 +77,7 @@ private:
 	int m_widthOriginal, m_heightOriginal;
 	float m_scaleX, m_scaleY, m_scaleZ;
 	float m_translationX, m_translationY, m_translationZ;
+	float m_additionalTranslationX, m_additionalTranslationY, m_additionalTranslationZ;
 	bool m_isVisibile = true;
 	bool m_useRotation;
 	float m_rotationX, m_rotationY, m_rotationZ;

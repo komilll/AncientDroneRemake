@@ -29,6 +29,7 @@ public:
 	void CallDroneToPlayer();
 	void StartGame();
 	Player* GetPlayer();
+	bool SpawnObjects();
 
 	template <typename T>
 	void AddNewEnemy(T type);
@@ -39,6 +40,7 @@ private:
 private:
 	InputClass* m_inputClass; //Singleton
 	MouseClass* m_mouseClass;
+	GraphicsClass* m_graphics;
 	Player *player;
 	EnemyWanderer* enemyWanderer;
 	EnemyFlying* enemyFlying;

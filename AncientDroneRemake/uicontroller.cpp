@@ -66,7 +66,7 @@ void UIController::SetProgress(float progress)
 	m_model->SetScale(progress, 1.0f, 1.0f);	
 	//m_model->SetTranslation(m_originalTranslationX - (1.0f - progress) * m_model->GetOriginalSize().x,
 	//	m_model->GetTranslation().y, m_model->GetTranslation().z);
-	m_model->SetTranslation((m_originalTranslationX + m_graphics->GetPlayerModel()->GetTranslation().x) - (1.0f - progress) * m_model->GetOriginalSize().x,
+	m_model->SetTranslation(m_originalTranslationX - (1.0f - progress) * m_model->GetOriginalSize().x,
 		m_model->GetTranslation().y, m_model->GetTranslation().z);
 	m_currentProgress = progress;
 }
@@ -78,4 +78,9 @@ void UIController::InitializeButton(MouseClass* mouseClass, float widthArea, flo
 	m_buttonPressed = false;
 	m_widthButton = m_model->GetSize().x * widthArea;
 	m_heightButton = m_model->GetSize().y * heightArea;
+}
+
+void UIController::SetNewOriginalSize(float diff)
+{
+	m_originalTranslationX += diff;
 }

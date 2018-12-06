@@ -20,23 +20,6 @@ void TiledInterpreter::Initialize(GraphicsClass * graphicsClass, Player* player,
 
 void TiledInterpreter::Import()
 {
-	int firstTile = 0;
-
-	//Find most-left tile to use as start point
-	for (int i = 0; i < MAP_WIDTH; i++)
-	{
-		for (int k = 0; k < MAP_HEIGHT; k++)
-		{
-			if (tab[i][k] >= TILE_MIN && tab[i][k] <= TILE_MAX)
-			{
-				firstTile = i;
-				break;
-			}
-		}
-		if (firstTile > 0)
-			break;
-	}
-
 	for (int i = 0; i < MAP_WIDTH; i++)
 	{
 		for (int k = 0; k < MAP_HEIGHT; k++)
@@ -90,26 +73,37 @@ void TiledInterpreter::ReadMapFile()
 		column = 0;
 	}
 
-	//for (int i = 0; i < x; i++)
-	//{
-	//	for (int k = 0; k < y; k++)
-	//	{
-	//		if (tab[i][k] > 0)
-	//		{
-	//			//char* toWrite = "[" + (char*)i + "][" + (char*)k + "] = " + (char*)tab[i][k];				
-	//			oFile.write("[", 1);
-	//			//oFile.write((char*)i, 1);
-	//			oFile.write("][", 2);
-	//			//oFile.write((char*)k, 1);
-	//			oFile.write("] = ", 4);
-	//			//oFile.write((char*)tab[i][k], 1);
-	//			oFile.write("\n", 1);
-	//		}
-	//	}
-	//}
+	iFile.close();
+	FindFirstTileX();
+	//Read waypoints map
+	iFile.open("mapWaypoints.txt");
+
+	line = "";
+	msg = "";
+	test = 0;
+	a = 0;
+	row = 0;
+	column = 0;
+	while (std::getline(iFile, line))
+	{
+		for (int i = 0; i < line.size(); i++)
+		{
+			if (line.at(i) == ',')
+			{
+				if (std::stoi(msg) == WAYPOINT)				
+					m_waypoints.push_back(D3DXVECTOR2((column - firstTile) * TILE_SIZE * 2, (MAP_HEIGHT - row - 100) * TILE_SIZE * 2));
+				
+				msg = "";
+				column++;
+			}
+			else
+				msg += line.at(i);
+		}
+		row++;
+		column = 0;
+	}
 
 	iFile.close();
-	//oFile.close();
 }
 
 void TiledInterpreter::SpawnPlayer(float posX, float posY)
@@ -140,15 +134,50 @@ void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy)
 			m_gameManager->AddNewEnemy(archer);
 			break;
 		case CROW:
-			//enemyFlying = new EnemyFlying();
-			//if (enemyFlying == nullptr)
-			//	return false;
-
-			//if (!enemyFlying->Init(graphicsClass, 16, 16))
-			//	return false;
-
-			//enemyFlying->SetPlayer(player);
+			flying = new EnemyFlying();
+			flying->Init(m_graphics, 16, 16, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2);
+			flying->SetPlayer(m_player);
 			//enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
+			int indexRight = -1;
+			int indexLeft = -1;
+			float posX = TILE_SIZE * indexX * 2;
+			for (int i = 0; i < m_waypoints.size(); i++)
+			{
+				if (m_waypoints.at(i).y == TILE_SIZE * indexY * 2)
+				{
+					if (indexRight == -1 && m_waypoints.at(i).x > posX)
+						indexRight = i;
+					else if (indexLeft == -1 && m_waypoints.at(i).x < posX)
+						indexLeft = i;
+					else if (indexRight != -1 && abs(m_waypoints.at(i).x - posX) < abs(m_waypoints.at(indexRight).x - posX) && m_waypoints.at(i).x > posX)
+						indexRight = i;
+					else if (indexLeft != -1 && abs(m_waypoints.at(i).x - posX) < abs(m_waypoints.at(indexLeft).x - posX) && m_waypoints.at(i).x < posX)
+						indexLeft = i;
+				}
+			}
+			if (indexLeft != -1 && indexRight != -1)
+				flying->SetWaypoints(D3DXVECTOR2(m_waypoints.at(indexLeft).x, TILE_SIZE * indexY * 2), D3DXVECTOR2(m_waypoints.at(indexRight).x, TILE_SIZE * indexY * 2));
+
+			m_gameManager->AddNewEnemy(flying);
+			break;
+	}
+
+}
+
+void TiledInterpreter::FindFirstTileX()
+{
+	//Find most-left tile to use as start point
+	for (int i = 0; i < MAP_WIDTH; i++)
+	{
+		for (int k = 0; k < MAP_HEIGHT; k++)
+		{
+			if (tab[i][k] >= TILE_MIN && tab[i][k] <= TILE_MAX)
+			{
+				firstTile = i;
+				break;
+			}
+		}
+		if (firstTile > 0)
 			break;
 	}
 

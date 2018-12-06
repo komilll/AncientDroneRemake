@@ -492,12 +492,13 @@ bool GraphicsClass::Render()
 			if (m_TextureShadersGeneral.at(i)->GetIsConstantOnScreen())
 			{
 				D3DXVECTOR3 posDiff = m_Camera->GetPosition() - m_lastFrameCameraPosition;
-				model->SetTranslation(model->GetTranslation().x + posDiff.x, model->GetTranslation().y + posDiff.y, model->GetTranslation().z);
+				model->SetAdditionalTranslation(model->GetAdditionalTranslation().x + posDiff.x, model->GetAdditionalTranslation().y + posDiff.y, model->GetAdditionalTranslation().z);
 			}
 
 			D3DXMATRIX scaleMatrix;
 			D3DXMatrixScaling(&scaleMatrix, model->GetScale().x, model->GetScale().y, 1.0f);
-			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x, model->GetTranslation().y, model->GetTranslation().z);
+			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x + model->GetAdditionalTranslation().x, model->GetTranslation().y + model->GetAdditionalTranslation().y,
+				model->GetTranslation().z + model->GetAdditionalTranslation().z);
 			D3DXMatrixMultiply(&worldMatrix, &scaleMatrix, &worldMatrix);
 			if (!model->Render(m_D3D->GetDeviceContext()))
 				continue;
