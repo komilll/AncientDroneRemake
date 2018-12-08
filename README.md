@@ -14,7 +14,7 @@ Another thing was creating parser for .csv data. I'm going to use Tiled for crea
 
 <a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.7">https://github.com/komilll/AncientDroneRemake/releases/tag/0.7</a> - Week #7 release
 <center><img src="Blog/gif_7.gif"></center>
-<center><i>Week #7: Gif #7 – Using drone controlled by player to kill enemy</i></center>
+<center><i>Week #7: Gif #7 – Environment created with Tiled</i></center>
 
 <h2>Week #6</h2>
 General class for dynamic objects turned out to be useful because that was pretty good base for building drone and spears it spawns. Drone can be controlled by pressing 'E' key in the place that we want it to be moved. Movement vector (and speed) is based on current distance to destination. It turned out that this solution works better than original one, where movement speed of drone was constant.
