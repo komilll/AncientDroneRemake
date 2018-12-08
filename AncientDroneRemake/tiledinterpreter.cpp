@@ -18,20 +18,45 @@ void TiledInterpreter::Initialize(GraphicsClass * graphicsClass, Player* player,
 	ReadMapFile();
 }
 
-void TiledInterpreter::Import()
+void TiledInterpreter::Import(bool restart)
 {
-	for (int i = 0; i < MAP_WIDTH; i++)
+	m_wandererIndex = 0;
+	m_archerIndex = 0;
+	m_crowIndex = 0;
+
+	if (restart == false)
 	{
-		for (int k = 0; k < MAP_HEIGHT; k++)
+		for (int i = 0; i < MAP_WIDTH; i++)
 		{
-			if (tab[i][k] >= TILE_MIN && tab[i][k] <= TILE_MAX)
-				SpawnTile(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
-			else if (tab[i][k] == SPAWN_POINT)
-				SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2);
-			else if (tab[i][k] >= WANDERER && tab[i][k] <= CROW)
-				SpawnEnemy(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
+			for (int k = 0; k < MAP_HEIGHT; k++)
+			{
+				if (tab[i][k] >= TILE_MIN && tab[i][k] <= TILE_MAX)
+					SpawnTile(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
+				else if (tab[i][k] == SPAWN_POINT)
+					SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2);
+				else if (tab[i][k] >= WANDERER && tab[i][k] <= CROW)
+					SpawnEnemy(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
+			}
 		}
 	}
+	else
+	{
+		for (int i = 0; i < MAP_WIDTH; i++)
+		{
+			for (int k = 0; k < MAP_HEIGHT; k++)
+			{
+				if (tab[i][k] == SPAWN_POINT)
+					SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2);
+				else if (tab[i][k] >= WANDERER && tab[i][k] <= CROW)
+					SpawnEnemy(i - firstTile, MAP_HEIGHT - k, tab[i][k], true);
+			}
+		}
+	}
+}
+
+void TiledInterpreter::RestartLevel()
+{
+	Import(true);
 }
 
 void TiledInterpreter::SpawnTile(int indexX, int indexY, int indexTile)
@@ -107,12 +132,13 @@ void TiledInterpreter::ReadMapFile()
 }
 
 void TiledInterpreter::SpawnPlayer(float posX, float posY)
-{
-	m_player->ChangePosition(posX, posY - TILE_SIZE * 100 * 2);
+{	
+	m_player->ResetPlayer();
+	m_player->ChangePosition(posX, posY - TILE_SIZE * 100 * 2);	
 	m_player->Move();
 }
 
-void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy)
+void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy, bool restart)
 {
 	indexY -= 100;
 
@@ -123,42 +149,69 @@ void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy)
 	switch (indexEnemy)
 	{
 		case WANDERER:
-			wanderer = new EnemyWanderer();
-			wanderer->Init(m_graphics, 16.0f, 16.0f, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, "mob_spikyback.dds");
-			m_gameManager->AddNewEnemy(wanderer);
+			if (restart)
+			{
+				((EnemyWanderer*)(m_gameManager->GetEnemy(G_WANDERER, m_wandererIndex)))->GetModel()->SetTranslation(TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, 0.0f);
+				((EnemyWanderer*)(m_gameManager->GetEnemy(G_WANDERER, m_wandererIndex)))->RestartEnemy();
+				m_wandererIndex++;
+			}
+			else
+			{
+				wanderer = new EnemyWanderer();
+				wanderer->Init(m_graphics, 16.0f, 16.0f, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, "mob_spikyback.dds");
+				m_gameManager->AddNewEnemy(G_WANDERER, wanderer);
+			}
 			break;
 		case ARCHER:
-			archer = new EnemyArcher();
-			archer->Init(m_graphics, 12.0f, 12.0f, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2);
-			archer->SetPlayer(m_player);
-			m_gameManager->AddNewEnemy(archer);
+			if (restart)
+			{
+				((EnemyArcher*)(m_gameManager->GetEnemy(G_ARCHER, m_archerIndex)))->GetModel()->SetTranslation(TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, 0.0f);
+				((EnemyArcher*)(m_gameManager->GetEnemy(G_ARCHER, m_archerIndex)))->RestartEnemy();
+				m_archerIndex++;
+			}
+			else
+			{
+				archer = new EnemyArcher();
+				archer->Init(m_graphics, 12.0f, 12.0f, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2);
+				archer->SetPlayer(m_player);
+				m_gameManager->AddNewEnemy(G_ARCHER, archer);
+			}
 			break;
 		case CROW:
-			flying = new EnemyFlying();
-			flying->Init(m_graphics, 16, 16, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2);
-			flying->SetPlayer(m_player);
-			//enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
-			int indexRight = -1;
-			int indexLeft = -1;
-			float posX = TILE_SIZE * indexX * 2;
-			for (int i = 0; i < m_waypoints.size(); i++)
+			if (restart)
 			{
-				if (m_waypoints.at(i).y == TILE_SIZE * indexY * 2)
-				{
-					if (indexRight == -1 && m_waypoints.at(i).x > posX)
-						indexRight = i;
-					else if (indexLeft == -1 && m_waypoints.at(i).x < posX)
-						indexLeft = i;
-					else if (indexRight != -1 && abs(m_waypoints.at(i).x - posX) < abs(m_waypoints.at(indexRight).x - posX) && m_waypoints.at(i).x > posX)
-						indexRight = i;
-					else if (indexLeft != -1 && abs(m_waypoints.at(i).x - posX) < abs(m_waypoints.at(indexLeft).x - posX) && m_waypoints.at(i).x < posX)
-						indexLeft = i;
-				}
+				((EnemyFlying*)(m_gameManager->GetEnemy(G_FLYING, m_crowIndex)))->GetModel()->SetTranslation(TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, 0.0f);
+				((EnemyFlying*)(m_gameManager->GetEnemy(G_FLYING, m_crowIndex)))->RestartEnemy();
+				m_crowIndex++;
 			}
-			if (indexLeft != -1 && indexRight != -1)
-				flying->SetWaypoints(D3DXVECTOR2(m_waypoints.at(indexLeft).x, TILE_SIZE * indexY * 2), D3DXVECTOR2(m_waypoints.at(indexRight).x, TILE_SIZE * indexY * 2));
+			else
+			{
+				flying = new EnemyFlying();
+				flying->Init(m_graphics, 16, 16, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2);
+				flying->SetPlayer(m_player);
+				//enemyFlying->SetWaypoints(D3DXVECTOR2(-120.0f, 0.0f), D3DXVECTOR2(120.0f, 0.0f));
+				int indexRight = -1;
+				int indexLeft = -1;
+				float posX = TILE_SIZE * indexX * 2;
+				for (int i = 0; i < m_waypoints.size(); i++)
+				{
+					if (m_waypoints.at(i).y == TILE_SIZE * indexY * 2)
+					{
+						if (indexRight == -1 && m_waypoints.at(i).x > posX)
+							indexRight = i;
+						else if (indexLeft == -1 && m_waypoints.at(i).x < posX)
+							indexLeft = i;
+						else if (indexRight != -1 && abs(m_waypoints.at(i).x - posX) < abs(m_waypoints.at(indexRight).x - posX) && m_waypoints.at(i).x > posX)
+							indexRight = i;
+						else if (indexLeft != -1 && abs(m_waypoints.at(i).x - posX) < abs(m_waypoints.at(indexLeft).x - posX) && m_waypoints.at(i).x < posX)
+							indexLeft = i;
+					}
+				}
+				if (indexLeft != -1 && indexRight != -1)
+					flying->SetWaypoints(D3DXVECTOR2(m_waypoints.at(indexLeft).x, TILE_SIZE * indexY * 2), D3DXVECTOR2(m_waypoints.at(indexRight).x, TILE_SIZE * indexY * 2));
 
-			m_gameManager->AddNewEnemy(flying);
+				m_gameManager->AddNewEnemy(G_FLYING, flying);
+			}
 			break;
 	}
 

@@ -90,41 +90,34 @@ void MovingObjectPrototype::FixedUpdate()
 		float gMaxX = m_graphics->GetGroundModel(i)->GetBounds().max.x;
 		float gMinX = m_graphics->GetGroundModel(i)->GetBounds().min.x;
 
-		float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
+		float groundThickness = (gMaxY - gMinY) / 4;
 		//Ground in the middle
-		bool groundInTheMiddle = (m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-			m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y);
+		bool groundInTheMiddle = (mMaxY > gMaxY && mMinY < gMinY);
 		//Ground from bottom
-		bool groundFromTheBottom = (m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-			m_model->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
-			m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y);
+		bool groundFromTheBottom = (mMaxY > gMaxY && mMinY > gMinY && mMinY < gMaxY);
 		//Ground from top
-		bool groundFromTheTop = (m_model->GetBounds().max.y < m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-			m_model->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().min.y &&
-			m_model->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y);
+		bool groundFromTheTop = (mMaxY < gMaxY && mMinY < gMinY && mMaxY > gMinY);
 
-
-		if (m_model->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y)		
+		if (mMinY <= gMaxY)		
 		{
-			if (m_model->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
-				&& m_model->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
+			if (mMinX < gMaxX && mMaxX > gMinX)
 			{
 				if (useGravity)
-					frameMovementUp = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_model->GetBounds().min.y);
+					frameMovementUp = (gMaxY - mMinY);
 				isFalling = false;
 				isGround = true;
 			}
 
 			if (useGravity && (groundInTheMiddle || groundFromTheBottom || groundFromTheTop) && speed != 0.0f)
 			{
-				if (m_model->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x)
+				if (mMaxX < gMaxX)
 				{
-					if (m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x <= 0.0f && frameMovementRight > 0.0f)
-						frameMovementRight = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_model->GetBounds().max.x;
+					if (gMinX - mMaxX  <= 0.0f && frameMovementRight > 0.0f)
+						frameMovementRight = gMinX - mMaxX;
 				}
-				else if (m_model->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
+				else if (mMinX > gMinX)
 				{
-					float temp_ = -(m_model->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
+					float temp_ = -(mMinX - gMaxX);
 
 					if (temp_ >= 0.0f && frameMovementRight < 0.0f)
 						frameMovementRight = temp_;
@@ -267,7 +260,6 @@ bool MovingObjectPrototype::DamageObject()
 void MovingObjectPrototype::DestroyObject()
 {
 	m_model->SetVisibility(false);
-
 }
 
 ModelClass* MovingObjectPrototype::GetModel()

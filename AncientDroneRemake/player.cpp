@@ -118,10 +118,20 @@ void Player::Update()
 			newState = IDLE;
 	}
 
-	if (m_input->IsKeyDown(btn_jump) && isGround)
+	if (m_input->IsKeyDown(btn_jump))
 	{
-		isGround = false;
-		currentJumpTicks = jumpTicks;
+		if ((isGround || canDoubleJump) && holdingJumpButton == false)
+		{
+			if (!isGround)
+				canDoubleJump = false;
+			isGround = false;
+			currentJumpTicks = jumpTicks;
+		}
+		holdingJumpButton = true;
+	}
+	else
+	{
+		holdingJumpButton = false;
 	}
 	
 	__int64 now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -243,6 +253,7 @@ void Player::Update()
 					{
 						isFalling = false;
 						isGround = true;
+						canDoubleJump = true;
 					}
 					else if (m_playerModel->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x && isFalling)
 					{
@@ -286,13 +297,19 @@ void Player::Update()
 			{
 				isFalling = false;
 				isGround = true;
+				canDoubleJump = true;
 			}
 		}
 
 		if (isFalling)
-			frameMovementUp -= gravity;
+		{
+			if (holdingJumpButton)
+				frameMovementUp -= gravitySlow;
+			else
+				frameMovementUp -= gravitySlow;
+		}
 
-		timer -= 20.0f;		
+		timer -= 20.0f;
 
 		movementRight += frameMovementRight;
 		movementUp += frameMovementUp;
@@ -357,6 +374,13 @@ void Player::ChangePosition(float x, float y)
 {
 	movementRight += x;
 	movementUp += y;
+}
+
+void Player::ResetPlayer()
+{
+	movementRight = 0;
+	movementUp = 0;
+	health = maxHealth;
 }
 
 void Player::PlayerDeath()

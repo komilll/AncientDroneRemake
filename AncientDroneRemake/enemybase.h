@@ -17,6 +17,7 @@ public:
 
 	void SetNewAnimation(int newState) override final;
 	void PlayOneShotAnimation(int state, int previousState = -1) override final;
+	virtual void RestartEnemy() final;
 
 private:
 	//Function

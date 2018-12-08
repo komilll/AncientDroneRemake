@@ -47,3 +47,10 @@ void EnemyBase::PlayOneShotAnimation(int newState, int previousState)
 {
 	MovingObjectPrototype::PlayOneShotAnimation(newState, previousState);
 }
+
+void EnemyBase::RestartEnemy()
+{
+	m_health = m_maxHealth;
+	m_model->SetVisibility(true);
+	m_destroyed = false;
+}

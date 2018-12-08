@@ -23,6 +23,7 @@ public:
 	void InitializeButton(MouseClass* mouseClass, float widthArea = 1, float heightArea = 1); //Percentage of image area that will be treated as button
 	std::function<void()> EventOnPressButton;
 	void SetNewOriginalSize(float diff);
+	void EnableButton(bool value);
 
 private:
 	ModelClass* m_model;

@@ -47,6 +47,10 @@ public:
 	void SetRotation(float z);
 	float GetRotation();
 	bool UseRotation();
+	float minX() const { return bounds.min.x + m_translationX; };
+	float maxX() const { return bounds.max.x + m_translationX; };
+	float minY() const { return bounds.min.y + m_translationY; };
+	float maxY() const { return bounds.max.y + m_translationY; };
 
 	/* Physics based methods */
 	void SetBounds(float minX, float maxX, float minY, float maxY);

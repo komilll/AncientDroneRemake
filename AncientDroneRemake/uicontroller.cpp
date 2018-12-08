@@ -35,13 +35,13 @@ void UIController::Init(GraphicsClass* graphicsClass, float width, float height,
 
 void UIController::Update()
 {
-	if (m_mouse == nullptr)
+	if (m_mouse == nullptr || m_button == false)
 		return;
 
-	if (m_mouse->GetMouseModelLocation().x >= m_model->GetTranslation().x - m_widthButton &&
-		m_mouse->GetMouseModelLocation().x <= m_model->GetTranslation().x + m_widthButton &&
-		m_mouse->GetMouseModelLocation().y >= m_model->GetTranslation().y - m_heightButton &&
-		m_mouse->GetMouseModelLocation().y <= m_model->GetTranslation().y + m_heightButton &&
+	if (m_mouse->GetMouseModelLocation().x >= m_model->GetTranslation().x - m_widthButton + m_model->GetAdditionalTranslation().x &&
+		m_mouse->GetMouseModelLocation().x <= m_model->GetTranslation().x + m_widthButton + m_model->GetAdditionalTranslation().x &&
+		m_mouse->GetMouseModelLocation().y >= m_model->GetTranslation().y - m_heightButton + m_model->GetAdditionalTranslation().y &&
+		m_mouse->GetMouseModelLocation().y <= m_model->GetTranslation().y + m_heightButton + m_model->GetAdditionalTranslation().y &&
 		m_mouse->GetLMBPressed())
 	{
 		EventOnPressButton();
@@ -83,4 +83,10 @@ void UIController::InitializeButton(MouseClass* mouseClass, float widthArea, flo
 void UIController::SetNewOriginalSize(float diff)
 {
 	m_originalTranslationX += diff;
+}
+
+void UIController::EnableButton(bool value)
+{
+	if (m_widthButton != -1 && m_heightButton != -1)
+		m_button = value;
 }

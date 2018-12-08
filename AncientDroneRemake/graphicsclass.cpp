@@ -426,15 +426,16 @@ bool GraphicsClass::Render()
 
 
 	m_D3D->TurnOnAlphaBlending();
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.	
 	D3DXMatrixTranslation(&worldMatrix, playerModel->GetTranslation().x, playerModel->GetTranslation().y, playerModel->GetTranslation().z);
-	playerModel->Render(m_D3D->GetDeviceContext());
-
-	// Render the model using the color shader.	
-	result = m_TextureShaders.at(0)->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, playerModel->movingRight);
-	if (!result)
+	if (playerModel->Render(m_D3D->GetDeviceContext()))
 	{
-		return false;
+		// Render the model using the color shader.	
+		result = m_TextureShaders.at(0)->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, playerModel->movingRight);
+		if (!result)
+		{
+			return false;
+		}
 	}
 
 	for (int i = 1; i < m_TextureShaders.size(); i++)

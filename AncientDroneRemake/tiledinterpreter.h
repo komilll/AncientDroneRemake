@@ -35,13 +35,14 @@ class TiledInterpreter
 public:
 	TiledInterpreter();
 	void Initialize(GraphicsClass* graphicsClass, Player* player, GameManager* gameManager);
-	void Import();
+	void Import(bool restart = false);
+	void RestartLevel();
 
 private:
 	void SpawnTile(int indeX, int indexY, int indexTile);
 	void ReadMapFile();
 	void SpawnPlayer(float posX, float posY);
-	void SpawnEnemy(int indexX, int indexY, int indexEnemy);
+	void SpawnEnemy(int indexX, int indexY, int indexEnemy, bool restart = false);
 	void FindFirstTileX();
 
 private:
@@ -54,6 +55,11 @@ private:
 	int tab[MAP_WIDTH][MAP_HEIGHT];
 	std::vector<D3DXVECTOR2> m_waypoints;
 	int firstTile;
+
+	//Restart params
+	int m_wandererIndex = 0;
+	int m_archerIndex = 0;
+	int m_crowIndex = 0;
 };
 
 #endif // !_TILED_INTERPRETER_H_

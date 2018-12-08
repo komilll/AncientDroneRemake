@@ -39,7 +39,7 @@ bool EnemyWanderer::Init(GraphicsClass* graphicsClass, float width, float height
 
 	m_wander = true;
 
-	m_model->SetBounds(-width, width, -height + 2, height);	
+	m_model->SetBounds(-width + 6, width - 3, -height + 2, height - 10);	
 
 	return toReturn;
 }

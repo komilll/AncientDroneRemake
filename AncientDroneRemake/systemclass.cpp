@@ -62,17 +62,20 @@ bool SystemClass::Initialize()
 	m_GameManager = new GameManager;
 	m_Mouse = new MouseClass;
 
+	m_tiledInterpreter = new TiledInterpreter;
+	if (!m_tiledInterpreter)
+		return false;
+
 	if (!m_GameManager)	
 		return false;	
 	if (!m_GameManager->Initialize(GetInputController(), m_Mouse, m_Graphics->GetD3D(), m_Graphics))
 		return false;
 
-	m_tiledInterpreter = new TiledInterpreter;
-	if (!m_tiledInterpreter)
-		return false;
-
 	m_tiledInterpreter->Initialize(m_Graphics, m_GameManager->GetPlayer(), m_GameManager);
-	m_tiledInterpreter->Import();
+	//if (m_GameManager->GetMenuStartGame() == nullptr)
+	//	m_GameManager->SetMenuStartGame();
+	m_GameManager->StartGameBuildLevel = [=]()-> void{ m_tiledInterpreter->Import(); };
+	//m_GameManager->GetMenuStartGame()->EventOnPressButton = [=]() -> void { };
 
 	if (!m_GameManager->SpawnObjects())
 		return false;
@@ -192,7 +195,12 @@ bool SystemClass::Frame()
 	}	
 	m_GameManager->SetDroneRotation(m_Mouse->GetMouseModelLocation().x, m_Mouse->GetMouseModelLocation().y);
 	
-	if (m_Input->IsKeyDown(VK_E))
+	if (m_Input->IsKeyDown(VK_P))
+	{
+		m_tiledInterpreter->RestartLevel();
+		m_GameManager->RestartLevel();
+	}
+	else if (m_Input->IsKeyDown(VK_E))
 		m_GameManager->SetDroneDestination(m_Mouse->GetMouseModelLocation().x, m_Mouse->GetMouseModelLocation().y);
 	else if (m_Input->IsKeyDown(VK_R))
 		m_GameManager->CallDroneToPlayer();

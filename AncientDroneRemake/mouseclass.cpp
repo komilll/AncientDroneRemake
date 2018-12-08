@@ -210,8 +210,8 @@ void MouseClass::SetLMBPressed(bool enable)
 
 D3DXVECTOR2 MouseClass::GetMouseModelLocation()
 {
-	float mouseMidX = m_model->GetBounds().min.x + (m_model->GetBounds().max.x - m_model->GetBounds().min.x) / 2.0f;
-	float mouseMidY = m_model->GetBounds().min.y + (m_model->GetBounds().max.y - m_model->GetBounds().min.y) / 2.0f;
+	float mouseMidX = m_model->GetBounds().min.x + m_model->GetAdditionalTranslation().x + (m_model->GetBounds().max.x - m_model->GetBounds().min.x) / 2.0f;
+	float mouseMidY = m_model->GetBounds().min.y + m_model->GetAdditionalTranslation().y + (m_model->GetBounds().max.y - m_model->GetBounds().min.y) / 2.0f;
 
 	return D3DXVECTOR2(mouseMidX, mouseMidY);
 }

@@ -32,6 +32,7 @@ public:
 	void DroneOutsideScreen();
 	void FreeDroneFromPlayer();
 	void CallDroneToPlayer();
+	void SetDroneFullEnergy();
 
 private:
 	//SPEAR

@@ -24,12 +24,6 @@ void GameManager::Update()
 		player->Update();
 	}
 
-	//if (enemyWanderer)
-	//{
-	//	enemyWanderer->Update();
-	//	enemyWanderer->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
-	//}
-
 	for (int i = 0; i < m_enemyWanderer.size(); i++)
 	{
 		m_enemyWanderer.at(i)->Update();
@@ -40,21 +34,10 @@ void GameManager::Update()
 	{
 		m_enemyFlying.at(i)->Update();
 	}
-	//if (enemyFlying)
-	//{
-	//	enemyFlying->Update();
-	//}
-
-	//if (enemyArcher)
-	//{
-	//	enemyArcher->Update();
-	//	enemyArcher->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
-	//}
 
 	for (int i = 0; i < m_enemyArcher.size(); i++)
 	{
 		m_enemyArcher.at(i)->Update();
-		//m_enemyArcher.at(i)->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
 
 	if (droneController)
@@ -107,12 +90,14 @@ bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3D
 	if (!player->Initialize())
 		return false;
 
+	player->GetModel()->SetVisibility(false);
+
 	return true;
 }
 
 void GameManager::LMBPressed()
 {
-	if (droneController)
+	if (droneController && m_gameStarted)
 		droneController->Attack();
 }
 
@@ -147,10 +132,6 @@ void GameManager::CallDroneToPlayer()
 	{
 		droneController->CallDroneToPlayer();
 	}
-}
-
-void GameManager::StartGame()
-{
 }
 
 Player * GameManager::GetPlayer()
@@ -192,6 +173,7 @@ bool GameManager::SpawnObjects()
 
 	if (!droneController->Init(m_graphics, 12.0f, 12.0f, 0.0f, 15.0f, "ancient_ball.dds"))
 		return false;
+	droneController->GetModel()->SetVisibility(false);
 
 	////////////////////////////////
 	////////////// UI //////////////
@@ -221,22 +203,29 @@ bool GameManager::SpawnObjects()
 		return false;
 
 	progressBar->Init(m_graphics, 6 * 8, 6, 512, 64, -85.0f, 75.0f, "UIProgress.dds");
+
+	healthBarBackground->GetModel()->SetVisibility(false);
+	healthBar->GetModel()->SetVisibility(false);
+	progressBarBackground->GetModel()->SetVisibility(false);
+	progressBar->GetModel()->SetVisibility(false);
 #pragma endregion
 
-	/*
 	#pragma region Menu UI
 	menuTitle = new UIController();
 	if (menuTitle == nullptr)
 	return false;
 
-	menuTitle->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, 60.0f, "UIMenu_Title.dds");
+	menuTitle->Init(m_graphics, 6 * 4, 6, 256, 64, 0.0f, 60.0f, "UIMenu_Title.dds");
 	menuTitle->GetModel()->SetScale(3.0f, 3.0f, 3.0f);
 
-	menuStartGame = new UIController();
 	if (menuStartGame == nullptr)
-	return false;
+	{
+		menuStartGame = new UIController();
+		if (menuStartGame == nullptr)
+			return false;
+	}
 
-	menuStartGame->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -15.0f, "UIMenu_StartGame.dds");
+	menuStartGame->Init(m_graphics, 6 * 4, 6, 256, 64, 0.0f, -15.0f, "UIMenu_StartGame.dds");
 	menuStartGame->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
 	menuStartGame->InitializeButton(m_mouseClass);
 	menuStartGame->EventOnPressButton = [=]() -> void { StartGame(); };
@@ -245,21 +234,83 @@ bool GameManager::SpawnObjects()
 	if (menuQuit == nullptr)
 	return false;
 
-	menuQuit->Init(graphicsClass, 6 * 4, 6, 256, 64, 0.0f, -45.0f, "UIMenu_Quit.dds");
+	menuQuit->Init(m_graphics, 6 * 4, 6, 256, 64, 0.0f, -45.0f, "UIMenu_Quit.dds");
 	menuQuit->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
 	menuQuit->InitializeButton(m_mouseClass);
 	menuQuit->EventOnPressButton = []()-> void { PostQuitMessage(0); };
 
 	#pragma endregion
-	*/
+	
 }
 
-void GameManager::PushNewEnemy(void * enemy)
+UIController * GameManager::GetMenuStartGame()
 {
-	if (static_cast<EnemyWanderer*>(enemy))	
+	return menuStartGame;
+}
+
+void GameManager::SetMenuStartGame()
+{
+	menuStartGame = new UIController();
+}
+
+void GameManager::StartGame()
+{
+	StartGameBuildLevel();
+	droneController->GetModel()->SetVisibility(true);
+	player->GetModel()->SetVisibility(true);
+	droneController->GetModel()->SetTranslation(player->GetModel()->GetTranslation().x, player->GetModel()->GetTranslation().y, player->GetModel()->GetTranslation().z);
+	menuQuit->GetModel()->SetVisibility(false);
+	menuQuit->EnableButton(false);
+
+	menuStartGame->GetModel()->SetVisibility(false);
+	menuStartGame->EnableButton(false);
+
+	menuTitle->GetModel()->SetVisibility(false);
+
+	healthBarBackground->GetModel()->SetVisibility(true);
+	healthBar->GetModel()->SetVisibility(true);
+	progressBarBackground->GetModel()->SetVisibility(true);
+	progressBar->GetModel()->SetVisibility(true);
+
+	m_mouseClass->SetLMBPressed(false);
+	m_gameStarted = true;
+}
+
+void GameManager::RestartLevel()
+{
+	droneController->SetDroneFullEnergy();
+	droneController->CallDroneToPlayer();
+	droneController->GetModel()->SetTranslation(player->GetModel()->GetTranslation().x, player->GetModel()->GetTranslation().y, player->GetModel()->GetTranslation().z);
+}
+
+void GameManager::AddNewEnemy(EnemyType type, void* enemy)
+{
+	PushNewEnemy(type, enemy);
+}
+
+void * GameManager::GetEnemy(EnemyType type, int index)
+{
+	return GetEnemyLocal(type, index);
+}
+
+void GameManager::PushNewEnemy(EnemyType enemyType, void* enemy)
+{
+	if (enemyType == G_WANDERER)
 		m_enemyWanderer.push_back(static_cast<EnemyWanderer*>(enemy));	
-	else if (static_cast<EnemyArcher*>(enemy))
+	else if (enemyType == G_ARCHER)
 		m_enemyArcher.push_back(static_cast<EnemyArcher*>(enemy));
-	else if (static_cast<EnemyFlying*>(enemy))
+	else if (enemyType == G_FLYING)
 		m_enemyFlying.push_back(static_cast<EnemyFlying*>(enemy));
+}
+
+void * GameManager::GetEnemyLocal(EnemyType type, int index)
+{
+	if (type == G_WANDERER) //WANDERER
+		return m_enemyWanderer.at(index);
+	else if (type == G_ARCHER) //ARCHER
+		return m_enemyArcher.at(index);
+	else if (type == G_FLYING) //CROW
+		return m_enemyFlying.at(index);
+	else
+		MessageBox(*m_graphics->GetHWND(), "No such class of enemy exists", "Type error", MB_OK);
 }

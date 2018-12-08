@@ -14,6 +14,10 @@
 #include <typeinfo>
 #include <type_traits>
 
+enum EnemyType {
+	G_WANDERER, G_ARCHER, G_FLYING
+};
+
 class GameManager
 {
 public:
@@ -27,15 +31,20 @@ public:
 	void SetDroneRotation(float mousePosX, float mousePosY);
 	void SetDroneDestination(float destX, float destY);
 	void CallDroneToPlayer();
-	void StartGame();
 	Player* GetPlayer();
 	bool SpawnObjects();
+	UIController* GetMenuStartGame();
+	void SetMenuStartGame();
+	std::function<void()> StartGameBuildLevel;
+	void StartGame();
+	void RestartLevel();
 
-	template <typename T>
-	void AddNewEnemy(T type);
+	void AddNewEnemy(EnemyType type, void* enemy);
+	void* GetEnemy(EnemyType type, int index);
 
 private:
-	void PushNewEnemy(void* enemy);
+	void PushNewEnemy(EnemyType enemyType, void* enemy);
+	void* GetEnemyLocal(EnemyType enemyType, int index);
 
 private:
 	InputClass* m_inputClass; //Singleton
@@ -58,14 +67,7 @@ private:
 	UIController* menuStartGame;
 	UIController* menuQuit;
 	UIController* menuTitle;
+
+	bool m_gameStarted = false;
 };
-
-template<typename T>
-inline void GameManager::AddNewEnemy(T type)
-{
-	if (type == nullptr || type == 0)
-		return;
-
-	PushNewEnemy(type);
-}
 #endif // !_GAMEMANAGER_H_

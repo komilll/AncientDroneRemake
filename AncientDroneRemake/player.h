@@ -71,6 +71,7 @@ public:
 	float GetHealthProgress();
 	ModelClass* GetModel();
 	void ChangePosition(float x, float y);
+	void ResetPlayer();
 
 private:
 	void PlayerDeath();
@@ -101,15 +102,20 @@ private:
 	int movementUp;
 	float movementSpeed = 1.0f;
 	bool isGround = false;
-	int jumpTicks = 8;
-	int currentJumpTicks = 0;
-	float jumpTickHeight = 4.75f;
 	int idleTime = 0;
 	int timeToSetIdleState = 15;
 	float groundEpsilon = 0.05f;
 
+	//Jump
+	int jumpTicks = 8;
+	int currentJumpTicks = 0;
+	float jumpTickHeight = 4.75f;
+	bool canDoubleJump = true;
+	bool holdingJumpButton = false;
+
 	//Physics
-	float gravity = 1.75f;
+	float gravityNormal = 1.75f;
+	float gravitySlow = 1.0f;
 	float timer;
 	__int64 lastTime;
 

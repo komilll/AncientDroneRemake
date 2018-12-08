@@ -186,3 +186,8 @@ void DroneController::CallDroneToPlayer()
 {
 	m_droneForceToPlayer = true;
 }
+
+void DroneController::SetDroneFullEnergy()
+{
+	m_energyLeft = m_energyMax;
+}
