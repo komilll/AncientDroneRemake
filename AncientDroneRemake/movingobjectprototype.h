@@ -27,7 +27,7 @@ public:
 	void SetNewAnimation(int newState) override;
 	virtual void PlayOneShotAnimation(int state, int previousState = -1);
 	virtual void HitedWall();
-	virtual void HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass* groundModel);
+	virtual void HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass* groundModel, bool heightTestPassed);
 	virtual bool DamageObject();
 	///////////////////////////
 	ModelClass* GetModel();

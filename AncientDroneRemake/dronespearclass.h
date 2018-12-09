@@ -22,7 +22,7 @@ public:
 	void SetNewAnimation(int newState) override;
 	void PlayOneShotAnimation(int state, int previousState = -1) override;
 	void HitedWall() override;
-	void HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass* groundModel) override;
+	void HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass* groundModel, bool heightTestPassed) override;
 
 	//Local functions
 	void Spawn();

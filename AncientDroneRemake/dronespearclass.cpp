@@ -108,8 +108,11 @@ void DroneSpearClass::HitedWall()
 	Destroy();
 }
 
-void DroneSpearClass::HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass * groundModel)
+void DroneSpearClass::HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass * groundModel, bool heightTestPassed)
 {
+	if (!heightTestPassed)
+		return;
+
 	if (mMinX < gMaxX && gMaxX > mMaxX && mMinX > gMinX)// && frameMovementRight * Forward().x < 0.0f)
 	{
 		//m_model->SetTranslation(m_model->GetTranslation().x - (m_graphics->GetGroundModel(i)->GetBounds().max.x - m_model->GetBounds().min.x) * Forward().x,

@@ -146,7 +146,7 @@ void MovingObjectPrototype::FixedUpdate()
 		//if (heightTest && m_hitedWall)
 		if (isGround)
 		{
-			HeightTest(mMinX, mMaxX, mMinY, mMaxY, gMinX, gMaxX, gMinY, gMaxY, m_graphics->GetGroundModel(i));
+			HeightTest(mMinX, mMaxX, mMinY, mMaxY, gMinX, gMaxX, gMinY, gMaxY, m_graphics->GetGroundModel(i), heightTest);
 		}
 	}
 
@@ -180,7 +180,7 @@ bool MovingObjectPrototype::TouchedPlayer(Player * player, float playerMinX, flo
 		if (playerMinY < m_model->GetBounds().max.y && playerMaxY > m_model->GetBounds().max.y || //Enter from the bottom
 			playerMaxY > m_model->GetBounds().min.y && m_model->GetBounds().max.y > playerMinY) //Enter from the top
 		{
-			player->DealDamage(1);
+			player->DealDamage(1, GetModel()->GetTranslation());
 			return true;
 		}
 	}
@@ -211,7 +211,7 @@ void MovingObjectPrototype::HitedWall()
 
 }
 
-void MovingObjectPrototype::HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass* groundModel)
+void MovingObjectPrototype::HeightTest(float mMinX, float mMaxX, float mMinY, float mMaxY, float gMinX, float gMaxX, float gMinY, float gMaxY, ModelClass* groundModel, bool heightTestPassed)
 {
 	bool groundInTheMiddle = (m_model->GetBounds().max.y > groundModel->GetBounds().max.y &&
 		m_model->GetBounds().min.y < groundModel->GetBounds().min.y &&

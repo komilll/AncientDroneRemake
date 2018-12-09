@@ -84,8 +84,6 @@ bool Player::Initialize(InputClass * inputClass)
 
 void Player::Update()
 {	
-	invincible = false;
-
 	float frameMovementRight = 0.0f;
 	float frameMovementUp = 0.0f;
 	movementDirection = 0.0f;
@@ -136,6 +134,18 @@ void Player::Update()
 	
 	__int64 now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	timer += (now - lastTime);
+
+	if (invincibilityTimeCurrent != 0) //Miliseconds
+	{
+		invincibilityTimeCurrent -= (now - lastTime);
+		if (invincibilityTimeCurrent <= 0)
+		{
+			invincible = false;
+			invincibilityTimeCurrent = 0;
+			m_shaderClass->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+	}
+
 	lastTime = now;
 
 	if (timer >= 20.0f) //20ms = 0.02s
@@ -151,7 +161,7 @@ void Player::Update()
 			currentJumpTicks--;
 		}
 		/****************************************************************/
-		frameMovementRight = movementDirection * movementSpeed;
+		frameMovementRight = movementDirection * movementSpeed + scheduledMovementX;
 
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 		{
@@ -183,7 +193,7 @@ void Player::Update()
 			}
 			else if (frameMovementRight > 0.0f) //Move right
 			{
-				if ((groundInTheMiddle || groundFromTheTop || groundFromTheBottom) && inBounds)
+				if ((groundInTheMiddle || groundFromTheBottom) && inBounds)
 				{
 					//float newMovement = m_playerModel->GetBounds().max.x - m_graphics->GetGroundModel(i)->GetBounds().min.x;
 					//if (newMovement < frameMovementRight)
@@ -191,7 +201,7 @@ void Player::Update()
 					frameMovementRight = -(m_playerModel->GetBounds().max.x + frameMovementRight - m_graphics->GetGroundModel(i)->GetBounds().min.x);
 					break;
 				}
-				else if ((groundInTheMiddle || groundFromTheTop || groundFromTheBottom) && inBoundsNextFrame)
+				else if ((groundInTheMiddle || groundFromTheBottom) && inBoundsNextFrame)
 				{
 					frameMovementRight = -(m_playerModel->GetBounds().max.x - m_graphics->GetGroundModel(i)->GetBounds().min.x);
 					break;
@@ -199,7 +209,7 @@ void Player::Update()
 			}
 			else if (frameMovementRight < 0.0f) //Move left
 			{
-				if ((groundInTheMiddle || groundFromTheTop || groundFromTheBottom) && inBounds)
+				if ((groundInTheMiddle || groundFromTheBottom) && inBounds)
 				{
 					//float newMovement = m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x;
 					//if (newMovement > frameMovementRight)
@@ -207,13 +217,18 @@ void Player::Update()
 					frameMovementRight = -(m_playerModel->GetBounds().min.x + frameMovementRight - m_graphics->GetGroundModel(i)->GetBounds().max.x);
 					break;
 				}
-				else if ((groundInTheMiddle || groundFromTheTop || groundFromTheBottom) && inBoundsNextFrame)
+				else if ((groundInTheMiddle || groundFromTheBottom) && inBoundsNextFrame)
 				{
 					frameMovementRight = -(m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
 					break;
 				}
 			}			
 		}
+		if (frameMovementRight - movementDirection * movementSpeed != scheduledMovementX)
+		{
+			invincibilityTimeCurrent = invincibilityTimeLong;
+		}
+		scheduledMovementX = 0;
 
 		/****************************************************************/
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
@@ -230,13 +245,13 @@ void Player::Update()
 			bool inBounds = (m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
 				&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x);
 
-			if (frameMovementUp > 0.0f && inMiddle && atTop && inBounds) //Check if player is moving up
+			if (frameMovementUp > 0.0f && (inMiddle || atTop) && inBounds) //Check if player is moving up
 			{
 				isFalling = true;
 				currentJumpTicks = 0;
 				frameMovementUp = -(m_playerModel->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) - 0.1f;
 			}
-			else if (m_playerModel->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y)
+			else if (m_playerModel->GetBounds().min.y < m_graphics->GetGroundModel(i)->GetBounds().max.y)
 			{
 				//float playerMin_ = m_playerModel->GetBounds().min.y - groundThickness;
 				//float groundMax_ = m_graphics->GetGroundModel()->GetBounds().max.y;
@@ -247,7 +262,7 @@ void Player::Update()
 				//frameMovementUp += (groundMax_ - playerMin_);
 
 				if (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().min.y)
-				{
+				{					
 					if (m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
 						&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x)
 					{
@@ -255,13 +270,13 @@ void Player::Update()
 						isGround = true;
 						canDoubleJump = true;
 					}
-					else if (m_playerModel->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x && isFalling)
+					else if (m_playerModel->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x && (isFalling || frameMovementUp != 0))
 					{
 						float temp_ = m_graphics->GetGroundModel(i)->GetBounds().min.x - m_playerModel->GetBounds().max.x;
 						if (temp_ <= 0.0f && frameMovementRight > 0.0f)
 							frameMovementRight = temp_;
 					}
-					else if (m_playerModel->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x && isFalling)
+					else if (m_playerModel->GetBounds().min.x > m_graphics->GetGroundModel(i)->GetBounds().min.x && (isFalling || frameMovementUp != 0))
 					{
 						float temp_ = -(m_playerModel->GetBounds().min.x - m_graphics->GetGroundModel(i)->GetBounds().max.x);
 						bool canContinue = false;
@@ -334,7 +349,7 @@ void Player::Move()
 	 m_playerModel->SetTranslation(movementRight, movementUp, 0.0f);
 }
 
-void Player::DealDamage(int dmg)
+void Player::DealDamage(int dmg, D3DXVECTOR3 dmgOrigin)
 {
 	/*if (health <= 0)
 		return;*/
@@ -343,6 +358,7 @@ void Player::DealDamage(int dmg)
 		return;
 
 	invincible = true;
+	invincibilityTimeCurrent = invincibilityTime;
 	health -= dmg;
 	if (health <= 0)
 	{
@@ -350,7 +366,12 @@ void Player::DealDamage(int dmg)
 		PlayerDeath();
 	}
 
-	movementRight -= 25.0f;
+	if (GetModel()->GetTranslation().x < dmgOrigin.x)
+		scheduledMovementX = -25.0f;
+	else
+		scheduledMovementX = 25.0f;
+
+	m_shaderClass->SetColorTint(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f));
 
 	//m_playerModel->SetTranslation(m_playerModel->GetTranslation().x - 25.0f, m_playerModel->GetTranslation().y, m_playerModel->GetTranslation().z);
 }

@@ -24,6 +24,8 @@ cbuffer TextureBuffer
 
 	float reverseX;
 	float reverseY;
+	
+	float4 tint;
 };
 
 //////////////
@@ -40,6 +42,7 @@ struct PixelInputType
 {
     float4 position : SV_POSITION;
     float2 tex : TEXCOORD0;
+	float4 color : TEXCOORD1;
 };
 
 
@@ -60,6 +63,8 @@ PixelInputType ColorVertexShader(VertexInputType input)
 
 	output.tex = (input.tex * float2(width/fullScreenWidth, height/fullScreenHeight) + float2((column * width)/fullScreenWidth, (row * height)/fullScreenHeight));	
     output.tex *= float2(reverseX, reverseY);
+	
+	output.color = tint;
 
     return output;
 }

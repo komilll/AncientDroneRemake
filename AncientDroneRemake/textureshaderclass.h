@@ -42,6 +42,8 @@ private:
 
 		float reverseX;
 		float reverseY;
+
+		D3DXVECTOR4 tint;
 		//D3DXVECTOR2 padding;
 	};
 
@@ -66,6 +68,7 @@ public:
 	void AddModel(ModelClass* model);
 	std::vector<ModelClass*> GetModels();
 	void SetAnimationObject(IEAnimationObject* animObject);
+	void SetColorTint(D3DXVECTOR4 color);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*, CHAR*);
@@ -90,6 +93,7 @@ private:
 	int m_currentFrameTime = 0;
 	int m_savedAnimationToPlay = -1; //Animation that will be played in loop after playing one shot
 	bool m_reverseX = false;
+	D3DXVECTOR4 m_colorTint = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	//Buffers and resources
 	ID3D11VertexShader* m_vertexShader;

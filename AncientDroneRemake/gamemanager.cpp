@@ -38,6 +38,7 @@ void GameManager::Update()
 	for (int i = 0; i < m_enemyArcher.size(); i++)
 	{
 		m_enemyArcher.at(i)->Update();
+		m_enemyArcher.at(i)->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
 
 	if (droneController)

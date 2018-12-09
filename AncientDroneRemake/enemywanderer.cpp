@@ -78,7 +78,7 @@ bool EnemyWanderer::TouchedPlayer(Player * player, float playerMinX, float playe
 		if (playerMinY < m_model->GetBounds().max.y && playerMaxY > m_model->GetBounds().max.y || //Enter from the bottom
 			playerMaxY > m_model->GetBounds().min.y && m_model->GetBounds().max.y > playerMinY) //Enter from the top
 		{
-			player->DealDamage(1);
+			player->DealDamage(1, GetModel()->GetTranslation());
 			PlayOneShotAnimation(ATTACKING);
 			return true;
 		}

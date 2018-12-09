@@ -183,6 +183,11 @@ void TextureShaderClass::SetAnimationObject(IEAnimationObject * animObject)
 	m_animObject = animObject;
 }
 
+void TextureShaderClass::SetColorTint(D3DXVECTOR4 color)
+{
+	m_colorTint = color;
+}
+
 bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename, CHAR* animationSheetFilename)
 {
 	HRESULT result;
@@ -487,6 +492,8 @@ bool TextureShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	dataPtr2->reverseX = m_reverseX ? -1.0f : 1.0f;
 	dataPtr2->reverseY = 1.0f;
+
+	dataPtr2->tint = m_colorTint;
 	//dataPtr2->padding = m_texBufferType.padding;
 
 	deviceContext->Unmap(m_textureBuffer, 0);

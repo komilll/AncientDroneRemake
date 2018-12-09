@@ -12,6 +12,7 @@ struct PixelInputType
 {
     float4 position : SV_POSITION;
     float2 tex : TEXCOORD0;
+    float4 color : TEXCOORD1;
 };
 
 
@@ -27,6 +28,8 @@ float4 ColorPixelShader(PixelInputType input) : SV_TARGET
 
 	textureColor *= normalize(textureColor.a);
 	//textureColor.a = 0.0f;
+
+	textureColor *= input.color;
 
     return textureColor;
 }

@@ -63,6 +63,9 @@ public:
 	D3DXVECTOR2 GetSize();
 	D3DXVECTOR2 GetOriginalSize();
 	void SetVisibility(bool enable);
+	
+	void SetColor(D3DXCOLOR color); //Unused
+	D3DXCOLOR GetColor(); //Unused
 
 public:
 	/* Physics based components */
@@ -85,6 +88,7 @@ private:
 	bool m_isVisibile = true;
 	bool m_useRotation;
 	float m_rotationX, m_rotationY, m_rotationZ;
+	D3DXCOLOR m_modelColor;
 };
 
 #endif

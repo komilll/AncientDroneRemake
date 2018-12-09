@@ -154,6 +154,11 @@ void ModelClass::SetScale(float x, float y, float z)
 	SetBounds(-newWidth, newWidth, -newHeight, newHeight);
 }
 
+void ModelClass::SetColor(D3DXCOLOR color)
+{
+	m_modelColor = color;
+}
+
 D3DXVECTOR3 ModelClass::GetScale()
 {
 	return D3DXVECTOR3(m_scaleX, m_scaleY, m_scaleZ);
@@ -167,6 +172,11 @@ D3DXVECTOR2 ModelClass::GetSize()
 D3DXVECTOR2 ModelClass::GetOriginalSize()
 {
 	return D3DXVECTOR2(m_widthOriginal, m_heightOriginal);
+}
+
+D3DXCOLOR ModelClass::GetColor()
+{
+	return m_modelColor;
 }
 
 void ModelClass::SetVisibility(bool enable)

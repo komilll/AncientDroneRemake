@@ -66,7 +66,7 @@ public:
 	void Update();
 	void FixedUpdate();
 	void Move();
-	void DealDamage(int dmg);
+	void DealDamage(int dmg, D3DXVECTOR3 dmgOrigin);
 	Bounds GetBounds();
 	float GetHealthProgress();
 	ModelClass* GetModel();
@@ -105,6 +105,7 @@ private:
 	int idleTime = 0;
 	int timeToSetIdleState = 15;
 	float groundEpsilon = 0.05f;
+	int scheduledMovementX = 0.0f;
 
 	//Jump
 	int jumpTicks = 8;
@@ -123,4 +124,7 @@ private:
 	int maxHealth = 10;
 	int health = maxHealth;
 	bool invincible = false;
+	int invincibilityTime = 200; //ms
+	int invincibilityTimeLong = 1000; //ms
+	int invincibilityTimeCurrent = 0; //ms
 };

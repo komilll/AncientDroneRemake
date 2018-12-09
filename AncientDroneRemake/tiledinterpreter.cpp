@@ -11,9 +11,13 @@ void TiledInterpreter::Initialize(GraphicsClass * graphicsClass, Player* player,
 	m_player = player;
 	m_gameManager = gameManager;
 
-	m_textureGeneral = new TextureShaderGeneralClass();
-	m_textureGeneral->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "Tile_1.dds");
-	m_graphics->AddTextureShaderGeneral(m_textureGeneral);	
+	for (int i = 0; i < 8; i++)
+	{
+		TextureShaderGeneralClass* newTexture = new TextureShaderGeneralClass();
+		newTexture->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), (CHAR*)GetTileName(i + 1).c_str());
+		m_textureGeneral.push_back(newTexture);
+		m_graphics->AddTextureShaderGeneral(newTexture);
+	}
 
 	ReadMapFile();
 }
@@ -62,7 +66,8 @@ void TiledInterpreter::RestartLevel()
 void TiledInterpreter::SpawnTile(int indexX, int indexY, int indexTile)
 {	
 	indexY -= 100;
-	m_textureGeneral->AddModel(m_graphics->AddGroundModel(TILE_SIZE, TILE_SIZE, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2));
+	indexTile = indexTile - TILE_MIN;
+	m_textureGeneral.at(indexTile)->AddModel(m_graphics->AddGroundModel(TILE_SIZE, TILE_SIZE, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2));
 }
 
 void TiledInterpreter::ReadMapFile()
@@ -234,4 +239,27 @@ void TiledInterpreter::FindFirstTileX()
 			break;
 	}
 
+}
+
+string TiledInterpreter::GetTileName(int index)
+{
+	switch (index)
+	{
+		case 1:
+			return "Tile_1.dds";
+		case 2:
+			return "Tile_2.dds";
+		case 3:
+			return "Tile_3.dds";
+		case 4:
+			return "Tile_4.dds";
+		case 5:
+			return "Tile_5.dds";
+		case 6:
+			return "Tile_6.dds";
+		case 7:
+			return "Tile_7.dds";
+		case 8:
+			return "Tile_8.dds";
+	}
 }

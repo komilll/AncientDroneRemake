@@ -16,9 +16,10 @@
 #include <algorithm>
 #include <vector>
 
+static const float TILE_SIZE = 16;
+
 class TiledInterpreter 
 {
-	const float TILE_SIZE = 16;
 	//TILES
 	static const int TILE_MIN = 1;
 	static const int TILE_MAX = 8;
@@ -44,10 +45,11 @@ private:
 	void SpawnPlayer(float posX, float posY);
 	void SpawnEnemy(int indexX, int indexY, int indexEnemy, bool restart = false);
 	void FindFirstTileX();
+	string GetTileName(int index);
 
 private:
 	GraphicsClass* m_graphics;
-	TextureShaderGeneralClass *m_textureGeneral;
+	std::vector<TextureShaderGeneralClass*>m_textureGeneral;
 	GameManager* m_gameManager;
 	Player* m_player;
 	static const int MAP_WIDTH = 100;
