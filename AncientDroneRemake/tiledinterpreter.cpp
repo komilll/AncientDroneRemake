@@ -36,6 +36,8 @@ void TiledInterpreter::Import(bool restart)
 			{
 				if (tab[i][k] >= TILE_MIN && tab[i][k] <= TILE_MAX)
 					SpawnTile(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
+				else if (tab[i][k] == DARK_SPHERE)
+					SpawnDarkSphere(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2 - TILE_SIZE * 100 * 2);
 				else if (tab[i][k] == SPAWN_POINT)
 					SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2);
 				else if (tab[i][k] >= WANDERER && tab[i][k] <= CROW)
@@ -220,6 +222,13 @@ void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy, bool r
 			break;
 	}
 
+}
+
+void TiledInterpreter::SpawnDarkSphere(float posX, float posY, bool restart)
+{
+	DarkSphere* darkSphere = new DarkSphere();
+	darkSphere->Init(m_graphics, posX, posY);
+	m_darkSpheres.push_back(darkSphere);
 }
 
 void TiledInterpreter::FindFirstTileX()

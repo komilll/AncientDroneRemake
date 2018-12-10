@@ -127,6 +127,7 @@
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="colorshaderclass.h" />
     <ClInclude Include="d3dclass.h" />
+    <ClInclude Include="darksphere.h" />
     <ClInclude Include="dronecontroller.h" />
     <ClInclude Include="dronespearclass.h" />
     <ClInclude Include="enemyarcher.h" />
@@ -156,6 +157,7 @@
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="colorshaderclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
+    <ClCompile Include="darksphere.cpp" />
     <ClCompile Include="dronecontroller.cpp" />
     <ClCompile Include="dronespearclass.cpp" />
     <ClCompile Include="enemyarcher.cpp" />

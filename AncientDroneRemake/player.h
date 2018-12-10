@@ -94,6 +94,7 @@ private:
 	int btn_moveUp = VK_UP;
 	int btn_moveDown = VK_DOWN;
 	int btn_jump = VK_SPACE;
+	int btn_jumpAlternative = VK_W;
 	///////////////
 
 	//Movement
@@ -106,6 +107,7 @@ private:
 	int timeToSetIdleState = 15;
 	float groundEpsilon = 0.05f;
 	int scheduledMovementX = 0.0f;
+	int scheduledMovementInFrameX = 0.0f;
 
 	//Jump
 	int jumpTicks = 8;

@@ -116,7 +116,7 @@ void Player::Update()
 			newState = IDLE;
 	}
 
-	if (m_input->IsKeyDown(btn_jump))
+	if (m_input->IsKeyDown(btn_jump) || m_input->IsKeyDown(btn_jumpAlternative))
 	{
 		if ((isGround || canDoubleJump) && holdingJumpButton == false)
 		{
@@ -138,6 +138,7 @@ void Player::Update()
 	if (invincibilityTimeCurrent != 0) //Miliseconds
 	{
 		invincibilityTimeCurrent -= (now - lastTime);
+		m_shaderClass->SetColorTint(D3DXVECTOR4(1.0f, 1.0f - (float)invincibilityTimeCurrent / (float)invincibilityTime, 1.0f - (float)invincibilityTimeCurrent / (float)invincibilityTime, 1.0f));
 		if (invincibilityTimeCurrent <= 0)
 		{
 			invincible = false;
@@ -150,6 +151,24 @@ void Player::Update()
 
 	if (timer >= 20.0f) //20ms = 0.02s
 	{
+		if (scheduledMovementX > 0)
+		{
+			scheduledMovementInFrameX = 5.0f;
+			if ((scheduledMovementX -= scheduledMovementInFrameX) < 0)
+				scheduledMovementX = 0;
+			if (movementDirection < 0)
+				movementDirection = 0;
+		}
+		else if (scheduledMovementX < 0)
+		{
+			scheduledMovementInFrameX = -5.0f;
+			if ((scheduledMovementX -= scheduledMovementInFrameX) > 0)
+				scheduledMovementX = 0;
+			if (movementDirection > 0)
+				movementDirection = 0;
+		}
+
+
 		bool isFalling = true;
 		isGround = false;
 
@@ -161,7 +180,7 @@ void Player::Update()
 			currentJumpTicks--;
 		}
 		/****************************************************************/
-		frameMovementRight = movementDirection * movementSpeed + scheduledMovementX;
+		frameMovementRight = movementDirection * movementSpeed + scheduledMovementInFrameX;
 
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 		{
@@ -224,11 +243,11 @@ void Player::Update()
 				}
 			}			
 		}
-		if (frameMovementRight - movementDirection * movementSpeed != scheduledMovementX)
+		if (frameMovementRight - movementDirection * movementSpeed != scheduledMovementInFrameX && invincibilityTimeCurrent != 0)
 		{
 			invincibilityTimeCurrent = invincibilityTimeLong;
 		}
-		scheduledMovementX = 0;
+		scheduledMovementInFrameX = 0;
 
 		/****************************************************************/
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
@@ -367,9 +386,9 @@ void Player::DealDamage(int dmg, D3DXVECTOR3 dmgOrigin)
 	}
 
 	if (GetModel()->GetTranslation().x < dmgOrigin.x)
-		scheduledMovementX = -25.0f;
+		scheduledMovementX = -35.f;
 	else
-		scheduledMovementX = 25.0f;
+		scheduledMovementX = 35.0f;
 
 	m_shaderClass->SetColorTint(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f));
 
