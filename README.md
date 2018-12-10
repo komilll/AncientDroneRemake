@@ -7,6 +7,15 @@ To start with – it isn’t a tutorial series. I wanted to start a blog to moti
 Project itself is a remake of 2D Platformer game that I’ve made with my friend for Ludum Dare 36
 <a href="https://azargaz.itch.io/ancient-drone">https://azargaz.itch.io/ancient-drone</a>. This time I’d like to make it from scratch using DirectX 11. I will create flipbook animation system, basic physics engine, enemies with simple AI and other things essential to complete this remake. Let’s get started!
 
+<h2>Week #8</h2>
+A grave mistake was basing everything on "ModelClass" which is basically quad that is treated as base graphics unit representing object. Due to overuse, using screen-space [0, 1] became hard and almost impossible or too hard to bother. However it comes with many pros - using only one space and one script to define every model and physics bounds used in game is great thanks to simplicity and reusing many functions.
+
+This week, I've upgraded map parser so enemies can be spawned by simply putting them in Tiled. Creating first map which was a remake of an original one, took me only few minutes and works as intended. I had some difficulties with waypoints for Crows. Therefore I'm using second layer for them - on startup each Crow enemy is looking for nearest waypoint on both left and right side and then uses them through game. Also by testing game in real conditions, many bugs, mistakes were fixed and optimization applied.
+
+<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.8">https://github.com/komilll/AncientDroneRemake/releases/tag/0.8</a> - Week #8 release (Alpha, .exe application included)
+<center><img src="Blog/gif_8.gif"></center>
+<center><i>Week #8: Gif #8 – First map recreated and ready to play</i></center>
+
 <h2>Week #7</h2>
 Week started with implementing gameplay usage of Health UI Bar and Drone Energy Bar. Refilling Energy is simply streching horizontally model of bar. It's definatelly not the best solution because rendering should just be cut in correct place to avoid stretching texture which looks generally bad. In this case it's not THAT awful but result isn't much satisfying.
 
