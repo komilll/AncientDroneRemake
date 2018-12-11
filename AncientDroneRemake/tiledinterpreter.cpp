@@ -229,6 +229,7 @@ void TiledInterpreter::SpawnDarkSphere(float posX, float posY, bool restart)
 	DarkSphere* darkSphere = new DarkSphere();
 	darkSphere->Init(m_graphics, posX, posY);
 	m_darkSpheres.push_back(darkSphere);
+	m_gameManager->AddDarkSphere(darkSphere);
 }
 
 void TiledInterpreter::FindFirstTileX()

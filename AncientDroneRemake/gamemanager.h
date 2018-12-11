@@ -10,6 +10,7 @@
 #include "dronecontroller.h"
 #include "uicontroller.h"
 #include "mouseclass.h"
+#include "darksphere.h"
 #include <functional>
 #include <typeinfo>
 #include <type_traits>
@@ -42,6 +43,8 @@ public:
 	void AddNewEnemy(EnemyType type, void* enemy);
 	void* GetEnemy(EnemyType type, int index);
 
+	void AddDarkSphere(DarkSphere* darkSphere);
+
 private:
 	void PushNewEnemy(EnemyType enemyType, void* enemy);
 	void* GetEnemyLocal(EnemyType enemyType, int index);
@@ -59,6 +62,7 @@ private:
 	std::vector<EnemyWanderer*> m_enemyWanderer;
 	std::vector<EnemyFlying*> m_enemyFlying;
 	std::vector<EnemyArcher*> m_enemyArcher;
+	std::vector<DarkSphere*> m_darkSphere;
 
 	UIController* healthBarBackground;
 	UIController* healthBar;

@@ -184,6 +184,8 @@
   <ItemGroup>
     <None Include="color.ps" />
     <None Include="color.vs" />
+    <None Include="darksphere.ps" />
+    <None Include="darksphere.vs" />
     <None Include="texture.ps" />
     <None Include="texture.vs" />
     <None Include="texturegeneral.ps" />

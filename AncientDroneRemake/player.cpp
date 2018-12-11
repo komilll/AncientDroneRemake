@@ -368,7 +368,7 @@ void Player::Move()
 	 m_playerModel->SetTranslation(movementRight, movementUp, 0.0f);
 }
 
-void Player::DealDamage(int dmg, D3DXVECTOR3 dmgOrigin)
+void Player::DealDamage(int dmg, D3DXVECTOR3 dmgOrigin, float translationStregthPercent)
 {
 	/*if (health <= 0)
 		return;*/

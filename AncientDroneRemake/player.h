@@ -66,7 +66,7 @@ public:
 	void Update();
 	void FixedUpdate();
 	void Move();
-	void DealDamage(int dmg, D3DXVECTOR3 dmgOrigin);
+	void DealDamage(int dmg, D3DXVECTOR3 dmgOrigin, float translationStregthPercent = 1.0f);
 	Bounds GetBounds();
 	float GetHealthProgress();
 	ModelClass* GetModel();

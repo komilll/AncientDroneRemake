@@ -49,6 +49,7 @@ public:
 	~TextureShaderGeneralClass();
 
 	bool Initialize(ID3D11Device*, HWND, CHAR*);
+	bool Initialize(ID3D11Device*, HWND, CHAR*, CHAR*, CHAR*);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, bool movingRight = true);
 	void SetColor(D3DXVECTOR4 newColor);

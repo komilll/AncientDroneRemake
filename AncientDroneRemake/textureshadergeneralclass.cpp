@@ -31,6 +31,20 @@ bool TextureShaderGeneralClass::Initialize(ID3D11Device *device, HWND hwnd, CHAR
 	return true;
 }
 
+bool TextureShaderGeneralClass::Initialize(ID3D11Device *device, HWND hwnd, CHAR* filename, CHAR *vsFilename, CHAR *psFilename)
+{
+	bool result;
+
+	// Initialize the vertex and pixel shaders.
+	result = InitializeShader(device, hwnd, vsFilename, psFilename, filename);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 void TextureShaderGeneralClass::Shutdown()
 {
 	// Shutdown the vertex and pixel shaders as well as the related objects.

@@ -71,6 +71,12 @@ void GameManager::Update()
 	{
 		menuQuit->Update();
 	}
+
+	for (int i = 0; i < m_darkSphere.size(); i++) 
+	{
+		m_darkSphere.at(i)->Update();
+		m_darkSphere.at(i)->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+	}
 }
 
 bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3DClass *d3d, GraphicsClass *graphicsClass)
@@ -292,6 +298,11 @@ void GameManager::AddNewEnemy(EnemyType type, void* enemy)
 void * GameManager::GetEnemy(EnemyType type, int index)
 {
 	return GetEnemyLocal(type, index);
+}
+
+void GameManager::AddDarkSphere(DarkSphere* darkSphere)
+{
+	m_darkSphere.push_back(darkSphere);
 }
 
 void GameManager::PushNewEnemy(EnemyType enemyType, void* enemy)

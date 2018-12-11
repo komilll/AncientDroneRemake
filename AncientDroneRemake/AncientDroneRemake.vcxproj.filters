@@ -205,5 +205,11 @@
     <None Include="texturegeneral.vs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="darksphere.ps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="darksphere.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
