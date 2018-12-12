@@ -10,6 +10,7 @@
 #include "enemyflying.h"
 #include "enemyarcher.h"
 #include "darksphere.h"
+#include "levelfinish.h"
 #include <fstream>
 #include <istream>
 #include <sstream>
@@ -42,6 +43,7 @@ public:
 	void Initialize(GraphicsClass* graphicsClass, Player* player, GameManager* gameManager);
 	void Import(bool restart = false);
 	void RestartLevel();
+	void LoadNextLevel();
 
 private:
 	void SpawnTile(int indeX, int indexY, int indexTile);
@@ -49,6 +51,7 @@ private:
 	void SpawnPlayer(float posX, float posY);
 	void SpawnEnemy(int indexX, int indexY, int indexEnemy, bool restart = false);
 	void SpawnDarkSphere(float posX, float posY, bool restart = false);
+	void SpawnLevelFinish(float posX, float posY, bool restart = false);
 	void FindFirstTileX();
 	string GetTileName(int index);
 
@@ -64,6 +67,8 @@ private:
 	int firstTile;
 
 	std::vector<DarkSphere*> m_darkSpheres;
+
+	int m_levelIndex = 0;
 
 	//Restart params
 	int m_wandererIndex = 0;

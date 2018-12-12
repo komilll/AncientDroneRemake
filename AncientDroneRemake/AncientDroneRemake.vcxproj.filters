@@ -102,6 +102,9 @@
     <ClInclude Include="darksphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="levelfinish.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="systemclass.cpp">
@@ -185,6 +188,9 @@
     <ClCompile Include="darksphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="levelfinish.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps">
@@ -209,6 +215,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="darksphere.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="endsphere.ps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="endsphere.vs">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

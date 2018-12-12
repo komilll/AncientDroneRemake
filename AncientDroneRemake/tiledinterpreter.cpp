@@ -42,6 +42,8 @@ void TiledInterpreter::Import(bool restart)
 					SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2);
 				else if (tab[i][k] >= WANDERER && tab[i][k] <= CROW)
 					SpawnEnemy(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
+				else if (tab[i][k] == END_POINT)
+					SpawnLevelFinish(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2 - TILE_SIZE * 100 * 2);
 			}
 		}
 	}
@@ -63,6 +65,12 @@ void TiledInterpreter::Import(bool restart)
 void TiledInterpreter::RestartLevel()
 {
 	Import(true);
+}
+
+void TiledInterpreter::LoadNextLevel()
+{
+	m_levelIndex++;
+	//Load next level here
 }
 
 void TiledInterpreter::SpawnTile(int indexX, int indexY, int indexTile)
@@ -230,6 +238,13 @@ void TiledInterpreter::SpawnDarkSphere(float posX, float posY, bool restart)
 	darkSphere->Init(m_graphics, posX, posY);
 	m_darkSpheres.push_back(darkSphere);
 	m_gameManager->AddDarkSphere(darkSphere);
+}
+
+void TiledInterpreter::SpawnLevelFinish(float posX, float posY, bool restart)
+{
+	LevelFinish* levelFinish = new LevelFinish();
+	levelFinish->Init(m_graphics, posX, posY);
+	m_gameManager->SetLevelFinish(levelFinish);
 }
 
 void TiledInterpreter::FindFirstTileX()

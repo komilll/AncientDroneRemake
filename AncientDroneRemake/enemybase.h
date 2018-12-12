@@ -14,6 +14,7 @@ public:
 	void FixedUpdate() override; //Update function for physics called in fixed time
 	void Move(float x) override;
 	bool TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY) override;
+	bool DamageObject() override;
 
 	void SetNewAnimation(int newState) override final;
 	void PlayOneShotAnimation(int state, int previousState = -1) override final;
@@ -27,4 +28,8 @@ public:
 
 private:
 	//Variable
+	bool invincible = false;
+	int invincibilityTime = 200; //ms
+	int invincibilityTimeLong = 1000; //ms
+	int invincibilityTimeCurrent = 0; //ms
 };

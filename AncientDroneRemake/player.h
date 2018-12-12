@@ -52,7 +52,8 @@ class Player : IEAnimationObject
 		IDLE,
 		MOVING,
 		COMMAND,
-		FALLING
+		FALLING,
+		DEATH
 	};
 
 public:
@@ -72,6 +73,7 @@ public:
 	ModelClass* GetModel();
 	void ChangePosition(float x, float y);
 	void ResetPlayer();
+	bool DoRestartGame();
 
 private:
 	void PlayerDeath();
@@ -129,4 +131,7 @@ private:
 	int invincibilityTime = 200; //ms
 	int invincibilityTimeLong = 1000; //ms
 	int invincibilityTimeCurrent = 0; //ms
+	bool isDead = false;
+	bool readyToRestart = false;
+	int deathTimer = 0;
 };

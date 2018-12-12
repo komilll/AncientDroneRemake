@@ -11,6 +11,7 @@
 #include "uicontroller.h"
 #include "mouseclass.h"
 #include "darksphere.h"
+#include "levelfinish.h"
 #include <functional>
 #include <typeinfo>
 #include <type_traits>
@@ -44,6 +45,10 @@ public:
 	void* GetEnemy(EnemyType type, int index);
 
 	void AddDarkSphere(DarkSphere* darkSphere);
+	
+	void SetLevelFinish(LevelFinish* levelFinish);
+
+	bool CheckNextLevel();
 
 private:
 	void PushNewEnemy(EnemyType enemyType, void* enemy);
@@ -63,6 +68,7 @@ private:
 	std::vector<EnemyFlying*> m_enemyFlying;
 	std::vector<EnemyArcher*> m_enemyArcher;
 	std::vector<DarkSphere*> m_darkSphere;
+	LevelFinish* m_levelFinish;
 
 	UIController* healthBarBackground;
 	UIController* healthBar;

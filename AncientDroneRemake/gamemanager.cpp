@@ -77,6 +77,12 @@ void GameManager::Update()
 		m_darkSphere.at(i)->Update();
 		m_darkSphere.at(i)->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
 	}
+
+	if (m_levelFinish)
+	{
+		m_levelFinish->Update();
+		m_levelFinish->TouchedPlayer(player, player->GetBounds().min.x, player->GetBounds().max.x, player->GetBounds().min.y, player->GetBounds().max.y);
+	}
 }
 
 bool GameManager::Initialize(InputClass *inputClass, MouseClass* mouseClass, D3DClass *d3d, GraphicsClass *graphicsClass)
@@ -303,6 +309,16 @@ void * GameManager::GetEnemy(EnemyType type, int index)
 void GameManager::AddDarkSphere(DarkSphere* darkSphere)
 {
 	m_darkSphere.push_back(darkSphere);
+}
+
+void GameManager::SetLevelFinish(LevelFinish * levelFinish)
+{
+	m_levelFinish = levelFinish;
+}
+
+bool GameManager::CheckNextLevel()
+{
+	return m_levelFinish->ReadyForNextLevel();
 }
 
 void GameManager::PushNewEnemy(EnemyType enemyType, void* enemy)

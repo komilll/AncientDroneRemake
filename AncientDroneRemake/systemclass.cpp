@@ -195,7 +195,7 @@ bool SystemClass::Frame()
 	}	
 	m_GameManager->SetDroneRotation(m_Mouse->GetMouseModelLocation().x, m_Mouse->GetMouseModelLocation().y);
 	
-	if (m_Input->IsKeyDown(VK_P))
+	if (m_Input->IsKeyDown(VK_P) || m_GameManager->GetPlayer()->DoRestartGame())
 	{
 		m_tiledInterpreter->RestartLevel();
 		m_GameManager->RestartLevel();
@@ -204,6 +204,11 @@ bool SystemClass::Frame()
 		m_GameManager->SetDroneDestination(m_Mouse->GetMouseModelLocation().x, m_Mouse->GetMouseModelLocation().y);
 	else if (m_Input->IsKeyDown(VK_R))
 		m_GameManager->CallDroneToPlayer();
+
+	if (m_GameManager->CheckNextLevel())
+	{
+		m_tiledInterpreter->LoadNextLevel();
+	}
 
 	return true;
 }

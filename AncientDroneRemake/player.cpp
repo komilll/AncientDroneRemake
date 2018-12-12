@@ -62,11 +62,13 @@ bool Player::Initialize()
 	m_shaderClass->CreateNewAnimation(6, 7, 1); //MOVING
 	m_shaderClass->CreateNewAnimation(7, 5, 3); //COMMAND
 	m_shaderClass->CreateNewAnimation(3, 5, 4, false); //FALLING
+	m_shaderClass->CreateNewAnimation(5, 5, 6, false); //DEATH
 
 	m_playerAnimation->PrepareAnimationPose(IDLE, IDLE);
 	m_playerAnimation->PrepareAnimationPose(MOVING, MOVING);
 	m_playerAnimation->PrepareAnimationPose(COMMAND, COMMAND);
 	m_playerAnimation->PrepareAnimationPose(FALLING, FALLING);
+	m_playerAnimation->PrepareAnimationPose(DEATH, DEATH);
 	m_playerAnimation->SetState(IDLE);
 ///////////////////
 	m_playerModel->SetBounds(-4, 4, m_playerModel->GetBounds().min.y, m_playerModel->GetBounds().max.y - 3);
@@ -84,6 +86,18 @@ bool Player::Initialize(InputClass * inputClass)
 
 void Player::Update()
 {	
+	if (isDead)
+	{
+		__int64 now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		deathTimer += (now - lastTime);
+		lastTime = now;
+		if (deathTimer > 1000)
+		{
+			deathTimer = 0;
+			readyToRestart = true;
+		}
+		return;
+	}
 	float frameMovementRight = 0.0f;
 	float frameMovementUp = 0.0f;
 	movementDirection = 0.0f;
@@ -421,11 +435,32 @@ void Player::ResetPlayer()
 	movementRight = 0;
 	movementUp = 0;
 	health = maxHealth;
+
+	m_playerAnimation->SetState(IDLE);
+	scheduledMovementX = 0;
+	scheduledMovementInFrameX = 0;
+	invincibilityTimeCurrent = 0;
+	m_shaderClass->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+
+	isDead = false;
+}
+
+bool Player::DoRestartGame()
+{
+	if (readyToRestart)
+	{
+		readyToRestart = false;
+		return true;
+	}
+	return false;
 }
 
 void Player::PlayerDeath()
 {
-	movementUp += 100.0f;
+	//movementUp += 100.0f;
+	m_shaderClass->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+	SetNewAnimation(DEATH);
+	isDead = true;
 }
 
 void Player::SetNewAnimation(int newState)
