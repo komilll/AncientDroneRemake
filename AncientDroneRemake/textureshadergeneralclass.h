@@ -59,6 +59,7 @@ public:
 	bool IsTransparent();
 	void AddModel(ModelClass * model);
 	std::vector<ModelClass*> GetModels();
+	void ClearModels();
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*, CHAR*);

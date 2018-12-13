@@ -318,7 +318,16 @@ void GameManager::SetLevelFinish(LevelFinish * levelFinish)
 
 bool GameManager::CheckNextLevel()
 {
-	return m_levelFinish->ReadyForNextLevel();
+	if (!m_levelFinish)
+		return false;
+	
+	if (m_levelFinish->ReadyForNextLevel())
+	{
+		DestroyLevel();
+		return true;
+	}
+
+	return false;
 }
 
 void GameManager::PushNewEnemy(EnemyType enemyType, void* enemy)
@@ -341,4 +350,39 @@ void * GameManager::GetEnemyLocal(EnemyType type, int index)
 		return m_enemyFlying.at(index);
 	else
 		MessageBox(*m_graphics->GetHWND(), "No such class of enemy exists", "Type error", MB_OK);
+}
+
+void GameManager::DestroyLevel()
+{
+	for (int i = 0; i < m_enemyWanderer.size(); i++)
+	{
+		m_enemyWanderer.at(i)->Shutdown();
+		delete m_enemyWanderer.at(i);
+	}
+	m_enemyWanderer.clear();
+
+	for (int i = 0; i < m_enemyFlying.size(); i++)
+	{
+		m_enemyFlying.at(i)->Shutdown();
+		delete m_enemyFlying.at(i);
+	}
+	m_enemyFlying.clear();
+
+	for (int i = 0; i < m_enemyArcher.size(); i++)
+	{
+		m_enemyArcher.at(i)->Shutdown();
+		delete m_enemyArcher.at(i);
+	}
+	m_enemyArcher.clear();
+
+	for (int i = 0; i < m_darkSphere.size(); i++)
+	{
+		m_darkSphere.at(i)->Shutdown();
+		delete m_darkSphere.at(i);
+	}
+	m_darkSphere.clear();
+
+	m_levelFinish->Shutdown();
+	delete m_levelFinish;
+	m_levelFinish = nullptr;
 }

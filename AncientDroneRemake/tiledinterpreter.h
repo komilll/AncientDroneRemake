@@ -54,13 +54,15 @@ private:
 	void SpawnLevelFinish(float posX, float posY, bool restart = false);
 	void FindFirstTileX();
 	string GetTileName(int index);
+	string GetLevelToLoad(int index);
+	string GetWaypointToLoad(int index);
 
 private:
 	GraphicsClass* m_graphics;
 	std::vector<TextureShaderGeneralClass*>m_textureGeneral;
 	GameManager* m_gameManager;
 	Player* m_player;
-	static const int MAP_WIDTH = 100;
+	static const int MAP_WIDTH = 150;
 	static const int MAP_HEIGHT = 20;
 	int tab[MAP_WIDTH][MAP_HEIGHT];
 	std::vector<D3DXVECTOR2> m_waypoints;
@@ -74,6 +76,13 @@ private:
 	int m_wandererIndex = 0;
 	int m_archerIndex = 0;
 	int m_crowIndex = 0;
+
+	string level_01 = "map01.txt";
+	string levelWaypont_01 = "map01_waypoint.txt";
+	string level_02 = "map02.txt";
+	string levelWaypont_02 = "map02_waypoint.txt";
+	string level_03 = "map03.txt";
+	string levelWaypont_03 = "map03_waypoint.txt";
 };
 
 #endif // !_TILED_INTERPRETER_H_

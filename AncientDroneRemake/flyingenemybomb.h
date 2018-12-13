@@ -15,6 +15,7 @@ public:
 	ModelClass* GetModel();
 	bool TouchedPlayer(Player * player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY);
 	void Init(float spawnPosX, float spawnPosY);
+	void Shutdown();
 
 private:
 	GraphicsClass* m_graphics;

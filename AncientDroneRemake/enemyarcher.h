@@ -19,6 +19,7 @@ public:
 	void Update() override;
 	void FixedUpdate() override;
 	virtual bool TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY) override;
+	void Shutdown() override;
 
 	void SetPlayer(Player* player);
 

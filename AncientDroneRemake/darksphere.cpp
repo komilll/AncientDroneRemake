@@ -115,6 +115,29 @@ bool DarkSphere::TouchedPlayer(Player * player, float playerMinX, float playerMa
 	return false;
 }
 
+void DarkSphere::Shutdown()
+{
+	m_graphics = 0;
+	if (m_modelBase)
+	{
+		m_modelBase->Shutdown();
+		delete m_modelBase;
+		m_modelBase = 0;
+	}
+	if (m_modelLerped)
+	{
+		m_modelLerped->Shutdown();
+		delete m_modelLerped;
+		m_modelLerped = 0;
+	}
+	if (m_shader)
+	{
+		m_shader->Shutdown();
+		delete m_shader;
+		m_shader = 0;
+	}
+}
+
 void DarkSphere::StartUsing()
 {
 	m_currentScale = m_maxScale;

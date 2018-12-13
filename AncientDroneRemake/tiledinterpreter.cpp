@@ -30,6 +30,12 @@ void TiledInterpreter::Import(bool restart)
 
 	if (restart == false)
 	{
+		for (int i = 0; i < 8; i++)
+		{
+			m_textureGeneral.at(i)->ClearModels();
+			m_graphics->ClearGrounds();
+		}
+
 		for (int i = 0; i < MAP_WIDTH; i++)
 		{
 			for (int k = 0; k < MAP_HEIGHT; k++)
@@ -70,7 +76,8 @@ void TiledInterpreter::RestartLevel()
 void TiledInterpreter::LoadNextLevel()
 {
 	m_levelIndex++;
-	//Load next level here
+	ReadMapFile();
+	Import();
 }
 
 void TiledInterpreter::SpawnTile(int indexX, int indexY, int indexTile)
@@ -85,7 +92,7 @@ void TiledInterpreter::ReadMapFile()
 	ifstream iFile;
 	//ofstream oFile;
 
-	iFile.open("map.txt");
+	iFile.open(GetLevelToLoad(m_levelIndex));
 	//oFile.open("map_test.txt");
 	//oFile.write("", 0);
 
@@ -116,7 +123,7 @@ void TiledInterpreter::ReadMapFile()
 	iFile.close();
 	FindFirstTileX();
 	//Read waypoints map
-	iFile.open("mapWaypoints.txt");
+	iFile.open(GetWaypointToLoad(m_levelIndex));
 
 	line = "";
 	msg = "";
@@ -287,4 +294,34 @@ string TiledInterpreter::GetTileName(int index)
 		case 8:
 			return "Tile_8.dds";
 	}
+}
+
+string TiledInterpreter::GetLevelToLoad(int index)
+{
+	switch (index)
+	{
+		case 0:
+			return level_01;
+		case 1:
+			return level_02;
+		case 2:
+			return level_03;
+	}
+
+	PostQuitMessage(0);
+}
+
+string TiledInterpreter::GetWaypointToLoad(int index)
+{
+	switch (index)
+	{
+	case 0:
+		return levelWaypont_01;
+	case 1:
+		return levelWaypont_02;
+	case 2:
+		return levelWaypont_03;
+	}
+
+	PostQuitMessage(0);
 }

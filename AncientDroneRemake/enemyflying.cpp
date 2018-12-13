@@ -97,6 +97,18 @@ void EnemyFlying::Move(float x)
 	EnemyBase::Move(x);
 }
 
+void EnemyFlying::Shutdown()
+{
+	EnemyBase::Shutdown();
+	for (int i = 0; i < m_bomb.size(); i++)
+	{
+		m_bomb.at(i)->Shutdown();
+		delete m_bomb.at(i);
+	}
+	m_bomb.clear();
+	m_graphics->ClearBombs();
+}
+
 void EnemyFlying::SetPlayer(Player * player_)
 {
 	player = player_;

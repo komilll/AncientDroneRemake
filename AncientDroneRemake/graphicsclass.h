@@ -48,6 +48,7 @@ public:
 	void AddEnemyModel(ModelClass* enemyModel);
 	void AddBombModel(ModelClass* bombModel);
 	void RemoveBombModel(ModelClass* bombModel);
+	void ClearBombs();
 	
 	bool AddTextureShader(TextureShaderClass* textureShader);
 	void RemoveTextureShader(TextureShaderClass* textureShader);
@@ -60,6 +61,7 @@ public:
 
 	ModelClass* AddGroundModel(int width, int height, float posX, float posY);
 	ModelClass* GetGroundModel(int index);
+	void ClearGrounds();
 	int GetGroundModelCount();
 
 	D3DXVECTOR3 GetPlayerPositionDiff();

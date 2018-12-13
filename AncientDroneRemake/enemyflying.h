@@ -19,6 +19,7 @@ public:
 	void Update() override;
 	void FixedUpdate() override;
 	void Move(float x) override;
+	void Shutdown() override;
 
 	void SetPlayer(Player* player);
 	void SetWaypoints(D3DXVECTOR2 waypoint1, D3DXVECTOR2 waypoint2);

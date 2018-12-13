@@ -108,6 +108,17 @@ std::vector<ModelClass*> TextureShaderGeneralClass::GetModels()
 	return m_models;
 }
 
+void TextureShaderGeneralClass::ClearModels()
+{
+	for (int i = 0; i < m_models.size(); i++)
+	{
+		m_models.at(i)->Shutdown();
+		delete m_models.at(i);
+		m_models.at(i) = 0;
+	}
+	m_models.clear();
+}
+
 bool TextureShaderGeneralClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename, CHAR* textureFilename)
 {
 	HRESULT result;

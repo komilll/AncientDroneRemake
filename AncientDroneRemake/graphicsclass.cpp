@@ -331,6 +331,19 @@ void GraphicsClass::RemoveBombModel(ModelClass * bombModel)
 	m_bombModels.erase(std::remove(m_bombModels.begin(), m_bombModels.end(), bombModel));
 }
 
+void GraphicsClass::ClearBombs()
+{
+	for (int i = 0; i < m_bombModels.size(); i++)
+	{
+		if (m_bombModels.at(i))
+		{
+			m_bombModels.at(i)->Shutdown();
+			delete m_bombModels.at(i);
+		}
+	}
+	m_bombModels.clear();
+}
+
 bool GraphicsClass::AddTextureShader(TextureShaderClass * textureShader)
 {
 	if (textureShader == nullptr)
@@ -394,6 +407,11 @@ ModelClass* GraphicsClass::AddGroundModel(int width, int height, float posX, flo
 ModelClass * GraphicsClass::GetGroundModel(int index)
 {
 	return m_groundModels.at(index);
+}
+
+void GraphicsClass::ClearGrounds()
+{
+	m_groundModels.clear();
 }
 
 bool GraphicsClass::Render()

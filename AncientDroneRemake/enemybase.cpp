@@ -64,6 +64,11 @@ bool EnemyBase::DamageObject()
 	m_shader->SetColorTint(D3DXVECTOR4(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
+void EnemyBase::Shutdown()
+{
+	MovingObjectPrototype::Shutdown();	
+}
+
 void EnemyBase::SetNewAnimation(int newState)
 {	
 	MovingObjectPrototype::SetNewAnimation(newState);

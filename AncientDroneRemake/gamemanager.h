@@ -53,6 +53,7 @@ public:
 private:
 	void PushNewEnemy(EnemyType enemyType, void* enemy);
 	void* GetEnemyLocal(EnemyType enemyType, int index);
+	void DestroyLevel();
 
 private:
 	InputClass* m_inputClass; //Singleton

@@ -15,6 +15,7 @@ public:
 	void Update();
 	void FixedUpdate();
 	bool TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY);
+	void Shutdown();
 
 private:
 	void StartUsing();

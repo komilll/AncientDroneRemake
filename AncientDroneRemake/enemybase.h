@@ -15,6 +15,7 @@ public:
 	void Move(float x) override;
 	bool TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY) override;
 	bool DamageObject() override;
+	void Shutdown() override;
 
 	void SetNewAnimation(int newState) override final;
 	void PlayOneShotAnimation(int state, int previousState = -1) override final;

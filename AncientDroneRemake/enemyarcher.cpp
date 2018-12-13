@@ -103,6 +103,17 @@ bool EnemyArcher::TouchedPlayer(Player * player, float playerMinX, float playerM
 	return false;
 }
 
+void EnemyArcher::Shutdown()
+{
+	EnemyBase::Shutdown();
+	for (int i = 0; i < m_arrow.size(); i++)
+	{
+		m_arrow.at(i)->Shutdown();
+		delete m_arrow.at(i);
+	}
+	m_arrow.clear();
+}
+
 void EnemyArcher::SetPlayer(Player * player_)
 {
 	player = player_;

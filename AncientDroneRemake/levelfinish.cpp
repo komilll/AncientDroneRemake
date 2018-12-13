@@ -80,3 +80,15 @@ bool LevelFinish::ReadyForNextLevel()
 	}
 	return false;
 }
+
+void LevelFinish::Shutdown()
+{
+	m_graphics->RemoveTextureShaderGeneral(m_shader);
+	if (m_model)
+	{
+		m_model->Shutdown();
+		delete m_model;
+		m_model = 0;
+	}
+	m_graphics = 0;
+}

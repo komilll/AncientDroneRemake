@@ -19,5 +19,4 @@ public:
 	bool TouchedPlayer(Player * player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY) override;
 	void Move(float x) override;
 	void HitedWall() override;
-
 };

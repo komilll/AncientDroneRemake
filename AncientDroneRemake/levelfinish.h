@@ -16,6 +16,7 @@ public:
 	void FixedUpdate();
 	bool TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY);
 	bool ReadyForNextLevel();
+	void Shutdown();
 
 private:
 	GraphicsClass* m_graphics;

@@ -257,6 +257,28 @@ bool MovingObjectPrototype::DamageObject()
 	return true;
 }
 
+void MovingObjectPrototype::Shutdown()
+{
+	m_graphics->RemoveTextureShader(m_shader);
+	if (m_model)
+	{
+		m_model->Shutdown();
+		delete m_model;
+		m_model = 0;
+	}
+	if (m_animation)
+	{
+		delete m_animation;
+		m_animation = 0;
+	}
+	if (m_shader)
+	{
+		m_shader->Shutdown();
+		delete m_shader;
+		m_shader = 0;
+	}
+}
+
 void MovingObjectPrototype::DestroyObject()
 {
 	m_model->SetVisibility(false);

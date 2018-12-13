@@ -113,6 +113,14 @@ void FlyingEnemyBomb::Init(float spawnPosX, float spawnPosY)
 	m_damaged = false;
 }
 
+void FlyingEnemyBomb::Shutdown()
+{
+	//m_graphics->RemoveBombModel(m_model);
+	//m_model->Shutdown();
+	//delete m_model;
+	//m_model = 0;
+}
+
 bool FlyingEnemyBomb::TouchedPlayer(Player* player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY)
 {
 	if (!m_init || m_used || m_damaged)
