@@ -188,6 +188,8 @@
     <None Include="color.vs" />
     <None Include="darksphere.ps" />
     <None Include="darksphere.vs" />
+    <None Include="droneexplosion.ps" />
+    <None Include="droneexplosion.vs" />
     <None Include="endsphere.ps" />
     <None Include="endsphere.vs" />
     <None Include="texture.ps" />

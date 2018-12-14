@@ -315,12 +315,12 @@ string TiledInterpreter::GetWaypointToLoad(int index)
 {
 	switch (index)
 	{
-	case 0:
-		return levelWaypont_01;
-	case 1:
-		return levelWaypont_02;
-	case 2:
-		return levelWaypont_03;
+		case 0:
+			return levelWaypont_01;
+		case 1:
+			return levelWaypont_02;
+		case 2:
+			return levelWaypont_03;
 	}
 
 	PostQuitMessage(0);

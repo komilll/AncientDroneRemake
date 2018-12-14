@@ -33,6 +33,8 @@ public:
 	void FreeDroneFromPlayer();
 	void CallDroneToPlayer();
 	void SetDroneFullEnergy();
+	void AttackExplosion();
+	bool ExplosionTouchedEnemy(MovingObjectPrototype *object);
 
 private:
 	//SPEAR
@@ -57,5 +59,17 @@ private:
 	float m_distToPlayerY = 11.0f;
 	float m_boundsScreenX = 141;
 	float m_boundsScreenY = 106;
+
+	//Explosion Attack
+	std::vector<MovingObjectPrototype*> m_damageByExplosionEnemies;
+	ModelClass* m_explosionModel;
+	TextureShaderGeneralClass* m_explosionShader;
+	bool m_isExploding = false;
+	float m_startSizeExplosion = 6.0f;
+	float m_endSizeExplosion = 14.0f;
+	int m_timeToExplode = 360; //ms
+	int m_currentExplodeTime = 0; //ms
+	float m_attackExplosionCooldown = 2.0f;
+	int m_explosionEnergyCost = 100;
 };
 #endif // !_DRONE_CONTORLLER_H_

@@ -30,6 +30,7 @@ public:
 	void Update();
 	bool Initialize(InputClass *inputClass, MouseClass* mouseClass, D3DClass *d3d, GraphicsClass *graphicsClass);
 	void LMBPressed();
+	void RMBPressed();
 	void SetDroneRotation(float mousePosX, float mousePosY);
 	void SetDroneDestination(float destX, float destY);
 	void CallDroneToPlayer();

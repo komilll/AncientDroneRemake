@@ -203,6 +203,16 @@ bool MouseClass::GetLMBPressed()
 	return m_mouseState.rgbButtons[0];
 }
 
+bool MouseClass::GetRMBPressed()
+{
+	return m_mouseState.rgbButtons[1];
+}
+
+void MouseClass::SetRMBPressed(bool enable)
+{
+	m_mouseState.rgbButtons[1] = enable;
+}
+
 void MouseClass::SetLMBPressed(bool enable)
 {
 	m_mouseState.rgbButtons[0] = enable;

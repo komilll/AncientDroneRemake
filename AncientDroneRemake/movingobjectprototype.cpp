@@ -257,6 +257,21 @@ bool MovingObjectPrototype::DamageObject()
 	return true;
 }
 
+bool MovingObjectPrototype::DamageObject(int dmg)
+{
+	if (m_destroyed == true || !m_destroyable)
+		return false;
+
+	m_health -= dmg;
+	if (m_health <= 0)
+	{
+		m_destroyed = true;
+		DestroyObject();
+	}
+
+	return true;
+}
+
 void MovingObjectPrototype::Shutdown()
 {
 	m_graphics->RemoveTextureShader(m_shader);

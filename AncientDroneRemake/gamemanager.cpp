@@ -114,6 +114,12 @@ void GameManager::LMBPressed()
 		droneController->Attack();
 }
 
+void GameManager::RMBPressed()
+{
+	if (droneController && m_gameStarted)
+		droneController->AttackExplosion();
+}
+
 void GameManager::SetDroneRotation(float mousePosX, float mousePosY)
 {
 	if (droneController)

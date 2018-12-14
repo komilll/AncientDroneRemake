@@ -36,7 +36,28 @@ bool DroneController::Init(GraphicsClass * graphicsClass, float width, float hei
 	useGravity = false;
 
 	m_model->SetBounds(-width, width, -height, height);
-	//m_model->SetRotation(90.0f);	
+	
+	//Explosion Initiation
+	m_explosionModel = new ModelClass();
+	m_explosionModel->Initialize(m_graphics->GetD3D()->GetDevice(), m_startSizeExplosion, m_startSizeExplosion);
+
+	m_explosionShader = new TextureShaderGeneralClass();
+	if (!m_explosionShader)
+		return false;
+
+	if (!m_explosionShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "DarkSphere_Core.dds", "droneexplosion.vs", "droneexplosion.ps"))
+		return false;
+
+	if (!m_graphics->AddTextureShaderGeneral(m_explosionShader))
+	{
+		m_explosionShader->Shutdown();
+		delete m_explosionShader;
+		m_explosionShader = 0;
+	}
+
+	m_explosionShader->AddModel(m_explosionModel);
+	m_explosionShader->SetAsTransparent(true);
+	m_explosionModel->SetVisibility(false);
 
 	return toReturn;
 }
@@ -96,6 +117,23 @@ void DroneController::FixedUpdate()
 			SetDestination(m_graphics->GetPlayerPosition().x + m_distToPlayerX, m_graphics->GetPlayerPosition().y + m_distToPlayerY);
 		else
 			SetDestination(m_graphics->GetPlayerPosition().x - m_distToPlayerX, m_graphics->GetPlayerPosition().y + m_distToPlayerY);
+	}
+
+	if (m_explosionModel)
+	{
+		m_explosionModel->SetTranslation(m_model->GetTranslation().x, m_model->GetTranslation().y, m_model->GetTranslation().z);
+		if (m_isExploding)
+		{
+			m_currentExplodeTime += 20;
+			float scale = Lerp(m_startSizeExplosion, m_endSizeExplosion, (float)m_currentExplodeTime / (float)m_timeToExplode) / m_startSizeExplosion;
+			m_explosionModel->SetScale(scale, scale, scale);
+			if (m_currentExplodeTime >= m_timeToExplode)
+			{
+				m_explosionModel->SetVisibility(false);
+				m_isExploding = false;
+				m_currentExplodeTime = 0;
+			}
+		}
 	}
 }
 
@@ -162,6 +200,8 @@ void DroneController::CheckSpearsDamage(MovingObjectPrototype *object)
 			//Hitted enemy, handled in spear script
 		}
 	}
+
+	ExplosionTouchedEnemy(object);
 }
 
 float DroneController::GetDroneEnergyProgress()
@@ -190,4 +230,46 @@ void DroneController::CallDroneToPlayer()
 void DroneController::SetDroneFullEnergy()
 {
 	m_energyLeft = m_energyMax;
+}
+
+void DroneController::AttackExplosion()
+{
+	if (m_attackCooldownCurrent > 0.0f || m_energyLeft < m_explosionEnergyCost)
+		return;
+
+	m_damageByExplosionEnemies.clear();
+	m_explosionModel->SetVisibility(true);
+	m_isExploding = true;
+	m_currentExplodeTime = 0;
+	m_attackCooldownCurrent = m_attackExplosionCooldown;
+	m_energyLeft -= m_explosionEnergyCost;
+	m_lastAttackTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
+bool DroneController::ExplosionTouchedEnemy(MovingObjectPrototype *object)
+{
+	if (!m_isExploding || object == nullptr)
+		return false;
+
+	for (int i = 0; i < m_damageByExplosionEnemies.size(); i++)
+		if (m_damageByExplosionEnemies.at(i) == object)
+			return false;
+
+	m_damageByExplosionEnemies.push_back(object);
+
+	ModelClass* enemyModel = object->GetModel();
+	if ((m_explosionModel->GetBounds().min.x < enemyModel->GetBounds().max.x && enemyModel->GetBounds().max.x < m_explosionModel->GetBounds().max.x) || //Enter from the left side		
+		(m_explosionModel->GetBounds().max.x > enemyModel->GetBounds().min.x && enemyModel->GetBounds().min.x > m_explosionModel->GetBounds().min.x)) //Enter from the right side
+	{
+		if (enemyModel->GetBounds().min.y < m_explosionModel->GetBounds().max.y && enemyModel->GetBounds().min.y > m_explosionModel->GetBounds().max.y || //Enter from the bottom
+			enemyModel->GetBounds().max.y > m_explosionModel->GetBounds().min.y && m_explosionModel->GetBounds().max.y > enemyModel->GetBounds().min.y) //Enter from the top
+		{
+			if (object->DamageObject(2))
+				return true;
+			else
+				return false;
+		}
+	}
+
+	return false;
 }

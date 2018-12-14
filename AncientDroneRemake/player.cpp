@@ -461,6 +461,7 @@ void Player::PlayerDeath()
 	m_shaderClass->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 	SetNewAnimation(DEATH);
 	isDead = true;
+	invincible = false;
 }
 
 void Player::SetNewAnimation(int newState)
