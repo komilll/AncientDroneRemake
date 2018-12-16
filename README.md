@@ -7,6 +7,32 @@ To start with – it isn’t a tutorial series. I wanted to start a blog to moti
 Project itself is a remake of 2D Platformer game that I’ve made with my friend for Ludum Dare 36
 <a href="https://azargaz.itch.io/ancient-drone">https://azargaz.itch.io/ancient-drone</a>. This time I’d like to make it from scratch using DirectX 11. I will create flipbook animation system, basic physics engine, enemies with simple AI and other things essential to complete this remake. Let’s get started!
 
+<h2>Week #9</h2>
+Everything related to the gameplay from original game is ready. What lacked was secondary drone attack (explosion) which can be used with Right Mouse Button. Another thing were traps (dark spheres) and changing levels.
+
+Also some physics issues, jump physics upgrade and lerping player position instead of instantly jumping after being damaged. Engine was implemented to use integer values only but thanks to using ModelClass (irony...) it could be easily changed to floating point values. I've decided to implement change falling/gravity algorithm:
+<pre><code class="cpp">
+if (isFalling)
+{
+	if (holdingJumpButton)
+	{
+		frameMovementUp -= gravitySlow;
+		gravityStep = 0;
+	}
+	else
+	{
+		gravityStep++;
+		frameMovementUp -= gravityNormal * sqrt(min(maxGravityStep, gravityStep));
+	}
+}
+</code></pre>
+
+When player is holding "Jump" button, character is falling slowly. Otherwise character is falling faster until reaches velocity limit. It was jump a simple idea to speed up falling and run away from linear falling which seems unnatural.
+
+<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.9">https://github.com/komilll/AncientDroneRemake/releases/tag/0.9/a> - Week #9 release (Gameplay ready from now on)
+<center><img src="Blog/gif_9.gif"></center>
+<center><i>Week #9: Gif #9 – Dark spheres - traps</i></center>
+
 <h2>Week #8</h2>
 A grave mistake was basing everything on "ModelClass" which is basically quad that is treated as base graphics unit representing object. Due to overuse, using screen-space [0, 1] became hard and almost impossible or too hard to bother. However it comes with many pros - using only one space and one script to define every model and physics bounds used in game is great thanks to simplicity and reusing many functions.
 
