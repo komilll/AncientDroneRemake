@@ -76,6 +76,9 @@ bool Player::Initialize()
 	m_graphics->SetPlayerModel(m_playerModel);
 	//movementUp += 10.0f;
 	//movementRight -= 60.0f;
+
+	//m_playerDust = new PlayerDustParticle();
+	//m_playerDust->Initialize(m_graphics, 10);
 }
 
 bool Player::Initialize(InputClass * inputClass)
@@ -100,6 +103,7 @@ void Player::Update()
 	}
 	float frameMovementRight = 0.0f;
 	float frameMovementUp = 0.0f;
+	float overrideFrameMovementUp = 0.0f;
 	movementDirection = 0.0f;
 	StatePlayer newState = IDLE;
 
@@ -138,6 +142,7 @@ void Player::Update()
 				canDoubleJump = false;
 			isGround = false;
 			currentJumpTicks = jumpTicks;
+			maxJumpHeightLeft = maxJumpHeight;
 		}
 		holdingJumpButton = true;
 	}
@@ -188,9 +193,13 @@ void Player::Update()
 
 		if (currentJumpTicks > 0)
 		{
+			gravityStep = 0;
 			isFalling = false;
 
-			frameMovementUp += jumpTickHeight;
+			frameMovementUp += sqrt(maxJumpHeight - maxJumpHeightLeft) + jumpTickHeight;
+			maxJumpHeightLeft -= frameMovementUp;
+			if (maxJumpHeight <= 0.0f)
+				currentJumpTicks = 1;
 			currentJumpTicks--;
 		}
 		/****************************************************************/
@@ -302,6 +311,7 @@ void Player::Update()
 						isFalling = false;
 						isGround = true;
 						canDoubleJump = true;
+						gravityStep = 0;
 					}
 					else if (m_playerModel->GetBounds().max.x < m_graphics->GetGroundModel(i)->GetBounds().max.x && (isFalling || frameMovementUp != 0))
 					{
@@ -338,29 +348,54 @@ void Player::Update()
 			}
 
 			//Ground from bottom
-			bool groundFromTheBottom = (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
-				m_playerModel->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
-				m_playerModel->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y);
-			if (groundFromTheBottom && inBounds && frameMovementUp <= 0.0f)
+			if (inBounds && frameMovementUp <= 0.0f)
 			{
-				isFalling = false;
-				isGround = true;
-				canDoubleJump = true;
+				bool groundFromTheBottom = (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+					m_playerModel->GetBounds().min.y > m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+					m_playerModel->GetBounds().min.y <= m_graphics->GetGroundModel(i)->GetBounds().max.y);
+
+				float gravityValTemp = holdingJumpButton ? gravitySlow : gravityNormal * sqrt(min(maxGravityStep, gravityStep + 1));
+				bool groundFromTheBottomNextFrame = (m_playerModel->GetBounds().max.y - gravityValTemp > m_graphics->GetGroundModel(i)->GetBounds().max.y &&
+					m_playerModel->GetBounds().min.y - gravityValTemp> m_graphics->GetGroundModel(i)->GetBounds().min.y &&
+					m_playerModel->GetBounds().min.y - gravityValTemp <= m_graphics->GetGroundModel(i)->GetBounds().max.y);
+
+				if (groundFromTheBottom || groundFromTheBottomNextFrame)
+				{
+					//if (groundFromTheBottom)
+						//frameMovementUp = (m_playerModel->GetBounds().min.y - m_graphics->GetGroundModel(i)->GetBounds().max.y);
+					//if (groundFromTheBottomNextFrame)
+					overrideFrameMovementUp = -(m_playerModel->GetBounds().min.y - m_graphics->GetGroundModel(i)->GetBounds().max.y);
+
+					isFalling = false;
+					isGround = true;
+					canDoubleJump = true;
+					gravityStep = 0;
+				}
 			}
 		}
 
 		if (isFalling)
 		{
 			if (holdingJumpButton)
+			{
 				frameMovementUp -= gravitySlow;
+				gravityStep = 0;
+			}
 			else
-				frameMovementUp -= gravitySlow;
+			{
+				gravityStep++;
+				frameMovementUp -= gravityNormal * sqrt(min(maxGravityStep, gravityStep));
+			}
 		}
 
 		timer -= 20.0f;
 
 		movementRight += frameMovementRight;
-		movementUp += frameMovementUp;
+		//m_playerDust->SpawnParticle(frameMovementRight);
+		if (overrideFrameMovementUp != 0.0f)
+			movementUp += overrideFrameMovementUp;
+		else
+			movementUp += frameMovementUp;
 
 		if (isGround == false)
 		{

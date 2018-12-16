@@ -147,6 +147,7 @@
     <ClInclude Include="movingobjectprototype.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playeranimationstates.h" />
+    <ClInclude Include="playerdustparticle.h" />
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="textureshaderclass.h" />
     <ClInclude Include="textureshadergeneralclass.h" />
@@ -177,6 +178,7 @@
     <ClCompile Include="movingobjectprototype.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playeranimationstates.cpp" />
+    <ClCompile Include="playerdustparticle.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
     <ClCompile Include="textureshadergeneralclass.cpp" />

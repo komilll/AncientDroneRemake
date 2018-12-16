@@ -39,7 +39,7 @@ private:
 	DIMOUSESTATE m_mouseState;
 
 	int m_screenWidth, m_screenHeight;
-	int m_mouseX, m_mouseY;
+	float m_mouseX, m_mouseY;
 	float m_mouseMaxX, m_mouseMaxY;
 	float m_mouseSpeedSlowdown = 4.0f;
 

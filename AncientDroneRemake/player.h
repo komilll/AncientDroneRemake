@@ -10,6 +10,7 @@
 #include "graphicsclass.h"
 #include "playeranimationstates.h"
 #include "IEanimationobject.h"
+#include "playerdustparticle.h"
 
 #pragma region KEYBOARD_KEYS
 
@@ -89,6 +90,7 @@ private:
 	ModelClass *m_playerModel;
 	TextureShaderClass* m_shaderClass;
 	PlayerAnimationStates *m_playerAnimation;
+	PlayerDustParticle* m_playerDust;
 	
 	//Input Options
 	int btn_moveRight = VK_D;
@@ -101,8 +103,8 @@ private:
 
 	//Movement
 	int movementDirection = 0;
-	int movementRight;
-	int movementUp;
+	float movementRight;
+	float movementUp;
 	float movementSpeed = 1.0f;
 	bool isGround = false;
 	int idleTime = 0;
@@ -114,12 +116,16 @@ private:
 	//Jump
 	int jumpTicks = 8;
 	int currentJumpTicks = 0;
-	float jumpTickHeight = 4.75f;
+	float jumpTickHeight = 4.0f;
+	float maxJumpHeight = 50.0f;
+	float maxJumpHeightLeft = 0.0f;
 	bool canDoubleJump = true;
 	bool holdingJumpButton = false;
 
 	//Physics
-	float gravityNormal = 1.75f;
+	float gravityStep = 0; //int
+	float maxGravityStep = 5;
+	float gravityNormal = 1.5f;
 	float gravitySlow = 1.0f;
 	float timer;
 	__int64 lastTime;
