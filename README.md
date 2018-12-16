@@ -29,7 +29,7 @@ if (isFalling)
 
 When player is holding "Jump" button, character is falling slowly. Otherwise character is falling faster until reaches velocity limit. It was jump a simple idea to speed up falling and run away from linear falling which seems unnatural.
 
-<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.9">https://github.com/komilll/AncientDroneRemake/releases/tag/0.9/a> - Week #9 release (Gameplay ready from now on)
+<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.9">https://github.com/komilll/AncientDroneRemake/releases/tag/0.9</a> - Week #9 release (Gameplay ready from now on)
 <center><img src="Blog/gif_9.gif"></center>
 <center><i>Week #9: Gif #9 – Dark spheres - traps</i></center>
 
