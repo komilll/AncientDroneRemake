@@ -194,6 +194,8 @@
     <None Include="droneexplosion.vs" />
     <None Include="endsphere.ps" />
     <None Include="endsphere.vs" />
+    <None Include="particles.ps" />
+    <None Include="particles.vs" />
     <None Include="texture.ps" />
     <None Include="texture.vs" />
     <None Include="texturegeneral.ps" />

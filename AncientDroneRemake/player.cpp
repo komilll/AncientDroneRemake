@@ -77,8 +77,8 @@ bool Player::Initialize()
 	//movementUp += 10.0f;
 	//movementRight -= 60.0f;
 
-	//m_playerDust = new PlayerDustParticle();
-	//m_playerDust->Initialize(m_graphics, 10);
+	m_playerDust = new PlayerDustParticle();
+	m_playerDust->Initialize(m_graphics, 10);
 }
 
 bool Player::Initialize(InputClass * inputClass)
@@ -165,7 +165,11 @@ void Player::Update()
 			m_shaderClass->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
 		}
 	}
+	///////////////////////
 
+	m_playerDust->Update();
+
+	/* FIXED UPDATE*/
 	lastTime = now;
 
 	if (timer >= 20.0f) //20ms = 0.02s
@@ -391,7 +395,7 @@ void Player::Update()
 		timer -= 20.0f;
 
 		movementRight += frameMovementRight;
-		//m_playerDust->SpawnParticle(frameMovementRight);
+		m_playerDust->SpawnParticle(m_playerModel->GetTranslation(), frameMovementRight);
 		if (overrideFrameMovementUp != 0.0f)
 			movementUp += overrideFrameMovementUp;
 		else

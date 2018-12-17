@@ -48,6 +48,7 @@ public:
 
 	void GetVideoCardInfo(char*, int&);
 
+	void TurnOnAlphaBlendingUseAlpha();
 	void TurnOnAlphaBlending();
 	void TurnOffAlphaBlending();
 

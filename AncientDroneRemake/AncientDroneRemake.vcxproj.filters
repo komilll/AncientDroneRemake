@@ -235,5 +235,11 @@
     <None Include="droneexplosion.ps">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="particles.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="particles.ps">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

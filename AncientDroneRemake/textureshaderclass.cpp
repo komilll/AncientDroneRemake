@@ -20,12 +20,17 @@ TextureShaderClass::~TextureShaderClass()
 
 bool TextureShaderClass::Initialize(ID3D11Device *device, HWND hwnd, CHAR* animationSheetFilename)
 {
+	return Initialize(device, hwnd, animationSheetFilename, "texture.vs", "texture.ps");
+}
+
+bool TextureShaderClass::Initialize(ID3D11Device * device, HWND hwnd, CHAR * animationSheetFilename, CHAR * vsFilename, CHAR * psFilename)
+{
 	bool result;
 
 	m_hwnd = &hwnd;
 
 	// Initialize the vertex and pixel shaders.
-	result = InitializeShader(device, hwnd, "texture.vs", "texture.ps", animationSheetFilename);
+	result = InitializeShader(device, hwnd, vsFilename, psFilename, animationSheetFilename);
 	if (!result)
 	{
 		return false;

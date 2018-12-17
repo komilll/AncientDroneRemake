@@ -14,11 +14,14 @@ void PlayerDustParticle::Update()
 
 	for (int i = 0; i < m_particleInUse.size(); i++)
 	{
-		if (!m_particleInUse.at(i))
+		if (m_particleInUse.at(i) == false)
 			continue;
 
+		__int64 time = now - m_spawnTime.at(i);
 		if (now - m_spawnTime.at(i) >= m_liveTime)
 		{
+			m_particleInUse.at(i) = false;
+			m_particles.at(i)->SetVisibility(false);
 			//Stop updating here
 		}
 	}
@@ -42,7 +45,6 @@ void PlayerDustParticle::SetNewAnimation(int newState, int index)
 bool PlayerDustParticle::Initialize(GraphicsClass* graphicsClass, int numberOfParticles)
 {
 	m_particleIndex = 0;
-	m_liveTimeLeft = 0;
 	m_lastSpawnTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
 	m_graphics = graphicsClass;
@@ -62,7 +64,7 @@ bool PlayerDustParticle::Initialize(GraphicsClass* graphicsClass, int numberOfPa
 		if (!shader)
 			return false;
 
-		if (!shader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "dust_particles.dds"))
+		if (!shader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "dust_particles.dds", "particles.vs", "particles.ps"))
 			return false;
 
 		if (!m_graphics->AddTextureShader(shader))
@@ -94,6 +96,7 @@ bool PlayerDustParticle::Initialize(GraphicsClass* graphicsClass, int numberOfPa
 		m_shaders.push_back(shader);
 		m_particles.push_back(model);
 		m_particleInUse.push_back(false);
+		m_spawnTime.push_back(m_lastSpawnTime);
 
 		shader->AddModel(model);
 		model->SetVisibility(false);
@@ -102,7 +105,7 @@ bool PlayerDustParticle::Initialize(GraphicsClass* graphicsClass, int numberOfPa
 	}
 }
 
-void PlayerDustParticle::SpawnParticle(float movevementDirection)
+void PlayerDustParticle::SpawnParticle(D3DXVECTOR3 spawnPos, float movevementDirection)
 {
 	if (movevementDirection == 0)
 		return;
@@ -113,6 +116,13 @@ void PlayerDustParticle::SpawnParticle(float movevementDirection)
 	m_lastSpawnTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	int dir = movevementDirection > 0 ? 1 : -1;
 
+	m_particleInUse.at(m_particleIndex) = true;
+	m_particles.at(m_particleIndex)->SetTranslation(spawnPos.x, spawnPos.y - 10.0f, spawnPos.z);
+	m_particles.at(m_particleIndex)->SetVisibility(true);
+	m_shaders.at(m_particleIndex)->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, .001f));
+	m_spawnTime.at(m_particleIndex) = m_lastSpawnTime;
+	m_particleIndex++;
+	m_particleIndex %= m_particles.size();
 	//Create new shader for particles
 		//--Move particle based on direction of player (to opposite side)
 		//--Blend alpha based on live time

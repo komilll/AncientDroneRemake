@@ -53,6 +53,7 @@ public:
 	~TextureShaderClass();
 
 	bool Initialize(ID3D11Device *device, HWND hwnd, CHAR* animationSheetFilename);
+	bool Initialize(ID3D11Device *device, HWND hwnd, CHAR* animationSheetFilename, CHAR* vsFilename, CHAR* psFilename);
 	void Shutdown();
 	bool Render(ID3D11DeviceContext*, int, D3DXMATRIX, D3DXMATRIX, D3DXMATRIX, bool movingRight = true);
 	void SetColor(D3DXVECTOR4 newColor);

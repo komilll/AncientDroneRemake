@@ -21,7 +21,7 @@ public:
 	void Update();
 	void SetNewAnimation(int newState, int index);
 	bool Initialize(GraphicsClass* graphicsClass, int numberOfParticles);
-	void SpawnParticle(float movevementDirection); //+move right; -move left
+	void SpawnParticle(D3DXVECTOR3 spawnPos, float movevementDirection); //+move right; -move left
 
 private:
 	//Methods
@@ -35,16 +35,15 @@ private:
 	std::vector<TextureShaderClass*> m_shaders;
 	std::vector<ModelClass*> m_particles;
 	std::vector<bool> m_particleInUse;
-	std::vector<int> m_spawnTime;
+	std::vector<__int64> m_spawnTime;
 	int m_particleIndex = 0;
 
 	//Particles settings
-	int m_liveTime = 500; //ms
-	int m_liveTimeLeft = 0; //ms
+	__int64 m_liveTime = 5000; //ms
 
 	//Spawn timers
 	__int64 m_lastSpawnTime = -1; //ms
-	int m_spawnCooldown = 100; //ms
+	int m_spawnCooldown = 150; //ms
 };
 
 #endif // !_PLAYER_DUST_PARTICLE_H_

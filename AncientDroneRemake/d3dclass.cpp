@@ -546,6 +546,11 @@ void D3DClass::GetVideoCardInfo(char* cardName, int& memory)
 	return;
 }
 
+void D3DClass::TurnOnAlphaBlendingUseAlpha()
+{
+	//Create new state for particles
+}
+
 void D3DClass::TurnOnAlphaBlending()
 {
 	float blendFactor[4];

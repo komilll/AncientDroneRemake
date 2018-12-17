@@ -1,0 +1,33 @@
+////////////////////////////////////////////////////////////////////////////////
+// Filename: texture.ps
+////////////////////////////////////////////////////////////////////////////////
+
+Texture2D shaderTexture;
+SamplerState SampleType;
+
+//////////////
+// TYPEDEFS //
+//////////////
+struct PixelInputType
+{
+    float4 position : SV_POSITION;
+    float2 tex : TEXCOORD0;
+    float4 color : TEXCOORD1;
+};
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Pixel Shader
+////////////////////////////////////////////////////////////////////////////////
+float4 ColorPixelShader(PixelInputType input) : SV_TARGET
+{
+	float4 textureColor = shaderTexture.Sample(SampleType, float2(input.tex.x, input.tex.y));	
+
+	//float alpha = textureColor.r + textureColor.b;
+	//textureColor.a = 1.0f - ( alpha - normalize(textureColor.g) * 2.0f );
+
+	//textureColor *= normalize(textureColor.a);
+	textureColor.a = min(0.0f, input.color.a - (1.0f - normalize(textureColor.a)));
+
+    return float4(1.0f, 0.0f, 0.0f, 0.0f);
+}
