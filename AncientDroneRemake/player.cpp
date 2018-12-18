@@ -74,11 +74,11 @@ bool Player::Initialize()
 	m_playerModel->SetBounds(-4, 4, m_playerModel->GetBounds().min.y, m_playerModel->GetBounds().max.y - 3);
 
 	m_graphics->SetPlayerModel(m_playerModel);
-	//movementUp += 10.0f;
-	//movementRight -= 60.0f;
 
 	m_playerDust = new PlayerDustParticle();
 	m_playerDust->Initialize(m_graphics, 10);
+	//movementUp += 10.0f;
+	//movementRight -= 60.0f;
 }
 
 bool Player::Initialize(InputClass * inputClass)
@@ -395,7 +395,8 @@ void Player::Update()
 		timer -= 20.0f;
 
 		movementRight += frameMovementRight;
-		m_playerDust->SpawnParticle(m_playerModel->GetTranslation(), frameMovementRight);
+		if (isGround)
+			m_playerDust->SpawnParticle(m_playerModel->GetTranslation(), frameMovementRight);
 		if (overrideFrameMovementUp != 0.0f)
 			movementUp += overrideFrameMovementUp;
 		else

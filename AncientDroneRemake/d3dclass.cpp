@@ -403,6 +403,17 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+	// Modify the description to create an alpha disabled blend state description.
+	blendStateDescription.RenderTarget[0].BlendEnable = TRUE;
+	blendStateDescription.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+
+	// Create the blend state using the description.
+	result = m_device->CreateBlendState(&blendStateDescription, &m_alphaEnableBlendingStateUseAlpha);
+	if (FAILED(result))
+	{
+		return false;
+	}
+	
 	return true;
 }
 
@@ -548,7 +559,18 @@ void D3DClass::GetVideoCardInfo(char* cardName, int& memory)
 
 void D3DClass::TurnOnAlphaBlendingUseAlpha()
 {
-	//Create new state for particles
+	float blendFactor[4];
+
+	// Setup the blend factor.
+	blendFactor[0] = 0.0f;
+	blendFactor[1] = 0.0f;
+	blendFactor[2] = 0.0f;
+	blendFactor[3] = 0.0f;
+
+	// Turn on the alpha blending.
+	m_deviceContext->OMSetBlendState(m_alphaEnableBlendingStateUseAlpha, blendFactor, 0xffffffff);
+
+	return;
 }
 
 void D3DClass::TurnOnAlphaBlending()

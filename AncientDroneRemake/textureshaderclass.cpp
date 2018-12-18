@@ -193,6 +193,16 @@ void TextureShaderClass::SetColorTint(D3DXVECTOR4 color)
 	m_colorTint = color;
 }
 
+void TextureShaderClass::SetUseAlphaSourceBlending(bool enable)
+{
+	m_useAlphaSourceBlending = enable;
+}
+
+bool TextureShaderClass::GetUseAlphaSourceBlending()
+{
+	return m_useAlphaSourceBlending;
+}
+
 bool TextureShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename, CHAR* animationSheetFilename)
 {
 	HRESULT result;

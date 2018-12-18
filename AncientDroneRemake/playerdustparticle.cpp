@@ -24,6 +24,12 @@ void PlayerDustParticle::Update()
 			m_particles.at(i)->SetVisibility(false);
 			//Stop updating here
 		}
+		else
+		{
+			float diff = (now - m_spawnTime.at(i));
+			float val = (diff / (float)m_liveTime);
+			m_shaders.at(i)->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 0.8f - val * val));
+		}
 	}
 
 	//Update for all particles
@@ -74,7 +80,7 @@ bool PlayerDustParticle::Initialize(GraphicsClass* graphicsClass, int numberOfPa
 			shader = 0;
 		}
 
-		model->Initialize(m_graphics->GetD3D()->GetDevice(), 4, 4);
+		model->Initialize(m_graphics->GetD3D()->GetDevice(), 4, 4);	
 
 		if (shader)
 			shader->SetAnimationObject(this);
@@ -99,6 +105,7 @@ bool PlayerDustParticle::Initialize(GraphicsClass* graphicsClass, int numberOfPa
 		m_spawnTime.push_back(m_lastSpawnTime);
 
 		shader->AddModel(model);
+		shader->SetUseAlphaSourceBlending(true);
 		model->SetVisibility(false);
 		model->SetRotation(90.0f);
 		SetNewAnimation(SIZE_1, i);
@@ -116,13 +123,22 @@ void PlayerDustParticle::SpawnParticle(D3DXVECTOR3 spawnPos, float movevementDir
 	m_lastSpawnTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	int dir = movevementDirection > 0 ? 1 : -1;
 
-	m_particleInUse.at(m_particleIndex) = true;
-	m_particles.at(m_particleIndex)->SetTranslation(spawnPos.x, spawnPos.y - 10.0f, spawnPos.z);
-	m_particles.at(m_particleIndex)->SetVisibility(true);
-	m_shaders.at(m_particleIndex)->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, .001f));
-	m_spawnTime.at(m_particleIndex) = m_lastSpawnTime;
-	m_particleIndex++;
-	m_particleIndex %= m_particles.size();
+	//for (int i = 0; i < 3; i++)
+	{
+		float randomX = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 5.0f - 2.0f;
+		float randomY = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 4.0f - 2.0f;
+		int randomAnim = (std::rand() % 5);
+		float randomScale = static_cast <float> (rand()) / static_cast <float> (RAND_MAX) * 0.15f;
+		SetNewAnimation(randomAnim, m_particleIndex);
+		m_particles.at(m_particleIndex)->SetScale(randomScale, randomScale, randomScale);
+		m_particleInUse.at(m_particleIndex) = true;
+		m_particles.at(m_particleIndex)->SetTranslation(spawnPos.x - dir * 5.0f + randomX, spawnPos.y - 10.0f + randomY, spawnPos.z);
+		m_particles.at(m_particleIndex)->SetVisibility(true);
+		m_shaders.at(m_particleIndex)->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 0.8f));
+		m_spawnTime.at(m_particleIndex) = m_lastSpawnTime;
+		m_particleIndex++;
+		m_particleIndex %= m_particles.size();
+	}
 	//Create new shader for particles
 		//--Move particle based on direction of player (to opposite side)
 		//--Blend alpha based on live time

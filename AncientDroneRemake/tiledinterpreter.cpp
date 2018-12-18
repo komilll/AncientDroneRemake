@@ -158,6 +158,17 @@ void TiledInterpreter::SpawnPlayer(float posX, float posY)
 	m_player->ResetPlayer();
 	m_player->ChangePosition(posX, posY - TILE_SIZE * 100 * 2);	
 	m_player->Move();
+
+	return;
+	TextureShaderGeneralClass* backgroundShader = new TextureShaderGeneralClass();
+	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_sky.dds");
+	m_graphics->AddBackgroundShader(backgroundShader);
+	ModelClass *backgroundModel = new ModelClass;
+	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 3000, 200);
+	backgroundModel->SetTranslation(posX, posY - TILE_SIZE * 100 * 2 - 100, 0.0f);
+	backgroundShader->AddModel(backgroundModel);
+
+	//Move slightly with player, different speed for each background
 }
 
 void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy, bool restart)

@@ -39,11 +39,11 @@ private:
 	int m_particleIndex = 0;
 
 	//Particles settings
-	__int64 m_liveTime = 5000; //ms
+	__int64 m_liveTime = 200; //ms
 
 	//Spawn timers
 	__int64 m_lastSpawnTime = -1; //ms
-	int m_spawnCooldown = 150; //ms
+	int m_spawnCooldown = 100; //ms
 };
 
 #endif // !_PLAYER_DUST_PARTICLE_H_

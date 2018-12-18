@@ -102,6 +102,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_backgroundModel = new ModelClass;
 	result = m_backgroundModel->Initialize(m_D3D->GetDevice(), 200, 112.5f);
 	m_backgroundModel->SetTranslation(0.0f, 0.0f, 0.0f);
+
 	if (!result) return false;
 
 	TextureShaderGeneralClass* groundShader = new TextureShaderGeneralClass();
@@ -395,6 +396,20 @@ void GraphicsClass::RemoveColorShader(ColorShaderClass * colorShader)
 	m_ColorShaders.erase(std::remove(m_ColorShaders.begin(), m_ColorShaders.end(), colorShader));
 }
 
+bool GraphicsClass::AddBackgroundShader(TextureShaderGeneralClass * textureShader)
+{
+	if (textureShader == nullptr)
+		return false;
+
+	m_backgrounds.push_back(textureShader);
+	return true;
+}
+
+void GraphicsClass::RemoveBackgroundShader(TextureShaderGeneralClass * textureShader)
+{
+	m_backgrounds.erase(std::remove(m_backgrounds.begin(), m_backgrounds.end(), textureShader));
+}
+
 ModelClass* GraphicsClass::AddGroundModel(int width, int height, float posX, float posY)
 {
 	m_groundModels.push_back(new ModelClass());
@@ -442,20 +457,47 @@ bool GraphicsClass::Render()
 		return false;
 	}
 
-
-	m_D3D->TurnOnAlphaBlending();
-	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.	
-	D3DXMatrixTranslation(&worldMatrix, playerModel->GetTranslation().x, playerModel->GetTranslation().y, playerModel->GetTranslation().z);
-	if (playerModel->Render(m_D3D->GetDeviceContext()))
+	for (int i = 0; i < m_backgrounds.size(); i++)
 	{
-		// Render the model using the color shader.	
-		result = m_TextureShaders.at(0)->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, playerModel->movingRight);
-		if (!result)
+		int b = i;
+
+		if (m_backgrounds.at(i) == nullptr)
+			continue;
+
+		ModelClass* model = nullptr;
+
+		if (m_backgrounds.at(i)->IsTransparent())
+			m_D3D->TurnOnAlphaBlending();
+
+		for (int k = 0; k < m_backgrounds.at(i)->GetModels().size(); k++)
 		{
-			return false;
+			if ((model = m_backgrounds.at(i)->GetModels().at(k)) == nullptr)
+				continue;
+
+			m_D3D->GetWorldMatrix(worldMatrix);
+			if (m_backgrounds.at(i)->GetIsConstantOnScreen())
+			{
+				D3DXVECTOR3 posDiff = m_Camera->GetPosition() - m_lastFrameCameraPosition;
+				model->SetAdditionalTranslation(model->GetAdditionalTranslation().x + posDiff.x, model->GetAdditionalTranslation().y + posDiff.y, model->GetAdditionalTranslation().z);
+			}
+
+			D3DXMATRIX scaleMatrix;
+			D3DXMatrixScaling(&scaleMatrix, model->GetScale().x, model->GetScale().y, 1.0f);
+			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x + model->GetAdditionalTranslation().x, model->GetTranslation().y + model->GetAdditionalTranslation().y,
+				model->GetTranslation().z + model->GetAdditionalTranslation().z);
+			D3DXMatrixMultiply(&worldMatrix, &scaleMatrix, &worldMatrix);
+			if (!model->Render(m_D3D->GetDeviceContext()))
+				continue;
+
+			if (!m_backgrounds.at(i)->Render(m_D3D->GetDeviceContext(), model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, model->movingRight))
+				return false;
 		}
+
+		m_D3D->TurnOffAlphaBlending();
 	}
 
+	m_D3D->TurnOnAlphaBlending();
+	bool useSourceAlpha = false;
 	for (int i = 1; i < m_TextureShaders.size(); i++)
 	{
 		int b = i;
@@ -464,6 +506,17 @@ bool GraphicsClass::Render()
 			continue;
 
 		ModelClass* model = nullptr;
+
+		if (m_TextureShaders.at(i)->GetUseAlphaSourceBlending() && !useSourceAlpha)
+		{
+			m_D3D->TurnOnAlphaBlendingUseAlpha();
+			useSourceAlpha = true;
+		}
+		else if (!m_TextureShaders.at(i)->GetUseAlphaSourceBlending() && useSourceAlpha)
+		{
+			m_D3D->TurnOnAlphaBlending();
+			useSourceAlpha = false;
+		}
 
 		for (int k = 0; k < m_TextureShaders.at(i)->GetModels().size(); k++)
 		{
@@ -487,6 +540,21 @@ bool GraphicsClass::Render()
 				return false;
 		}
 	}
+
+	m_D3D->TurnOnAlphaBlending();
+	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.	
+	m_D3D->GetWorldMatrix(worldMatrix);
+	D3DXMatrixTranslation(&worldMatrix, playerModel->GetTranslation().x, playerModel->GetTranslation().y, playerModel->GetTranslation().z);
+	if (playerModel->Render(m_D3D->GetDeviceContext()))
+	{
+		// Render the model using the color shader.	
+		result = m_TextureShaders.at(0)->Render(m_D3D->GetDeviceContext(), playerModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, playerModel->movingRight);
+		if (!result)
+		{
+			return false;
+		}
+	}
+
 
 	m_D3D->TurnOffAlphaBlending();
 
