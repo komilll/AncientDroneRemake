@@ -60,6 +60,7 @@ public:
 	void AddModel(ModelClass * model);
 	std::vector<ModelClass*> GetModels();
 	void ClearModels();
+	void SetConstReverseX(int direction);
 
 private:
 	bool InitializeShader(ID3D11Device*, HWND, CHAR*, CHAR*, CHAR*);
@@ -72,6 +73,7 @@ private:
 private:
 	TextureBufferType m_texBufferType;
 	std::vector<ModelClass*> m_models;
+	int m_constReverseX = 0; //Use together
 	bool m_reverseX = false;
 	bool m_isTransparent = false;
 	bool m_constantPosition = false;

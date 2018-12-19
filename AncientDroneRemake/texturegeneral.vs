@@ -40,6 +40,7 @@ struct PixelInputType
 {
     float4 position : SV_POSITION;
     float2 tex : TEXCOORD0;
+	float reverseX : TEXCOORD1;
 };
 
 
@@ -61,6 +62,7 @@ PixelInputType ColorVertexShader(VertexInputType input)
 	//output.position = input.position;
 
 	output.tex = input.tex;
+	output.reverseX = reverseX;
 
     return output;
 }

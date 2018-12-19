@@ -52,6 +52,7 @@ void TiledInterpreter::Import(bool restart)
 					SpawnLevelFinish(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2 - TILE_SIZE * 100 * 2);
 			}
 		}
+		SpawnBackgrounds();
 	}
 	else
 	{
@@ -75,6 +76,7 @@ void TiledInterpreter::RestartLevel()
 
 void TiledInterpreter::LoadNextLevel()
 {
+	DestroyBackgrounds();
 	m_levelIndex++;
 	ReadMapFile();
 	Import();
@@ -158,17 +160,6 @@ void TiledInterpreter::SpawnPlayer(float posX, float posY)
 	m_player->ResetPlayer();
 	m_player->ChangePosition(posX, posY - TILE_SIZE * 100 * 2);	
 	m_player->Move();
-
-	return;
-	TextureShaderGeneralClass* backgroundShader = new TextureShaderGeneralClass();
-	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_sky.dds");
-	m_graphics->AddBackgroundShader(backgroundShader);
-	ModelClass *backgroundModel = new ModelClass;
-	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 3000, 200);
-	backgroundModel->SetTranslation(posX, posY - TILE_SIZE * 100 * 2 - 100, 0.0f);
-	backgroundShader->AddModel(backgroundModel);
-
-	//Move slightly with player, different speed for each background
 }
 
 void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy, bool restart)
@@ -335,4 +326,90 @@ string TiledInterpreter::GetWaypointToLoad(int index)
 	}
 
 	PostQuitMessage(0);
+}
+
+void TiledInterpreter::SpawnBackgrounds()
+{
+	//m_player->GetModel()->GetTranslation( -> UZYWAC TEGO
+	TextureShaderGeneralClass* backgroundShader = new TextureShaderGeneralClass();
+	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_sky.dds");
+	m_graphics->AddBackgroundShader(backgroundShader);
+	ModelClass *backgroundModel = new ModelClass;
+	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 200, 112.5f);
+	backgroundModel->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	backgroundShader->AddModel(backgroundModel);
+	backgroundShader->SetAsTransparent(true);
+	backgroundShader->SetConstReverseX(1);
+
+	backgroundShader = new TextureShaderGeneralClass();
+	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_sky.dds");
+	m_graphics->AddBackgroundShader(backgroundShader);
+	backgroundModel = new ModelClass;
+	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 200, 112.5f);
+	backgroundModel->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	backgroundShader->AddModel(backgroundModel);
+	backgroundShader->SetAsTransparent(true);
+	backgroundShader->SetConstReverseX(-1);
+	///////////////////////////////////////////
+	backgroundShader = new TextureShaderGeneralClass();
+	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_mountains.dds");
+	m_graphics->AddBackgroundShader(backgroundShader);
+	backgroundModel = new ModelClass;
+	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 200, 112.5f);
+	backgroundModel->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	backgroundShader->AddModel(backgroundModel);
+	backgroundShader->SetAsTransparent(true);
+	backgroundShader->SetConstReverseX(1);
+
+	backgroundShader = new TextureShaderGeneralClass();
+	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_mountains.dds");
+	m_graphics->AddBackgroundShader(backgroundShader);
+	backgroundModel = new ModelClass;
+	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 200, 112.5f);
+	backgroundModel->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	backgroundShader->AddModel(backgroundModel);
+	backgroundShader->SetAsTransparent(true);
+	backgroundShader->SetConstReverseX(-1);
+
+	///////////////////////////////////////////
+	backgroundShader = new TextureShaderGeneralClass();
+	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_sand.dds");
+	m_graphics->AddBackgroundShader(backgroundShader);
+	backgroundModel = new ModelClass;
+	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 200, 112.5f);
+	backgroundModel->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	backgroundShader->AddModel(backgroundModel);
+	backgroundShader->SetAsTransparent(true);
+	backgroundShader->SetConstReverseX(1);
+
+	backgroundShader = new TextureShaderGeneralClass();
+	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_sand.dds");
+	m_graphics->AddBackgroundShader(backgroundShader);
+	backgroundModel = new ModelClass;
+	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 200, 112.5f);
+	backgroundModel->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	backgroundShader->AddModel(backgroundModel);
+	backgroundShader->SetAsTransparent(true);
+	backgroundShader->SetConstReverseX(-1);
+	//else
+	//{
+	//	m_graphics->GetBackgroundShader(0)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	//	m_graphics->GetBackgroundShader(1)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	//	m_graphics->GetBackgroundShader(2)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	//	m_graphics->GetBackgroundShader(3)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	//	m_graphics->GetBackgroundShader(4)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	//	m_graphics->GetBackgroundShader(5)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	//}
+}
+
+void TiledInterpreter::DestroyBackgrounds()
+{
+	for (int i = 5; i > -1; i--)
+	{
+		TextureShaderGeneralClass* tmp = m_graphics->GetBackgroundShader(i);
+		m_graphics->RemoveBackgroundShader(tmp);
+		tmp->Shutdown();
+		delete tmp;
+		tmp = 0;
+	}
 }

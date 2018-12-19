@@ -56,6 +56,8 @@ private:
 	string GetTileName(int index);
 	string GetLevelToLoad(int index);
 	string GetWaypointToLoad(int index);
+	void SpawnBackgrounds();
+	void DestroyBackgrounds();
 
 private:
 	GraphicsClass* m_graphics;
@@ -70,7 +72,7 @@ private:
 
 	std::vector<DarkSphere*> m_darkSpheres;
 
-	int m_levelIndex = 0;
+	int m_levelIndex = 1;
 
 	//Restart params
 	int m_wandererIndex = 0;

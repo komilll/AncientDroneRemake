@@ -61,6 +61,7 @@ public:
 
 	bool AddBackgroundShader(TextureShaderGeneralClass* textureShader);
 	void RemoveBackgroundShader(TextureShaderGeneralClass* textureShader);
+	TextureShaderGeneralClass* GetBackgroundShader(int index);
 
 	ModelClass* AddGroundModel(int width, int height, float posX, float posY);
 	ModelClass* GetGroundModel(int index);

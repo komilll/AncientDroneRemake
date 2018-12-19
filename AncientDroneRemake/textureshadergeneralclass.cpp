@@ -58,7 +58,17 @@ bool TextureShaderGeneralClass::Render(ID3D11DeviceContext* deviceContext, int i
 {
 	bool result;
 
-	m_reverseX = !movingRight;
+	if (m_constReverseX != 0)
+	{
+		if (m_constReverseX == 1)
+			m_reverseX = false;
+		else if (m_constReverseX == -1)
+			m_reverseX = true;
+	}
+	else
+	{
+		m_reverseX = !movingRight;
+	}
 
 	// Set the shader parameters that it will use for rendering.
 	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
@@ -117,6 +127,11 @@ void TextureShaderGeneralClass::ClearModels()
 		m_models.at(i) = 0;
 	}
 	m_models.clear();
+}
+
+void TextureShaderGeneralClass::SetConstReverseX(int direction)
+{
+	m_constReverseX = direction > 0 ? 1 : -1;
 }
 
 bool TextureShaderGeneralClass::InitializeShader(ID3D11Device* device, HWND hwnd, CHAR* vsFilename, CHAR* psFilename, CHAR* textureFilename)

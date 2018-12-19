@@ -12,6 +12,7 @@ struct PixelInputType
 {
     float4 position : SV_POSITION;
     float2 tex : TEXCOORD0;
+	float reverseX : TEXCOORD1;
 };
 
 
@@ -20,8 +21,8 @@ struct PixelInputType
 ////////////////////////////////////////////////////////////////////////////////
 float4 ColorPixelShader(PixelInputType input) : SV_TARGET
 {
-	float4 textureColor = shaderTexture.Sample(SampleType, float2(input.tex.x, input.tex.y));	
-	float alpha = textureColor.r + textureColor.b;
+	float4 textureColor = shaderTexture.Sample(SampleType, float2(input.tex.x * input.reverseX, input.tex.y));	
+	//float alpha = textureColor.r + textureColor.b;
 	//textureColor.a = normalize(1.0f - alpha / 2.0f);
 
 	//textureColor *= normalize(textureColor.a);

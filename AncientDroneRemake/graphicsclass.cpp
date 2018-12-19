@@ -254,6 +254,25 @@ bool GraphicsClass::Frame()
 	m_Camera->SetPosition(m_Camera->GetPosition().x + m_playerPosDiff.x, m_Camera->GetPosition().y + m_playerPosDiff.y, m_Camera->GetPosition().z);
 	m_backgroundModel->SetTranslation(m_backgroundModel->GetTranslation().x + m_playerPosDiff.x, m_backgroundModel->GetTranslation().y + m_playerPosDiff.y, m_backgroundModel->GetTranslation().z);
 
+	if (m_backgrounds.size() == 6)
+	{
+		//background_sky
+		ModelClass* model = m_backgrounds.at(0)->GetModels().at(0);
+		model->SetTranslation(model->GetTranslation().x + m_playerPosDiff.x * 0.96f, model->GetTranslation().y + m_playerPosDiff.y, model->GetTranslation().z);
+		model = m_backgrounds.at(1)->GetModels().at(0);
+		model->SetTranslation(model->GetTranslation().x + m_playerPosDiff.x * 0.96f, model->GetTranslation().y + m_playerPosDiff.y, model->GetTranslation().z);
+		//background_mountains
+		model = m_backgrounds.at(2)->GetModels().at(0);
+		model->SetTranslation(model->GetTranslation().x + m_playerPosDiff.x * 0.9f, model->GetTranslation().y + m_playerPosDiff.y, model->GetTranslation().z);
+		model = m_backgrounds.at(3)->GetModels().at(0);
+		model->SetTranslation(model->GetTranslation().x + m_playerPosDiff.x * 0.9f, model->GetTranslation().y + m_playerPosDiff.y, model->GetTranslation().z);
+		//background_sand
+		model = m_backgrounds.at(4)->GetModels().at(0);
+		model->SetTranslation(model->GetTranslation().x + m_playerPosDiff.x * 0.85f, model->GetTranslation().y + m_playerPosDiff.y, model->GetTranslation().z);
+		model = m_backgrounds.at(5)->GetModels().at(0);
+		model->SetTranslation(model->GetTranslation().x + m_playerPosDiff.x * 0.85f, model->GetTranslation().y + m_playerPosDiff.y, model->GetTranslation().z);
+	}
+
 	return true;
 }
 
@@ -410,6 +429,11 @@ void GraphicsClass::RemoveBackgroundShader(TextureShaderGeneralClass * textureSh
 	m_backgrounds.erase(std::remove(m_backgrounds.begin(), m_backgrounds.end(), textureShader));
 }
 
+TextureShaderGeneralClass * GraphicsClass::GetBackgroundShader(int index)
+{
+	return m_backgrounds.at(index);
+}
+
 ModelClass* GraphicsClass::AddGroundModel(int width, int height, float posX, float posY)
 {
 	m_groundModels.push_back(new ModelClass());
@@ -447,15 +471,15 @@ bool GraphicsClass::Render()
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 	
-	m_D3D->GetWorldMatrix(worldMatrix);
-	D3DXMatrixTranslation(&worldMatrix, m_backgroundModel->GetTranslation().x, m_backgroundModel->GetTranslation().y, m_backgroundModel->GetTranslation().z);
-	m_backgroundModel->Render(m_D3D->GetDeviceContext());
+	//m_D3D->GetWorldMatrix(worldMatrix);
+	//D3DXMatrixTranslation(&worldMatrix, m_backgroundModel->GetTranslation().x, m_backgroundModel->GetTranslation().y, m_backgroundModel->GetTranslation().z);
+	//m_backgroundModel->Render(m_D3D->GetDeviceContext());
 
-	result = m_TextureShaderBackground->Render(m_D3D->GetDeviceContext(), m_backgroundModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-	if (!result)
-	{
-		return false;
-	}
+	//result = m_TextureShaderBackground->Render(m_D3D->GetDeviceContext(), m_backgroundModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 	for (int i = 0; i < m_backgrounds.size(); i++)
 	{
