@@ -44,6 +44,7 @@ public:
 	void Import(bool restart = false);
 	void RestartLevel();
 	void LoadNextLevel();
+	void Update();
 
 private:
 	void SpawnTile(int indeX, int indexY, int indexTile);
@@ -57,6 +58,7 @@ private:
 	string GetLevelToLoad(int index);
 	string GetWaypointToLoad(int index);
 	void SpawnBackgrounds();
+	void SpawnBackgroundsContinue();
 	void DestroyBackgrounds();
 
 private:
@@ -72,7 +74,7 @@ private:
 
 	std::vector<DarkSphere*> m_darkSpheres;
 
-	int m_levelIndex = 1;
+	int m_levelIndex = 0;
 
 	//Restart params
 	int m_wandererIndex = 0;
@@ -85,6 +87,8 @@ private:
 	string levelWaypont_02 = "map02_waypoint.txt";
 	string level_03 = "map03.txt";
 	string levelWaypont_03 = "map03_waypoint.txt";
+
+	__int64 m_startBackgroundSpawnTime = -1;
 };
 
 #endif // !_TILED_INTERPRETER_H_

@@ -215,6 +215,11 @@ bool SystemClass::Frame()
 		m_tiledInterpreter->LoadNextLevel();
 	}
 
+	if (m_tiledInterpreter)
+	{
+		m_tiledInterpreter->Update();
+	}
+
 	return true;
 }
 

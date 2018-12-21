@@ -52,7 +52,7 @@ void TiledInterpreter::Import(bool restart)
 					SpawnLevelFinish(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2 - TILE_SIZE * 100 * 2);
 			}
 		}
-		SpawnBackgrounds();
+		SpawnBackgroundsContinue();
 	}
 	else
 	{
@@ -76,10 +76,17 @@ void TiledInterpreter::RestartLevel()
 
 void TiledInterpreter::LoadNextLevel()
 {
+	m_startBackgroundSpawnTime = -1;
 	DestroyBackgrounds();
 	m_levelIndex++;
 	ReadMapFile();
 	Import();
+}
+
+void TiledInterpreter::Update()
+{
+	if (m_startBackgroundSpawnTime != -1)
+		SpawnBackgrounds();
 }
 
 void TiledInterpreter::SpawnTile(int indexX, int indexY, int indexTile)
@@ -173,6 +180,7 @@ void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy, bool r
 	switch (indexEnemy)
 	{
 		case WANDERER:
+			indexY--;
 			if (restart)
 			{
 				((EnemyWanderer*)(m_gameManager->GetEnemy(G_WANDERER, m_wandererIndex)))->GetModel()->SetTranslation(TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, 0.0f);
@@ -187,6 +195,7 @@ void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy, bool r
 			}
 			break;
 		case ARCHER:
+			indexY--;
 			if (restart)
 			{
 				((EnemyArcher*)(m_gameManager->GetEnemy(G_ARCHER, m_archerIndex)))->GetModel()->SetTranslation(TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, 0.0f);
@@ -330,7 +339,25 @@ string TiledInterpreter::GetWaypointToLoad(int index)
 
 void TiledInterpreter::SpawnBackgrounds()
 {
-	//m_player->GetModel()->GetTranslation( -> UZYWAC TEGO
+	if (m_graphics->GetBackgroundShader(6) == nullptr)
+		return;
+
+	m_graphics->GetBackgroundShader(0)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	m_graphics->GetBackgroundShader(1)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	m_graphics->GetBackgroundShader(2)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	m_graphics->GetBackgroundShader(3)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
+	m_graphics->GetBackgroundShader(4)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	m_graphics->GetBackgroundShader(5)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	m_graphics->GetBackgroundShader(6)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 590, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+
+	if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - m_startBackgroundSpawnTime > 1000)
+		m_startBackgroundSpawnTime = -1;
+}
+
+void TiledInterpreter::SpawnBackgroundsContinue()
+{
+	m_startBackgroundSpawnTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
 	TextureShaderGeneralClass* backgroundShader = new TextureShaderGeneralClass();
 	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_sky.dds");
 	m_graphics->AddBackgroundShader(backgroundShader);
@@ -391,6 +418,16 @@ void TiledInterpreter::SpawnBackgrounds()
 	backgroundShader->AddModel(backgroundModel);
 	backgroundShader->SetAsTransparent(true);
 	backgroundShader->SetConstReverseX(-1);
+
+	backgroundShader = new TextureShaderGeneralClass();
+	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_sand.dds");
+	m_graphics->AddBackgroundShader(backgroundShader);
+	backgroundModel = new ModelClass;
+	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 200, 112.5f);
+	backgroundModel->SetTranslation(m_graphics->GetPlayerPosition().x + 590, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	backgroundShader->AddModel(backgroundModel);
+	backgroundShader->SetAsTransparent(true);
+	backgroundShader->SetConstReverseX(1);
 	//else
 	//{
 	//	m_graphics->GetBackgroundShader(0)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
@@ -399,14 +436,18 @@ void TiledInterpreter::SpawnBackgrounds()
 	//	m_graphics->GetBackgroundShader(3)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
 	//	m_graphics->GetBackgroundShader(4)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
 	//	m_graphics->GetBackgroundShader(5)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	//	m_graphics->GetBackgroundShader(6)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 590, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
 	//}
 }
 
 void TiledInterpreter::DestroyBackgrounds()
 {
-	for (int i = 5; i > -1; i--)
+	for (int i = 6; i > -1; i--)
 	{
 		TextureShaderGeneralClass* tmp = m_graphics->GetBackgroundShader(i);
+		if (tmp == nullptr)
+			continue;
+
 		m_graphics->RemoveBackgroundShader(tmp);
 		tmp->Shutdown();
 		delete tmp;

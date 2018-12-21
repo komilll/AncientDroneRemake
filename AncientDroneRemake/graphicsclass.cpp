@@ -8,7 +8,7 @@ GraphicsClass::GraphicsClass()
 {
 	m_D3D = 0;
 	m_Camera = 0;
-	playerModel = 0;	
+	playerModel = 0;
 	m_ColorShader = 0;
 	m_TextureShaderBackground = 0;
 	m_backgroundModel = 0;
@@ -62,7 +62,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -256.0f);	
+	m_Camera->SetPosition(0.0f, 0.0f, -256.0f);
 
 	// Create the model object.
 	//for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
@@ -176,8 +176,8 @@ void GraphicsClass::Shutdown()
 			(*(shader_._Ptr))->Shutdown();
 			delete (*(shader_._Ptr));
 			(*(shader_._Ptr)) = 0;
-		}		
-		
+		}
+
 		//m_TextureShader->Shutdown();
 		//delete m_TextureShader;
 		//m_TextureShader = 0;
@@ -246,15 +246,15 @@ bool GraphicsClass::Frame()
 	}
 
 	for (int i = 0; i < m_TextureShaders.size(); i++)
-		m_TextureShaders.at(i)->CheckNextFrame();	
+		m_TextureShaders.at(i)->CheckNextFrame();
 
 	m_lastFrameCameraPosition = m_Camera->GetPosition();
 	m_playerPosDiff = playerModel->GetTranslation() - m_lastPlayerPosition;
 	m_lastPlayerPosition = playerModel->GetTranslation();
 	m_Camera->SetPosition(m_Camera->GetPosition().x + m_playerPosDiff.x, m_Camera->GetPosition().y + m_playerPosDiff.y, m_Camera->GetPosition().z);
-	m_backgroundModel->SetTranslation(m_backgroundModel->GetTranslation().x + m_playerPosDiff.x, m_backgroundModel->GetTranslation().y + m_playerPosDiff.y, m_backgroundModel->GetTranslation().z);
+	//m_backgroundModel->SetTranslation(m_backgroundModel->GetTranslation().x + m_playerPosDiff.x, m_backgroundModel->GetTranslation().y + m_playerPosDiff.y, m_backgroundModel->GetTranslation().z);
 
-	if (m_backgrounds.size() == 6)
+	if (m_backgrounds.size() == 7)
 	{
 		//background_sky
 		ModelClass* model = m_backgrounds.at(0)->GetModels().at(0);
@@ -270,6 +270,8 @@ bool GraphicsClass::Frame()
 		model = m_backgrounds.at(4)->GetModels().at(0);
 		model->SetTranslation(model->GetTranslation().x + m_playerPosDiff.x * 0.85f, model->GetTranslation().y + m_playerPosDiff.y, model->GetTranslation().z);
 		model = m_backgrounds.at(5)->GetModels().at(0);
+		model->SetTranslation(model->GetTranslation().x + m_playerPosDiff.x * 0.85f, model->GetTranslation().y + m_playerPosDiff.y, model->GetTranslation().z);
+		model = m_backgrounds.at(6)->GetModels().at(0);
 		model->SetTranslation(model->GetTranslation().x + m_playerPosDiff.x * 0.85f, model->GetTranslation().y + m_playerPosDiff.y, model->GetTranslation().z);
 	}
 
@@ -431,6 +433,9 @@ void GraphicsClass::RemoveBackgroundShader(TextureShaderGeneralClass * textureSh
 
 TextureShaderGeneralClass * GraphicsClass::GetBackgroundShader(int index)
 {
+	if (m_backgrounds.size() <= index)
+		return nullptr;
+
 	return m_backgrounds.at(index);
 }
 
@@ -470,7 +475,7 @@ bool GraphicsClass::Render()
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
-	
+
 	//m_D3D->GetWorldMatrix(worldMatrix);
 	//D3DXMatrixTranslation(&worldMatrix, m_backgroundModel->GetTranslation().x, m_backgroundModel->GetTranslation().y, m_backgroundModel->GetTranslation().z);
 	//m_backgroundModel->Render(m_D3D->GetDeviceContext());
@@ -618,7 +623,7 @@ bool GraphicsClass::Render()
 				return false;
 		}
 
-		m_D3D->TurnOffAlphaBlending();		
+		m_D3D->TurnOffAlphaBlending();
 	}
 
 	//for (int i = 0; i < GROUND_MODEL_LENGTH; i++)
