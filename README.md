@@ -10,6 +10,7 @@ Project itself is a remake of 2D Platformer game that I’ve made with my friend
 <h2>Week #10</h2>
 At week #9 I've finished everything gameplay related (even though I want to tweak some settings on last week #11). This week I've spent on creating particle system for dust that is appearing behind moving player. Other thing was parallax scrolling background and some minor fixes of bugs that I've noticed.
 Parallax scrolling was made with 3 sprites that are moving with different speed. The farthest sky is the slowest and sand which is the nearest is slightly faster. I've already made for Models to follow Player so I only needed to connect backgrounds to it. Previously for example UI and Cursor was following the player every frame (because I am not using screenspace and everything is based on models).
+
 Particle system is based on 4 similar sprites that differ by size. Additional every particle is resized randomly, shifted by random position and then alpha is blended over time to 0. No movement of particle is involved as player creates an illusion of motion because of his and camera movement.
 
 <a href="https://github.com/komilll/AncientDroneRemake/releases/tag/0.10">https://github.com/komilll/AncientDroneRemake/releases/tag/0.10</a> - Week #10 release
