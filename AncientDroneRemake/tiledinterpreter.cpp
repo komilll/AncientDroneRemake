@@ -52,7 +52,11 @@ void TiledInterpreter::Import(bool restart)
 					SpawnLevelFinish(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2 - TILE_SIZE * 100 * 2);
 			}
 		}
-		SpawnBackgroundsContinue();
+		if (m_backgroundSpawned == false)
+		{
+			SpawnBackgroundsContinue();
+			m_startBackgroundSpawnTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		}
 	}
 	else
 	{
@@ -77,7 +81,7 @@ void TiledInterpreter::RestartLevel()
 void TiledInterpreter::LoadNextLevel()
 {
 	m_startBackgroundSpawnTime = -1;
-	DestroyBackgrounds();
+	//DestroyBackgrounds();
 	m_levelIndex++;
 	ReadMapFile();
 	Import();
@@ -260,9 +264,12 @@ void TiledInterpreter::SpawnDarkSphere(float posX, float posY, bool restart)
 
 void TiledInterpreter::SpawnLevelFinish(float posX, float posY, bool restart)
 {
-	LevelFinish* levelFinish = new LevelFinish();
-	levelFinish->Init(m_graphics, posX, posY);
-	m_gameManager->SetLevelFinish(levelFinish);
+	if (m_gameManager->GetLevelFinish() == nullptr)
+	{
+		LevelFinish* levelFinish = new LevelFinish();
+		levelFinish->Init(m_graphics, posX, posY);
+		m_gameManager->SetLevelFinish(levelFinish);
+	}
 }
 
 void TiledInterpreter::FindFirstTileX()
@@ -348,7 +355,7 @@ void TiledInterpreter::SpawnBackgrounds()
 	m_graphics->GetBackgroundShader(3)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y, m_graphics->GetPlayerPosition().z);
 	m_graphics->GetBackgroundShader(4)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
 	m_graphics->GetBackgroundShader(5)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 395, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
-	m_graphics->GetBackgroundShader(6)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 590, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	m_graphics->GetBackgroundShader(6)->GetModels().at(0)->SetTranslation(m_graphics->GetPlayerPosition().x + 795, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
 
 	if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - m_startBackgroundSpawnTime > 1000)
 		m_startBackgroundSpawnTime = -1;
@@ -356,7 +363,7 @@ void TiledInterpreter::SpawnBackgrounds()
 
 void TiledInterpreter::SpawnBackgroundsContinue()
 {
-	m_startBackgroundSpawnTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	m_backgroundSpawned = true;
 
 	TextureShaderGeneralClass* backgroundShader = new TextureShaderGeneralClass();
 	backgroundShader->Initialize(m_graphics->GetD3D()->GetDevice(), *m_graphics->GetHWND(), "background_sky.dds");
@@ -424,7 +431,7 @@ void TiledInterpreter::SpawnBackgroundsContinue()
 	m_graphics->AddBackgroundShader(backgroundShader);
 	backgroundModel = new ModelClass;
 	backgroundModel->Initialize(m_graphics->GetD3D()->GetDevice(), 200, 112.5f);
-	backgroundModel->SetTranslation(m_graphics->GetPlayerPosition().x + 590, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
+	backgroundModel->SetTranslation(m_graphics->GetPlayerPosition().x + 795, m_graphics->GetPlayerPosition().y - 100, m_graphics->GetPlayerPosition().z);
 	backgroundShader->AddModel(backgroundModel);
 	backgroundShader->SetAsTransparent(true);
 	backgroundShader->SetConstReverseX(1);
@@ -448,9 +455,11 @@ void TiledInterpreter::DestroyBackgrounds()
 		if (tmp == nullptr)
 			continue;
 
-		m_graphics->RemoveBackgroundShader(tmp);
+		tmp->ClearModels();
 		tmp->Shutdown();
 		delete tmp;
 		tmp = 0;
 	}
+
+	m_graphics->ClearBackgrounds();
 }

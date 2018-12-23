@@ -62,7 +62,8 @@ public:
 	bool AddBackgroundShader(TextureShaderGeneralClass* textureShader);
 	void RemoveBackgroundShader(TextureShaderGeneralClass* textureShader);
 	TextureShaderGeneralClass* GetBackgroundShader(int index);
-
+	void ClearBackgrounds();
+		
 	ModelClass* AddGroundModel(int width, int height, float posX, float posY);
 	ModelClass* GetGroundModel(int index);
 	void ClearGrounds();
@@ -71,6 +72,8 @@ public:
 	D3DXVECTOR3 GetPlayerPositionDiff();
 	D3DXVECTOR3 GetPlayerPosition();
 	ModelClass* GetPlayerModel();
+
+	ModelClass* GetMainMenuBackground();
 
 private:
 	bool Render();

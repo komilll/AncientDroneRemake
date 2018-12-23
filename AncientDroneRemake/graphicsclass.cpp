@@ -252,7 +252,7 @@ bool GraphicsClass::Frame()
 	m_playerPosDiff = playerModel->GetTranslation() - m_lastPlayerPosition;
 	m_lastPlayerPosition = playerModel->GetTranslation();
 	m_Camera->SetPosition(m_Camera->GetPosition().x + m_playerPosDiff.x, m_Camera->GetPosition().y + m_playerPosDiff.y, m_Camera->GetPosition().z);
-	//m_backgroundModel->SetTranslation(m_backgroundModel->GetTranslation().x + m_playerPosDiff.x, m_backgroundModel->GetTranslation().y + m_playerPosDiff.y, m_backgroundModel->GetTranslation().z);
+	m_backgroundModel->SetTranslation(m_backgroundModel->GetTranslation().x + m_playerPosDiff.x, m_backgroundModel->GetTranslation().y + m_playerPosDiff.y, m_backgroundModel->GetTranslation().z);
 
 	if (m_backgrounds.size() == 7)
 	{
@@ -316,6 +316,11 @@ D3DXVECTOR3 GraphicsClass::GetPlayerPosition()
 ModelClass * GraphicsClass::GetPlayerModel()
 {
 	return playerModel;
+}
+
+ModelClass * GraphicsClass::GetMainMenuBackground()
+{
+	return m_backgroundModel;
 }
 
 void GraphicsClass::SetPlayerAnimation(int index, TextureShaderClass* shader)
@@ -439,6 +444,11 @@ TextureShaderGeneralClass * GraphicsClass::GetBackgroundShader(int index)
 	return m_backgrounds.at(index);
 }
 
+void GraphicsClass::ClearBackgrounds()
+{
+	m_backgrounds.clear();
+}
+
 ModelClass* GraphicsClass::AddGroundModel(int width, int height, float posX, float posY)
 {
 	m_groundModels.push_back(new ModelClass());
@@ -476,15 +486,15 @@ bool GraphicsClass::Render()
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
-	//m_D3D->GetWorldMatrix(worldMatrix);
-	//D3DXMatrixTranslation(&worldMatrix, m_backgroundModel->GetTranslation().x, m_backgroundModel->GetTranslation().y, m_backgroundModel->GetTranslation().z);
-	//m_backgroundModel->Render(m_D3D->GetDeviceContext());
+	m_D3D->GetWorldMatrix(worldMatrix);
+	D3DXMatrixTranslation(&worldMatrix, m_backgroundModel->GetTranslation().x, m_backgroundModel->GetTranslation().y, m_backgroundModel->GetTranslation().z);
+	m_backgroundModel->Render(m_D3D->GetDeviceContext());
 
-	//result = m_TextureShaderBackground->Render(m_D3D->GetDeviceContext(), m_backgroundModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
-	//if (!result)
-	//{
-	//	return false;
-	//}
+	result = m_TextureShaderBackground->Render(m_D3D->GetDeviceContext(), m_backgroundModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	if (!result)
+	{
+		return false;
+	}
 
 	for (int i = 0; i < m_backgrounds.size(); i++)
 	{
@@ -616,7 +626,7 @@ bool GraphicsClass::Render()
 			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x + model->GetAdditionalTranslation().x, model->GetTranslation().y + model->GetAdditionalTranslation().y,
 				model->GetTranslation().z + model->GetAdditionalTranslation().z);
 			D3DXMatrixMultiply(&worldMatrix, &scaleMatrix, &worldMatrix);
-			if (!model->Render(m_D3D->GetDeviceContext()))
+			if (!model || !m_D3D || !m_D3D->GetDeviceContext() || !model->Render(m_D3D->GetDeviceContext()))
 				continue;
 
 			if (!m_TextureShadersGeneral.at(i)->Render(m_D3D->GetDeviceContext(), model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, model->movingRight))

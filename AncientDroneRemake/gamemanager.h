@@ -48,8 +48,10 @@ public:
 	void AddDarkSphere(DarkSphere* darkSphere);
 	
 	void SetLevelFinish(LevelFinish* levelFinish);
+	LevelFinish* GetLevelFinish();
 
 	bool CheckNextLevel();
+
 
 private:
 	void PushNewEnemy(EnemyType enemyType, void* enemy);

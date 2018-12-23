@@ -74,7 +74,7 @@ private:
 
 	std::vector<DarkSphere*> m_darkSpheres;
 
-	int m_levelIndex = 0;
+	int m_levelIndex = 1;
 
 	//Restart params
 	int m_wandererIndex = 0;
@@ -89,6 +89,7 @@ private:
 	string levelWaypont_03 = "map03_waypoint.txt";
 
 	__int64 m_startBackgroundSpawnTime = -1;
+	bool m_backgroundSpawned = false;
 };
 
 #endif // !_TILED_INTERPRETER_H_

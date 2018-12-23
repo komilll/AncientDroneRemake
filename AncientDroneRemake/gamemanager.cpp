@@ -293,6 +293,8 @@ void GameManager::StartGame()
 
 	m_mouseClass->SetLMBPressed(false);
 	m_gameStarted = true;
+	
+	m_graphics->GetMainMenuBackground()->SetVisibility(false);
 }
 
 void GameManager::RestartLevel()
@@ -320,6 +322,11 @@ void GameManager::AddDarkSphere(DarkSphere* darkSphere)
 void GameManager::SetLevelFinish(LevelFinish * levelFinish)
 {
 	m_levelFinish = levelFinish;
+}
+
+LevelFinish * GameManager::GetLevelFinish()
+{
+	return m_levelFinish;
 }
 
 bool GameManager::CheckNextLevel()
