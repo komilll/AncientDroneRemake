@@ -44,13 +44,13 @@ private:
 	float m_destX, m_destY;
 	float m_epsilon = 0.1f;
 	float m_epsilonDistance = 0.3f;
-	float m_attackCooldown = 1.0f;
+	float m_attackCooldown = 0.35f;
 	float m_attackCooldownCurrent = 0.0f;
 	int m_energyMax = 100;
 	int m_energyLeft = m_energyMax;
 	int m_bulletEnergyCost = 25;
 	__int64 m_lastAttackTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-	int m_timeToRecoverEnergy = 2000; //ms
+	int m_timeToRecoverEnergy = 1500; //ms
 
 	//Movement
 	bool m_droneOnPlayer = false;

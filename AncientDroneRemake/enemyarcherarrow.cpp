@@ -50,8 +50,57 @@ void EnemyArcherArrow::FixedUpdate()
 	}
 
 	m_model->movingRight = frameMovementRight > 0;
-	MovingObjectPrototype::FixedUpdate();
+	//MovingObjectPrototype::FixedUpdate();
 	//Move(frameMovementRight);		
+
+	if (m_destroyed)
+		return;
+
+	bool isFalling = useGravity;
+	bool isGround = false;
+
+	for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
+	{
+		float mMinY = m_model->GetBounds().min.y;
+		float gMaxY = m_graphics->GetGroundModel(i)->GetBounds().max.y;
+
+		if (mMinY > gMaxY)
+			continue;
+
+		float mMinX = m_model->GetBounds().min.x;
+		float gMaxX = m_graphics->GetGroundModel(i)->GetBounds().max.x;
+
+		if (mMinX >= gMaxX)
+			continue;
+
+		float mMaxX = m_model->GetBounds().max.x;
+		float gMinX = m_graphics->GetGroundModel(i)->GetBounds().min.x;
+
+		if (mMaxX <= gMinX)
+			continue;
+
+		float mMaxY = m_model->GetBounds().max.y;
+		float gMinY = m_graphics->GetGroundModel(i)->GetBounds().min.y;
+		
+		isGround = true;
+		bool heightTest = (gMaxY > mMaxY && mMinY > gMinY) || (mMaxY > gMaxY && mMinY < gMinY) || (mMaxY > gMaxY && mMinY > gMinY && mMinY < gMaxY) ||
+			(mMaxY < gMaxY && mMinY < gMinY && mMaxY > gMinY);
+		if (isGround)
+			HeightTest(mMinX, mMaxX, mMinY, mMaxY, gMinX, gMaxX, gMinY, gMaxY, m_graphics->GetGroundModel(i), heightTest);
+	}
+
+	if (isFalling)
+		frameMovementUp -= gravity;
+
+	timer -= 20.0f;
+
+	m_model->SetTranslation(m_model->GetTranslation().x + Forward().x * frameMovementRight, m_model->GetTranslation().y + Forward().y * frameMovementRight + frameMovementUp, m_model->GetTranslation().z);
+	if (m_colliderModel)
+	{
+		m_colliderModel->SetTranslation(m_model->GetTranslation().x, m_model->GetTranslation().y, m_model->GetTranslation().z);
+		if (m_model->UseRotation())
+			m_colliderModel->SetRotation(m_model->GetRotation());
+	}
 }
 
 bool EnemyArcherArrow::IsActive()

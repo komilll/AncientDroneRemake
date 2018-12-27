@@ -28,7 +28,7 @@ private:
 
 	//Arrows spawning
 	std::vector<EnemyArcherArrow*> m_arrow;
-	float m_arrowCooldownTime = 1.25f;
+	float m_arrowCooldownTime = 1.75f;
 	float m_arrowCooldownCurrent = 0.0f;
 	int m_arrowIndex = 0;
 	D3DXVECTOR2 arrowSpawnPoint; //Relative

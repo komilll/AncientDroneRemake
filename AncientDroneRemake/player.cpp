@@ -211,6 +211,9 @@ void Player::Update()
 
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 		{
+			if (m_graphics->GetGroundModel(i)->isInCamera == false)
+				continue;
+
 			bool inBounds = (m_playerModel->GetBounds().min.x < m_graphics->GetGroundModel(i)->GetBounds().max.x
 				&& m_playerModel->GetBounds().max.x > m_graphics->GetGroundModel(i)->GetBounds().min.x);
 			bool inBoundsNextFrame = (m_playerModel->GetBounds().min.x + frameMovementRight < m_graphics->GetGroundModel(i)->GetBounds().max.x
@@ -279,6 +282,9 @@ void Player::Update()
 		/****************************************************************/
 		for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
 		{
+			if (m_graphics->GetGroundModel(i)->isInCamera == false)
+				continue;
+
 			//float groundThickness = (m_graphics->GetGroundModel(i)->GetBounds().max.y - m_graphics->GetGroundModel(i)->GetBounds().min.y) / 4;
 			//Check if player is inside environment #1 - in the middle
 			bool inMiddle = (m_playerModel->GetBounds().max.y > m_graphics->GetGroundModel(i)->GetBounds().max.y &&

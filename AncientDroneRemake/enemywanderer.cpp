@@ -3,8 +3,9 @@
 EnemyWanderer::EnemyWanderer()
 {
 	EnemyBase::EnemyBase();
+	m_wander = true;
 	useGravity = true;
-	gravity = 5.0f;
+	gravity = 0.0f;
 	speed = 0.25f;
 	m_hitedWall = true;
 }

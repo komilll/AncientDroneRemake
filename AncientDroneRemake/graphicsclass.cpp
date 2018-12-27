@@ -480,6 +480,9 @@ bool GraphicsClass::Render()
 
 	// Generate the view matrix based on the camera's position.
 	m_Camera->Render();
+	float cameraPosLeftX = m_Camera->GetPosition().x - 175.0f;
+	float cameraPosRightX = m_Camera->GetPosition().x + 175.0f;
+	float xPos = 0.0f;
 
 	// Get the world, view, and projection matrices from the camera and d3d objects.
 	m_Camera->GetViewMatrix(viewMatrix);
@@ -562,6 +565,11 @@ bool GraphicsClass::Render()
 			if ((model = m_TextureShaders.at(i)->GetModels().at(k)) == nullptr)
 				continue;
 
+			xPos = model->GetTranslation().x;
+
+			if (xPos < cameraPosLeftX|| xPos > cameraPosRightX)
+				continue;
+
 			m_D3D->GetWorldMatrix(worldMatrix);
 			if (model->UseRotation())
 			{
@@ -614,13 +622,23 @@ bool GraphicsClass::Render()
 			if ((model = m_TextureShadersGeneral.at(i)->GetModels().at(k)) == nullptr)
 				continue;
 
-			m_D3D->GetWorldMatrix(worldMatrix);
 			if (m_TextureShadersGeneral.at(i)->GetIsConstantOnScreen())
 			{
 				D3DXVECTOR3 posDiff = m_Camera->GetPosition() - m_lastFrameCameraPosition;
 				model->SetAdditionalTranslation(model->GetAdditionalTranslation().x + posDiff.x, model->GetAdditionalTranslation().y + posDiff.y, model->GetAdditionalTranslation().z);
 			}
+			else
+			{
+				xPos = model->GetTranslation().x;
+				if (xPos < cameraPosLeftX || xPos > cameraPosRightX)
+				{
+					model->isInCamera = false;
+					continue;
+				}
+				model->isInCamera = true;
+			}
 
+			m_D3D->GetWorldMatrix(worldMatrix);
 			D3DXMATRIX scaleMatrix;
 			D3DXMatrixScaling(&scaleMatrix, model->GetScale().x, model->GetScale().y, 1.0f);
 			D3DXMatrixTranslation(&worldMatrix, model->GetTranslation().x + model->GetAdditionalTranslation().x, model->GetTranslation().y + model->GetAdditionalTranslation().y,

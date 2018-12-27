@@ -71,6 +71,7 @@ public:
 	/* Physics based components */
 	Bounds bounds;
 	bool movingRight = true;
+	bool isInCamera = true;
 
 private:
 	bool InitializeBuffers(ID3D11Device*);

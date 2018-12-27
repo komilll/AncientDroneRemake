@@ -24,7 +24,7 @@ public:
 private:
 	bool m_init = false;
 	bool m_isMoving = false;
-	float timeToDestroy = 2.0f;
+	float timeToDestroy = 15.0f;
 	float currentTimeToDestroy = 0.0f;
 };
 #endif // !_ENEMY_ARCHER_ARROW_H_

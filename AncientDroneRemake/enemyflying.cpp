@@ -67,7 +67,67 @@ void EnemyFlying::FixedUpdate()
 {
 	UpdateBombs();
 
-	EnemyBase::FixedUpdate();
+	if (m_destroyed)
+		return;
+
+	bool isFalling = useGravity;
+	bool isGround = false;
+
+	for (int i = 0; i < m_graphics->GetGroundModelCount(); i++)
+	{
+		float mMinX = m_model->GetBounds().min.x;
+		float gMaxX = m_graphics->GetGroundModel(i)->GetBounds().max.x;
+
+		if (mMinX >= gMaxX)
+			continue;
+
+		float mMaxX = m_model->GetBounds().max.x;
+		float gMinX = m_graphics->GetGroundModel(i)->GetBounds().min.x;
+
+		if (mMaxX <= gMinX)
+			continue;
+
+		float mMinY = m_model->GetBounds().min.y;
+		float gMaxY = m_graphics->GetGroundModel(i)->GetBounds().max.y;
+
+		if (mMinY > gMaxY)
+			continue;
+
+		float mMaxY = m_model->GetBounds().max.y;
+		float gMinY = m_graphics->GetGroundModel(i)->GetBounds().min.y;
+
+		bool heightTest = (gMaxY > mMaxY && mMinY > gMinY) || (mMaxY > gMaxY && mMinY < gMinY) || (mMaxY > gMaxY && mMinY > gMinY && mMinY < gMaxY) ||
+			(mMaxY < gMaxY && mMinY < gMinY && mMaxY > gMinY);
+
+		//if (heightTest && m_hitedWall)
+		if (isGround)
+			HeightTest(mMinX, mMaxX, mMinY, mMaxY, gMinX, gMaxX, gMinY, gMaxY, m_graphics->GetGroundModel(i), heightTest);
+	}
+
+	if (isFalling)
+		frameMovementUp -= gravity;
+
+	timer -= 20.0f;
+
+	m_model->SetTranslation(m_model->GetTranslation().x + Forward().x * frameMovementRight, m_model->GetTranslation().y + Forward().y * frameMovementRight + frameMovementUp, m_model->GetTranslation().z);
+	if (m_colliderModel)
+	{
+		m_colliderModel->SetTranslation(m_model->GetTranslation().x, m_model->GetTranslation().y, m_model->GetTranslation().z);
+		if (m_model->UseRotation())
+			m_colliderModel->SetRotation(m_model->GetRotation());
+	}
+
+	if (invincibilityTimeCurrent != 0) //Miliseconds
+	{
+		invincibilityTimeCurrent -= 20;
+		m_shader->SetColorTint(D3DXVECTOR4(1.0f, 1.0f - (float)invincibilityTimeCurrent / (float)invincibilityTime, 1.0f - (float)invincibilityTimeCurrent / (float)invincibilityTime, 1.0f));
+		if (invincibilityTimeCurrent <= 0)
+		{
+			invincible = false;
+			invincibilityTimeCurrent = 0;
+			m_shader->SetColorTint(D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+	}
 	
 	m_bombCooldownCurrent += 0.02f;
 	if (m_bombCooldownCurrent >= m_bombCooldownTime)

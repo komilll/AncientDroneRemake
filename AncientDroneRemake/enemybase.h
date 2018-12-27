@@ -27,7 +27,7 @@ private:
 public:
 	//Variable
 
-private:
+protected:
 	//Variable
 	bool invincible = false;
 	int invincibilityTime = 200; //ms
