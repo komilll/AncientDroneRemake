@@ -81,8 +81,12 @@ private:
 	bool Frame();
 	void InitializeWindows(int&, int&);
 	void ShutdownWindows();
+	void UseGodMode();
 
 private:
+	int m_currentCheatLetter = 0;
+	__int64 m_timeToTypeCheats = 10000;
+	__int64 m_lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	LPCSTR m_applicationName;
 	HINSTANCE m_hinstance;
 	HWND m_hwnd;

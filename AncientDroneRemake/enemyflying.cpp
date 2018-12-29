@@ -19,7 +19,7 @@ bool EnemyFlying::Init(GraphicsClass* graphicsClass, float width, float height, 
 {
 	for (int i = 0; i < 5; i++)
 	{
-		m_bomb.push_back(new FlyingEnemyBomb(graphicsClass, 4, 0.35f));
+		m_bomb.push_back(new FlyingEnemyBomb(graphicsClass, 4, 0.35f, 4.0f, 3.0f));
 	}
 	bool toReturn = EnemyBase::Init(graphicsClass, width, height, translationX, translationY, "mob_crow.dds");
 	if (!toReturn)

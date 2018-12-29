@@ -29,6 +29,7 @@ class TiledInterpreter
 	static const int END_POINT = 9;
 	//ENEMIES
 	static const int WANDERER = 10;
+	static const int WANDERER_VERTICAL = 16;
 	static const int ARCHER = 11;
 	static const int CROW = 12;
 	/////////
@@ -74,7 +75,7 @@ private:
 
 	std::vector<DarkSphere*> m_darkSpheres;
 
-	int m_levelIndex = 1;
+	int m_levelIndex = 0;
 
 	//Restart params
 	int m_wandererIndex = 0;

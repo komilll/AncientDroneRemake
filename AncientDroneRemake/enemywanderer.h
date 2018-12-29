@@ -19,4 +19,10 @@ public:
 	bool TouchedPlayer(Player * player, float playerMinX, float playerMaxX, float playerMinY, float playerMaxY) override;
 	void Move(float x) override;
 	void HitedWall() override;
+
+	void ForceVerticalMovement();
+
+private:
+	int m_wanderTimer = 0;
+	bool m_moveOnlyVertically = false;
 };

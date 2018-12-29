@@ -220,6 +220,48 @@ bool SystemClass::Frame()
 		m_tiledInterpreter->Update();
 	}
 
+	if (m_currentCheatLetter == 0)
+	{
+		if (m_Input->IsKeyDown(VK_T))
+		{
+			m_currentCheatLetter = 1;
+			m_timeToTypeCheats = 10000;
+		}
+	}
+	else if (m_currentCheatLetter == 1)
+	{
+		if (m_Input->IsKeyDown(VK_A))
+			m_currentCheatLetter = 2;
+	}
+	else if (m_currentCheatLetter == 2)
+	{
+		if (m_Input->IsKeyDown(VK_N))
+			m_currentCheatLetter = 3;
+	}
+	else if (m_currentCheatLetter == 3)
+	{
+		if (m_Input->IsKeyDown(VK_U))
+			m_currentCheatLetter = 4;
+	}
+	else if (m_currentCheatLetter == 4)
+	{
+		if (m_Input->IsKeyDown(VK_K))
+			m_currentCheatLetter = 5;
+	}
+	else if (m_currentCheatLetter == 5)
+	{
+		if (m_Input->IsKeyDown(VK_I))
+		{
+			UseGodMode();
+			m_currentCheatLetter = 6;
+		}
+	}
+
+	m_timeToTypeCheats -= (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count() - m_lastTime);
+	m_lastTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	if (m_timeToTypeCheats <= 0)
+		m_currentCheatLetter = 0;
+
 	return true;
 }
 
@@ -358,6 +400,11 @@ void SystemClass::ShutdownWindows()
 	ApplicationHandle = NULL;
 
 	return;
+}
+
+void SystemClass::UseGodMode()
+{
+	m_GameManager->UseGodMode();
 }
 
 

@@ -76,6 +76,8 @@ public:
 	void ResetPlayer();
 	bool DoRestartGame();
 
+	void UseGodMode();
+
 private:
 	void PlayerDeath();
 	void SetNewAnimation(int newState) override final; //IE
@@ -105,7 +107,7 @@ private:
 	int movementDirection = 0;
 	float movementRight;
 	float movementUp;
-	float movementSpeed = 1.0f;
+	float movementSpeed = 1.4f;
 	bool isGround = false;
 	int idleTime = 0;
 	int timeToSetIdleState = 15;
@@ -131,7 +133,7 @@ private:
 	__int64 lastTime;
 
 	//Gameplay
-	int maxHealth = 10;
+	int maxHealth = 5;
 	int health = maxHealth;
 	bool invincible = false;
 	int invincibilityTime = 200; //ms
@@ -140,4 +142,7 @@ private:
 	bool isDead = false;
 	bool readyToRestart = false;
 	int deathTimer = 0;
+
+	//Others
+	bool useGodMode = false;
 };

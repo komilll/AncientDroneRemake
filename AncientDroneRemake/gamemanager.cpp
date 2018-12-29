@@ -232,7 +232,7 @@ bool GameManager::SpawnObjects()
 	#pragma region Menu UI
 	menuTitle = new UIController();
 	if (menuTitle == nullptr)
-	return false;
+		return false;
 
 	menuTitle->Init(m_graphics, 6 * 4, 6, 256, 64, 0.0f, 60.0f, "UIMenu_Title.dds");
 	menuTitle->GetModel()->SetScale(3.0f, 3.0f, 3.0f);
@@ -251,15 +251,20 @@ bool GameManager::SpawnObjects()
 
 	menuQuit = new UIController();
 	if (menuQuit == nullptr)
-	return false;
+		return false;
 
 	menuQuit->Init(m_graphics, 6 * 4, 6, 256, 64, 0.0f, -45.0f, "UIMenu_Quit.dds");
 	menuQuit->GetModel()->SetScale(2.0f, 2.0f, 2.0f);
 	menuQuit->InitializeButton(m_mouseClass);
 	menuQuit->EventOnPressButton = []()-> void { PostQuitMessage(0); };
 
+	endGameTitle = new UIController();
+	if (endGameTitle == nullptr)
+		return false;
+
+	endGameTitle->Init(m_graphics, 142, 106.5f, 800, 600, 0.0f, 0.0f, "end_screen.dds");
+	endGameTitle->GetModel()->SetVisibility(false);
 	#pragma endregion
-	
 }
 
 UIController * GameManager::GetMenuStartGame()
@@ -336,11 +341,28 @@ bool GameManager::CheckNextLevel()
 	
 	if (m_levelFinish->ReadyForNextLevel())
 	{
+		if (m_levelFinish->m_currentLevel == 2)
+		{
+			DestroyLevel();
+			FinishedGame();
+			return false;
+		}
+		
 		DestroyLevel();
 		return true;
 	}
 
 	return false;
+}
+
+void GameManager::FinishedGame()
+{
+	endGameTitle->GetModel()->SetVisibility(true);
+}
+
+void GameManager::UseGodMode()
+{
+	player->UseGodMode();
 }
 
 void GameManager::PushNewEnemy(EnemyType enemyType, void* enemy)

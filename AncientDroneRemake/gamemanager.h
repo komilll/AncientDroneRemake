@@ -52,6 +52,9 @@ public:
 
 	bool CheckNextLevel();
 
+	void FinishedGame();
+
+	void UseGodMode();
 
 private:
 	void PushNewEnemy(EnemyType enemyType, void* enemy);
@@ -81,6 +84,7 @@ private:
 	UIController* menuStartGame;
 	UIController* menuQuit;
 	UIController* menuTitle;
+	UIController* endGameTitle;
 
 	bool m_gameStarted = false;
 };

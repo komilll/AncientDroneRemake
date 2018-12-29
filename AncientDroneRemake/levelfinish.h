@@ -18,6 +18,9 @@ public:
 	bool ReadyForNextLevel();
 	void Shutdown();
 
+public:
+	int m_currentLevel = 0;
+
 private:
 	GraphicsClass* m_graphics;
 	ModelClass* m_model;

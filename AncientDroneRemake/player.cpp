@@ -136,7 +136,7 @@ void Player::Update()
 
 	if (m_input->IsKeyDown(btn_jump) || m_input->IsKeyDown(btn_jumpAlternative))
 	{
-		if ((isGround || canDoubleJump) && holdingJumpButton == false)
+		if (((isGround || canDoubleJump) && holdingJumpButton == false) || useGodMode)
 		{
 			if (!isGround)
 				canDoubleJump = false;
@@ -433,7 +433,7 @@ void Player::DealDamage(int dmg, D3DXVECTOR3 dmgOrigin, float translationStregth
 	/*if (health <= 0)
 		return;*/
 	
-	if (invincible)
+	if (invincible || useGodMode)
 		return;
 
 	invincible = true;
@@ -499,6 +499,12 @@ bool Player::DoRestartGame()
 		return true;
 	}
 	return false;
+}
+
+void Player::UseGodMode()
+{
+	useGodMode = true;
+	movementSpeed = 3.0f;
 }
 
 void Player::PlayerDeath()

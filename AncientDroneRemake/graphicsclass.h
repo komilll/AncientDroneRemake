@@ -83,6 +83,7 @@ private:
 	D3DClass* m_D3D;
 	CameraClass* m_Camera;
 	ColorShaderClass* m_ColorShader;
+	TextureShaderGeneralClass* m_bombShader;
 
 	ModelClass* playerModel;
 	ModelClass* m_backgroundModel;

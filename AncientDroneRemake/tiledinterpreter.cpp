@@ -46,7 +46,7 @@ void TiledInterpreter::Import(bool restart)
 					SpawnDarkSphere(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2 - TILE_SIZE * 100 * 2);
 				else if (tab[i][k] == SPAWN_POINT)
 					SpawnPlayer(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2);
-				else if (tab[i][k] >= WANDERER && tab[i][k] <= CROW)
+				else if ((tab[i][k] >= WANDERER && tab[i][k] <= CROW) || tab[i][k] == WANDERER_VERTICAL)
 					SpawnEnemy(i - firstTile, MAP_HEIGHT - k, tab[i][k]);
 				else if (tab[i][k] == END_POINT)
 					SpawnLevelFinish(TILE_SIZE * (i - firstTile) * 2, (MAP_HEIGHT - k) * TILE_SIZE * 2 - TILE_SIZE * 100 * 2);
@@ -82,6 +82,8 @@ void TiledInterpreter::LoadNextLevel()
 {
 	m_startBackgroundSpawnTime = -1;
 	//DestroyBackgrounds();
+	if (m_levelIndex == 2)
+		return;
 	m_levelIndex++;
 	ReadMapFile();
 	Import();
@@ -183,6 +185,22 @@ void TiledInterpreter::SpawnEnemy(int indexX, int indexY, int indexEnemy, bool r
 
 	switch (indexEnemy)
 	{
+		case WANDERER_VERTICAL:
+			indexY--;
+			if (restart)
+			{
+				((EnemyWanderer*)(m_gameManager->GetEnemy(G_WANDERER, m_wandererIndex)))->GetModel()->SetTranslation(TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, 0.0f);
+				((EnemyWanderer*)(m_gameManager->GetEnemy(G_WANDERER, m_wandererIndex)))->RestartEnemy();
+				m_wandererIndex++;
+			}
+			else
+			{
+				wanderer = new EnemyWanderer();
+				wanderer->Init(m_graphics, 16.0f, 16.0f, TILE_SIZE * indexX * 2, TILE_SIZE * indexY * 2, "mob_spikyback.dds");
+				m_gameManager->AddNewEnemy(G_WANDERER, wanderer);
+				wanderer->ForceVerticalMovement();
+			}
+			break;
 		case WANDERER:
 			indexY--;
 			if (restart)
@@ -268,6 +286,7 @@ void TiledInterpreter::SpawnLevelFinish(float posX, float posY, bool restart)
 	{
 		LevelFinish* levelFinish = new LevelFinish();
 		levelFinish->Init(m_graphics, posX, posY);
+		levelFinish->m_currentLevel = m_levelIndex;
 		m_gameManager->SetLevelFinish(levelFinish);
 	}
 }

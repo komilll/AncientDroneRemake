@@ -126,6 +126,9 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	m_bombShader = new TextureShaderGeneralClass();
+	m_bombShader->Initialize(m_D3D->GetDevice(), *m_hwnd, "DarkSphere_Core.dds", "darksphere.vs", "darksphere.ps");
+	m_bombShader->SetAsTransparent(true);
 	//m_TextureShader = new TextureShaderClass;
 	//if (!m_TextureShader)
 	//{
@@ -704,6 +707,8 @@ bool GraphicsClass::Render()
 	//	}		
 	//}
 
+	m_D3D->TurnOnAlphaBlending();
+
 	for (int i = 0; i < m_bombModels.size(); i++)
 	{
 		m_ColorShader->SetColor(D3DXVECTOR4(1.0f, 0.5f, 0.3f, 1.0f));
@@ -715,12 +720,13 @@ bool GraphicsClass::Render()
 
 		m_bombModels[i]->Render(m_D3D->GetDeviceContext());
 
-		result = m_ColorShader->Render(m_D3D->GetDeviceContext(), m_bombModels[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+		result = m_bombShader->Render(m_D3D->GetDeviceContext(), m_bombModels[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
 		if (!result)
 		{
 			return false;
 		}
 	}
+	m_D3D->TurnOffAlphaBlending();
 
 	// Present the rendered scene to the screen.
 	m_D3D->EndScene();
