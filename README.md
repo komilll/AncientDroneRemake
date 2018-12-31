@@ -7,6 +7,9 @@ To start with – it isn’t a tutorial series. I wanted to start a blog to moti
 Project itself is a remake of 2D Platformer game that I’ve made with my friend for Ludum Dare 36
 <a href="https://azargaz.itch.io/ancient-drone">https://azargaz.itch.io/ancient-drone</a>. This time I’d like to make it from scratch using DirectX 11. I will create flipbook animation system, basic physics engine, enemies with simple AI and other things essential to complete this remake. Let’s get started!
 
+<h2>Week #11 [Christmas week]</h2>
+Polishing, testing, debugging. Also preparing release and postmortem.
+
 <h2>Week #10</h2>
 At week #9 I've finished everything gameplay related (even though I want to tweak some settings on last week #11). This week I've spent on creating particle system for dust that is appearing behind moving player. Other thing was parallax scrolling background and some minor fixes of bugs that I've noticed.
 Parallax scrolling was made with 3 sprites that are moving with different speed. The farthest sky is the slowest and sand which is the nearest is slightly faster. I've already made for Models to follow Player so I only needed to connect backgrounds to it. Previously for example UI and Cursor was following the player every frame (because I am not using screenspace and everything is based on models).
