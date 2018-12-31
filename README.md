@@ -1,6 +1,8 @@
 <a href="https://komilll.github.io/AncientDroneRemake/">Better formatting</a>
 
 <a href="Blog/Post-mortem.pdf">Postmortem</a>
+
+<a href="https://github.com/komilll/AncientDroneRemake/releases/tag/1.0">Final Release (.exe)</a>
 <h1>Introduction</h1>
 Hey there!
 
