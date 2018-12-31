@@ -1,4 +1,6 @@
 <a href="https://komilll.github.io/AncientDroneRemake/">Better formatting</a>
+
+<a href="Blog/Post-mortem.pdf">Postmortem</a>
 <h1>Introduction</h1>
 Hey there!
 
